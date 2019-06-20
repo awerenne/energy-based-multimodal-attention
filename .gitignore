@@ -1,6 +1,8 @@
 *.png
 *.pt
-*.sketch
+*.DS_Store
+*.ubyte
+
 
 *.log
 *.aux
