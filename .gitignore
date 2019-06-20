@@ -1,0 +1,11 @@
+*.png
+*.pt
+*.sketch
+
+*.log
+*.aux
+*.blg
+*.out
+*.synctex.gz
+*.toc
+

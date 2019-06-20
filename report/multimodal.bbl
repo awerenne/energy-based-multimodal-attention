@@ -1,0 +1,65 @@
+\begin{thebibliography}{10}
+
+\bibitem{afouras}
+Triantafyllos {Afouras}, Joon {Son Chung}, Andrew {Senior}, Oriol {Vinyals},
+  and Andrew {Zisserman}.
+\newblock {Deep Audio-Visual Speech Recognition}.
+\newblock {\em arXiv e-prints}, page arXiv:1809.02108, Sep 2018.
+
+\bibitem{alainbengio}
+Guillaume {Alain} and Yoshua {Bengio}.
+\newblock {What Regularized Auto-Encoders Learn from the Data Generating
+  Distribution}.
+\newblock {\em arXiv e-prints}, page arXiv:1211.4246, Nov 2012.
+
+\bibitem{kahneman}
+Brian Bruya and Yi-Yuan Tang.
+\newblock Is attention really effort? revisiting daniel kahneman’s
+  influential 1973 book attention and effort.
+\newblock {\em Frontiers in Psychology}, 9:1133, 2018.
+
+\bibitem{cocktail-party}
+{Cocktail party effect}.
+\newblock Cocktail party effect --- {W}ikipedia{,} the free encyclopedia, 2010.
+\newblock [Online; accessed 29-April-2019].
+
+\bibitem{crossmodal}
+Jon Driver and Charles Spence.
+\newblock Crossmodal attention.
+\newblock {\em Current Opinion in Neurobiology}, 8(2):245 -- 253, 1998.
+
+\bibitem{jaiswal}
+Ayush {Jaiswal}, Ekraam {Sabir}, Wael {AbdAlmageed}, and Premkumar {Natarajan}.
+\newblock {Multimedia Semantic Integrity Assessment Using Joint Embedding Of
+  Images And Text}.
+\newblock {\em arXiv e-prints}, page arXiv:1707.01606, Jul 2017.
+
+\bibitem{potentialenergy}
+Hanna {Kamyshanska} and Roland {Memisevic}.
+\newblock {The Potential Energy of an Autoencoder}.
+\newblock {\em IEEE TRANSACTIONS ON PATTERN ANALYSIS AND MACHINE INTELLIGENCE
+  (TPAMI)}, 2014.
+
+\bibitem{liu-kuan}
+Kuan {Liu}, Yanen {Li}, Ning {Xu}, and Prem {Natarajan}.
+\newblock {Learn to Combine Modalities in Multimodal Deep Learning}.
+\newblock {\em arXiv e-prints}, page arXiv:1805.11730, May 2018.
+
+\bibitem{EBM}
+Takayuki {Osogami}.
+\newblock {Boltzmann machines and energy-based models}.
+\newblock {\em arXiv e-prints}, page arXiv:1708.06008, Aug 2017.
+
+\bibitem{dae-vincent}
+Pascal {Vincentl}, {Bengio}~Yoshua {Larochelle}, Hugo, , and Pierre-Antoine
+  {Manzagol}.
+\newblock {Extracting and Composing Robust Features with Denoising
+  Autoencoders}.
+\newblock {\em ICML 2008}, 2008.
+
+\bibitem{ising-model}
+C.~N. Yang.
+\newblock The spontaneous magnetization of a two-dimensional ising model.
+\newblock {\em Phys. Rev.}, 85:808--816, Mar 1952.
+
+\end{thebibliography}
