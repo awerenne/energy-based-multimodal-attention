@@ -17,9 +17,6 @@ n_samples = 1000
 noise = 0.08
 retrain = False
 
-# TODO: add generic noise process in inference 
-# TODO: early stopping
-
 
 # ---------------
 def train(loaders, model, optimizer, max_epochs, noise):
@@ -71,10 +68,10 @@ if __name__ == "__main__":
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
         model, curves = train(loaders, model, optimizer, max_epochs, noise)
         plot_curves(curves)
-        torch.save(model.state_dict(),"trained-models/autoencoder.pt")
+        torch.save(model.state_dict(),"dump-models/autoencoder.pt")
     else:
         model = AutoEncoder(d_input, n_hidden).float()
-        model.load_state_dict(torch.load("trained-models/autoencoder.pt"))
+        model.load_state_dict(torch.load("dump-models/autoencoder.pt"))
 
     model.eval()
     plot_vector_field(model, X)

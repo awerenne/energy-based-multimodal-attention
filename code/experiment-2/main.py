@@ -1,159 +1,100 @@
-import numpy as np
-import numpy.random
-import scipy.stats as ss
-import matplotlib.pyplot as plt
-import torch
-import torch.nn as nn
-from torch.autograd import Variable
-import torch.nn.functional as F
-from torch.utils import data
-
-from data import Mode
-from model import Composer
-
-
-# m1 = Mode(np.array([[4, 1.2]]), 2)
-# m1 = Mode(np.array([[12, 1.2], [2, 0.7]]), 0.5)
-m1 = Mode(np.array([[4, 1.6]]), 100)
-m2 = Mode(np.array([[4, 1.6]]), 1)
-# m2 = Mode(np.array([[4, 0.4]]), 1)
-model = Composer(2).float()
-model.reset(200)
-# optimizer = torch.optim.SGD(model.parameters(), lr=1e-2)
-optimizer = torch.optim.Adagrad(model.parameters())
-
-def regul(logits, abn1, abn2):
-    loss = (logits[:,0] * abn1) + (logits[:,1] * abn2)
-    return -torch.sum(loss)
-
-X = torch.zeros(1000,3,2)
-temp = m1.forced_sample(1000, frac=0.75)
-np.random.shuffle(temp)
-X[:,:,0] = torch.tensor(temp)
-temp = m2.forced_sample(1000)
-np.random.shuffle(temp)
-X[:,:,1] = torch.tensor(temp)
-X = X.float()
-
-print(dict(model.named_parameters())['Gamma'])
-print(dict(model.named_parameters())['w'])
-print(model.mode_min)
-
-n_epochs = 100
-batch_size = 8
-for i in range(n_epochs):
-    indices = np.arange(X.size(0))
-    np.random.shuffle(indices)
-    for j in range(0, len(X)-batch_size, batch_size):
-        optimizer.zero_grad()
-        idx = indices[j:j+batch_size]
-        alphas, logits = model(X[idx,2,:].squeeze())
-        loss = regul(logits, X[idx,1,0], X[idx,1,1])
-        if j%20 == 0: 
-            print(loss.item())
-        loss.backward()
-        optimizer.step()
-        dict(model.named_parameters())['Gamma'].data.clamp_(min=1e-5, max=1-1e-5)
-        dict(model.named_parameters())['w'].data.clamp_(1e-5)
-        model.cooldown()
-
-
-print(dict(model.named_parameters())['Gamma'])
-print(dict(model.named_parameters())['w'])
-print(model.mode_min)
-
+"""
+    ...
+"""
+ 
 
 import numpy as np
-import numpy.random
-import scipy.stats as ss
-import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 import torch.nn.functional as F
 from torch.utils import data
+from torchvision import datasets, transforms
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+from model import AutoEncoder
+from matplotlib import rc
+rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+rc('text', usetex=True)
+plt.style.use('seaborn-whitegrid')
 
-from data import Mode
-from model import Composer
-
-
-m1 = Mode(np.array([[4, 1.]]), 5)
-m2 = Mode(np.array([[4, 1.]]), 5)
-m3 = Mode(np.array([[4, 1.]]), 5)
-model = Composer(3).float()
-model.reset(500)
-# optimizer = torch.optim.SGD(model.parameters(), lr=1e-2)
-# optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
-optimizer = torch.optim.Adagrad(model.parameters())
-
-def regul(logits, abn):
-    loss = 0
-    for i in range(logits.size(-1)):
-        loss += logits[:,i] * abn[:,i]
-    cost = -torch.sum(loss)
-    return cost
-
-X = torch.zeros(1000,3,3)
-X[:,:,0] = torch.tensor(m1.forced_sample(1000))
-
-# X[:,:,1] = torch.tensor(m2.forced_sample(1000))
-X[:,:,1] = X[:,:,0]
-X[:,2,1] = X[:,2,1] * X[:,2,1]
-
-temp = m3.forced_sample(1000)
-# print(temp[:3])
-np.random.shuffle(temp)
-# print(temp[:3])
-X[:,:,2] = torch.tensor(temp)
-X = X.float()
-
-print("\nGamma")
-print(dict(model.named_parameters())['Gamma'])
-print("\nw")
-print(dict(model.named_parameters())['w'])
-print("\ncorrection")
-print(model.mode_min)
-
-n_epochs = 100
-batch_size = 16
-for i in range(n_epochs):
-    indices = np.arange(X.size(0))
-    np.random.shuffle(indices)
-    for j in range(0, len(X)-batch_size, batch_size):
-        optimizer.zero_grad()
-        idx = indices[j:j+batch_size]
-        alphas, logits = model(X[idx,2,:].squeeze())
-        loss = regul(logits, X[idx,1,:].squeeze())
-        if j%20 == 0: 
-            print(loss.item())
-        loss.backward()
-        optimizer.step()
-        dict(model.named_parameters())['Gamma'].data.clamp_(min=1e-5, max=1-1e-5)
-        dict(model.named_parameters())['w'].data.clamp_(1e-5)
-        model.cooldown()
+with_training = False
+noise = 0.1
+max_epochs = 15
+batch_size = 32
 
 
-print("\nGamma")
-print(dict(model.named_parameters())['Gamma'])
-print("\nw")
-print(dict(model.named_parameters())['w'])
-print("\ncorrection")
-print(model.mode_min)
+# ---------------
+def noise_vs_energy():
+    pass
 
+# ---------------
+def seen_vs_unseen():
+    pass
 
+# ---------------
+if __name__ == "__main__":
+    X0_train, X0_valid, X1_valid = torch.load('test_data/zeroandone.pt')
+    X0 = (X0_train.float(), X0_valid.float())
+    X1_valid = X1_valid.float()
 
+    # Train on zeros
+    if with_training:
+        model = AutoEncoder(28*28, 1024).float()
+        optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
+        model, curves = train(loader, model, optimizer, max_epochs)
+        torch.save(model.state_dict(),"dump-models/autoencoder.pt")
+        plot_curves(curves)
+    else:
+        model = AutoEncoder(28*28, 1024).float()
+        model.load_state_dict(torch.load("dump-models/autoencoder.pt"))
 
+    # Experiments
+    model.eval()
+    noise_vs_energy()
+    seen_vs_unseen()
 
+    # Exp 4-1: Noise versus energy with bands
+    measures = []
+    for noise in np.linspace(0, 10, 30):
+        energies = []
+        for i in range(100):
+            X = X0[0][i].view(1,-1) 
+            n = noise * np.random.normal(loc=0.0, scale=1, size=X.size(-1))
+            X += torch.tensor(n).float()
+            # energies.append(model.energy(X).data)
+            energies.append((model(X)-X).norm(p=2).pow(2).data/1000000)
+        energies = np.asarray(energies)
+        measures.append([noise, np.mean(energies), np.std(energies)])
+    measures = np.asarray(measures)
+    plt.fill_between(measures[:,0], measures[:,1]-2*measures[:,2],
+            measures[:,1]+2*measures[:,2])
+    plt.plot(measures[:,0], measures[:,1],c='black')
+    plt.xlabel('Noise', fontsize=18)
+    plt.ylabel('Reconstruction norm', fontsize=18)
+    plt.tick_params(axis='both', which='major', labelsize=11)
+    # plt.show()
+    plt.savefig('results/noise_vs_energy')
 
+    # Exp 4-2: seen versus unseen
+    plt.figure()
+    energies_0 = []
+    energies_1 = []
+    for i in range(100):
+        x = X0[0][i].view(1, -1).data
+        energies_0.append((model(x)-x).norm(p=2).pow(2).data/1000000)
+        x = X1_valid[i].view(1, -1).data
+        energies_1.append((model(x)-x).norm(p=2).pow(2).data/1000000)
 
-
-
-
-
-
-
-
-
+        # energies_0.append(model.energy(X0[0][i].view(1, -1)).data)
+        # energies_1.append(model.energy(X1_valid[i].view(1, -1)).data)
+    plt.boxplot([energies_0, energies_1])
+    plt.xticks([1, 2], [0, 1])
+    plt.xlabel('Mode', fontsize=18)
+    plt.ylabel('Reconstruction norm', fontsize=18)
+    plt.tick_params(axis='both', which='major', labelsize=11)
+    # plt.show()
+    plt.savefig('results/seen_vs_unseen')
+    
 
 
 

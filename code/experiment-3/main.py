@@ -2,86 +2,197 @@
     ...
 """
 
-
-import numpy as np
+from __future__ import print_function
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.utils import data
+import torch.optim as optim
 from torchvision import datasets, transforms
-from sklearn.model_selection import train_test_split
-import matplotlib.pyplot as plt
-from model import AutoEncoder
 
-with_training = True
-noise = 0.2
-max_epochs = 20
+from data import CombineDataset
+from models import Encoder, DualDecoder
 
 
-# ---------------
-def add_noise(X):
-    for j in range(X.size(0)):
-        n = noise * np.random.normal(loc=0.0, scale=1, size=X.size(-1))
-        X[j,:] += torch.tensor(n).float()
-    # plt.imshow(X[0].view(28,28).data.numpy(), cmap='gray')
-    # plt.show()
-    return X
+#---------------
+def forward(model, data):
+    m1 = model[0](data[:,0].unsqueeze(1))
+    m2 = model[1](data[:,1].unsqueeze(1))
+    m = torch.cat((m1, m2), dim=-1)
+    return model[-1](m)
 
 
-# ---------------
-def train(loaders, model, optimizer, max_epochs):
-    train_loader, test_loader = loaders
-    train_curve = []
-    test_curve = []
-    criterion = nn.MSELoss()
-    for epoch in range(max_epochs):
-        model.train()
-        sum_loss = 0
-        n_steps = 0
-        for i, (data, target) in enumerate(train_loader):
-            optimizer.zero_grad()
-            X = data.view(data.size(0), -1)
-            X_noisy = add_noise(X)
-            Xhat = model(X_noisy)
-            loss = criterion(Xhat, X)
-            sum_loss += loss.item()
-            n_steps += 1
-            loss.backward()
-            optimizer.step()
-            # if i == 20: break
-        train_curve.append(sum_loss/n_steps)
-
-        model.eval()
-        sum_loss = 0
-        n_steps = 0
-        for i, (data, target) in enumerate(test_loader):
-            X = data.view(data.size(0), -1)
-            X_noisy = add_noise(X)
-            Xhat = model(X_noisy)
-            loss = criterion(Xhat, X)
-            sum_loss += loss.item()
-            n_steps += 1
-            # if i == 10: break
-        test_curve.append(sum_loss/n_steps)
-        print("Epoch: " + str(epoch))
-        print(sum_loss/n_steps)
-        print()
-    return model, (train_curve, test_curve)
+#---------------
+def train(model, train_loader, optimizer, epoch):
+    model[-1].train()
+    for batch_idx, (data, target) in enumerate(train_loader):
+        optimizer.zero_grad()
+        output = forward(model, data)
+        loss = F.nll_loss(output, target.long())
+        loss.backward()
+        optimizer.step()
+        if batch_idx % 10 == 0:
+            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                epoch, batch_idx * len(data), len(train_loader.dataset),
+                100. * batch_idx / len(train_loader), loss.item()))
 
 
-# ---------------
-def plot_curves(curves):
-    train_curve, test_curve = curves
-    train_curve = np.asarray(train_curve)
-    test_curve = np.asarray(test_curve)
-    epochs = np.arange(len(train_curve))
-    plt.plot(epochs, train_curve)
-    plt.plot(epochs, test_curve)
-    plt.show()
+#---------------
+def test(model, test_loader):
+    model[-1].eval()
+    test_loss = 0
+    correct = 0
+    with torch.no_grad():
+        for data, target in test_loader:
+            output = forward(model, data)
+            test_loss += F.nll_loss(output, target.long(), reduction='sum').item() # sum up batch loss
+            pred = output.argmax(dim=1, keepdim=True) # get the index of the max log-probability
+            correct += pred.eq(target.long().view_as(pred)).sum().item()
+    test_loss /= len(test_loader.dataset)
+    print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
+        test_loss, correct, len(test_loader.dataset),
+        100. * correct / len(test_loader.dataset)))
 
 
-# ---------------
-if __name__ == "__main__":
+#---------------       
+if __name__ == '__main__':
+    
+    train_loader = torch.utils.data.DataLoader(CombineDataset(train=True,
+        transform=transforms.Normalize((0.1307,), (0.3081,))),
+        batch_size=32, shuffle=True)
+    test_loader = torch.utils.data.DataLoader(CombineDataset(train=False,
+        transform=transforms.Normalize((0.1307,), (0.3081,))),
+        batch_size=32, shuffle=True)
+
+    enc1 = Encoder().float()
+    enc1.load_state_dict(torch.load("models/mnist_encoder.pt"))
+    enc2 = Encoder().float().eval()
+    enc2.load_state_dict(torch.load("models/fashion_encoder.pt"))
+    dec = DualDecoder().float().eval()
+    optimizer = optim.SGD(dec.parameters(), lr=0.01, momentum=0.9)
+    model = nn.ModuleList([enc1, enc2, dec])
+
+    n_epochs = 1
+    for epoch in range(1, n_epochs+1):
+        train(model, train_loader, optimizer, epoch)
+        torch.save(model[-1].state_dict(),"models/dualdecoder.pt")
+        test(model, test_loader)
+    
+
+
+
+from __future__ import print_function
+import argparse
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+from torchvision import datasets, transforms
+
+from models import Encoder, SingleDecoder
+
+def train(model, train_loader, optimizer, epoch):
+    model.train()
+    for batch_idx, (data, target) in enumerate(train_loader):
+        optimizer.zero_grad()
+        print(data.size())
+        output = model(data)
+        loss = F.nll_loss(output, target)
+        loss.backward()
+        optimizer.step()
+        if batch_idx % 10 == 0:
+            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                epoch, batch_idx * len(data), len(train_loader.dataset),
+                100. * batch_idx / len(train_loader), loss.item()))
+
+def test(model, test_loader):
+    model.eval()
+    test_loss = 0
+    correct = 0
+    with torch.no_grad():
+        for data, target in test_loader:
+            output = model(data)
+            test_loss += F.nll_loss(output, target, reduction='sum').item() # sum up batch loss
+            pred = output.argmax(dim=1, keepdim=True) # get the index of the max log-probability
+            correct += pred.eq(target.view_as(pred)).sum().item()
+    test_loss /= len(test_loader.dataset)
+    print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
+        test_loss, correct, len(test_loader.dataset),
+        100. * correct / len(test_loader.dataset)))
+
+        
+if __name__ == '__main__':
+
+    train_loader = torch.utils.data.DataLoader(
+        datasets.FashionMNIST('./data_fashion', train=True, download=True,
+                       transform=transforms.Compose([
+                           transforms.ToTensor(),
+                           transforms.Normalize((0.1307,), (0.3081,))
+                       ])),
+        batch_size=32, shuffle=True)
+    test_loader = torch.utils.data.DataLoader(
+        datasets.FashionMNIST('./data_fashion', train=False, transform=transforms.Compose([
+                           transforms.ToTensor(),
+                           transforms.Normalize((0.1307,), (0.3081,))
+                       ])),
+        batch_size=32, shuffle=True)
+
+    model = nn.Sequential(Encoder(), SingleDecoder())
+    optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+
+    n_epochs = 1
+    for epoch in range(1, 1+n_epochs):
+        train(model, train_loader, optimizer, epoch)
+        test(model, test_loader)
+    # torch.save(model[0].state_dict(),"models/fashion_encoder.pt")
+
+
+
+
+
+
+
+
+from __future__ import print_function
+import argparse
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+from torchvision import datasets, transforms
+
+from models import Encoder, SingleDecoder
+
+    
+def train(model, train_loader, optimizer, epoch):
+    model.train()
+    for batch_idx, (data, target) in enumerate(train_loader):
+        optimizer.zero_grad()
+        output = model(data)
+        loss = F.nll_loss(output, target)
+        loss.backward()
+        optimizer.step()
+        if batch_idx % 10 == 0:
+            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                epoch, batch_idx * len(data), len(train_loader.dataset),
+                100. * batch_idx / len(train_loader), loss.item()))
+
+def test(model, test_loader):
+    model.eval()
+    test_loss = 0
+    correct = 0
+    with torch.no_grad():
+        for data, target in test_loader:
+            output = model(data)
+            test_loss += F.nll_loss(output, target, reduction='sum').item() # sum up batch loss
+            pred = output.argmax(dim=1, keepdim=True) # get the index of the max log-probability
+            correct += pred.eq(target.view_as(pred)).sum().item()
+    test_loss /= len(test_loader.dataset)
+    print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
+        test_loss, correct, len(test_loader.dataset),
+        100. * correct / len(test_loader.dataset)))
+
+        
+if __name__ == '__main__':
 
     train_loader = torch.utils.data.DataLoader(
         datasets.MNIST('./data_mnist', train=True, download=True,
@@ -96,192 +207,15 @@ if __name__ == "__main__":
                            transforms.Normalize((0.1307,), (0.3081,))
                        ])),
         batch_size=32, shuffle=True)
-    loaders = (train_loader, test_loader)
 
-    if with_training:
-        model = AutoEncoder(28*28, 900).float()
-        optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        model.train()
-        model, curves = train(loaders, model, optimizer, max_epochs)
-        torch.save(model.state_dict(),"model/autoencoder.pt")
-        plot_curves(curves)
-    else:
-        model = AutoEncoder(28*28, 1024).float()
-        model.load_state_dict(torch.load("model/autoencoder.pt"))
+    model = nn.Sequential(Encoder(), SingleDecoder())
+    optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
 
-    model.eval()
-    for i, (data, target) in enumerate(test_loader):
-        X = data.view(data.size(0), -1)
-        X_noisy = add_noise(X)
-        Xhat = model(X_noisy)
-        for i in range(3):
-            plt.imshow(X_noisy[i].view(28,28).data.numpy(), cmap='gray')
-            plt.show()
-            plt.imshow(Xhat[i].view(28,28).data.numpy(), cmap='gray')
-            plt.show()
-        break
-    
-    
-
-import numpy as np
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from torch.utils import data
-from torchvision import datasets, transforms
-from sklearn.model_selection import train_test_split
-import matplotlib.pyplot as plt
-from model import AutoEncoder
-from matplotlib import rc
-rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
-## for Palatino and other serif fonts use:
-#rc('font',**{'family':'serif','serif':['Palatino']})
-rc('text', usetex=True)
-plt.style.use('seaborn-whitegrid')
-
-with_training = False
-noise = 0.1
-max_epochs = 15
-batch_size = 32
-
-
-# ---------------
-def add_noise(X):
-    for j in range(X.size(0)):
-        n = noise * np.random.normal(loc=0.0, scale=1, size=X.size(-1))
-        X[j,:] += torch.tensor(n).float()
-    return X
-
-
-# ---------------
-def train(X, model, optimizer, max_epochs):
-    X_train, X_valid = X
-    train_curve = []
-    test_curve = []
-    criterion = nn.MSELoss()
-    for epoch in range(max_epochs):
-        model.train()
-        sum_loss = 0
-        n_steps = 0
-        indices = np.arange(X_train.size(0))
-        np.random.shuffle(indices)
-        for j in range(0, len(X_train)-batch_size, batch_size):
-            optimizer.zero_grad()
-            idx = indices[j:j+batch_size]
-            sample = X_train[idx].view(batch_size, -1)
-            sample_noisy = add_noise(sample)
-            preds = model(sample_noisy)
-            loss = criterion(preds, sample)
-            sum_loss += loss.item()
-            n_steps += 1
-            loss.backward()
-            optimizer.step()
-            # if i == 20: break
-        train_curve.append(sum_loss/n_steps)
-
-        model.eval()
-        sum_loss = 0
-        n_steps = 0
-        indices = np.arange(X_valid.size(0))
-        np.random.shuffle(indices)
-        for j in range(0, len(X_valid)-batch_size, batch_size):
-            optimizer.zero_grad()
-            idx = indices[j:j+batch_size]
-            sample = X_valid[idx].view(batch_size, -1)
-            sample_noisy = add_noise(sample)
-            preds = model(sample_noisy)
-            loss = criterion(preds, sample)
-            sum_loss += loss.item()
-            n_steps += 1
-            # if i == 10: break
-        test_curve.append(sum_loss/n_steps)
-
-        print("Epoch: " + str(epoch))
-    return model, (train_curve, test_curve)
-
-
-# ---------------
-def plot_curves(curves):
-    train_curve, test_curve = curves
-    train_curve = np.asarray(train_curve)
-    test_curve = np.asarray(test_curve)
-    epochs = np.arange(len(train_curve))
-    plt.plot(epochs, train_curve)
-    plt.plot(epochs, test_curve)
-    plt.show()
-
-
-# ---------------
-if __name__ == "__main__":
-    X0_train, X0_valid, X1_valid = torch.load('test_data/zeroandone.pt')
-    X0 = (X0_train.float(), X0_valid.float())
-    X1_valid = X1_valid.float()
-
-    # Train on zeros
-    if with_training:
-        model = AutoEncoder(28*28, 1024).float()
-        optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        model.train()
-        model, curves = train(X0, model, optimizer, max_epochs)
-        torch.save(model.state_dict(),"model/autoencoder.pt")
-        plot_curves(curves)
-    else:
-        model = AutoEncoder(28*28, 1024).float()
-        model.load_state_dict(torch.load("model/autoencoder.pt"))
-
-    # Experiments
-    model.eval()
-
-    # Exp 4-1: Noise versus energy with bands
-    measures = []
-    for noise in np.linspace(0, 10, 30):
-        energies = []
-        for i in range(100):
-            X = X0[0][i].view(1,-1) 
-            n = noise * np.random.normal(loc=0.0, scale=1, size=X.size(-1))
-            X += torch.tensor(n).float()
-            # energies.append(model.energy(X).data)
-            energies.append((model(X)-X).norm(p=2).pow(2).data/1000000)
-        energies = np.asarray(energies)
-        measures.append([noise, np.mean(energies), np.std(energies)])
-    measures = np.asarray(measures)
-    plt.fill_between(measures[:,0], measures[:,1]-2*measures[:,2],
-            measures[:,1]+2*measures[:,2])
-    plt.plot(measures[:,0], measures[:,1],c='black')
-    plt.xlabel('Noise', fontsize=18)
-    plt.ylabel('Reconstruction norm', fontsize=18)
-    plt.tick_params(axis='both', which='major', labelsize=11)
-    # plt.show()
-    plt.savefig('results/noise_vs_energy')
-
-    # Exp 4-2: seen versus unseen
-    plt.figure()
-    energies_0 = []
-    energies_1 = []
-    for i in range(100):
-        x = X0[0][i].view(1, -1).data
-        energies_0.append((model(x)-x).norm(p=2).pow(2).data/1000000)
-        x = X1_valid[i].view(1, -1).data
-        energies_1.append((model(x)-x).norm(p=2).pow(2).data/1000000)
-
-        # energies_0.append(model.energy(X0[0][i].view(1, -1)).data)
-        # energies_1.append(model.energy(X1_valid[i].view(1, -1)).data)
-    plt.boxplot([energies_0, energies_1])
-    plt.xticks([1, 2], [0, 1])
-    plt.xlabel('Mode', fontsize=18)
-    plt.ylabel('Reconstruction norm', fontsize=18)
-    plt.tick_params(axis='both', which='major', labelsize=11)
-    # plt.show()
-    plt.savefig('results/seen_vs_unseen')
-    
-
-
-
-
-
-
-
-
+    n_epochs = 1
+    for epoch in range(1, 1+n_epochs):
+        train(model, train_loader, optimizer, epoch)
+        test(model, test_loader)
+    # torch.save(model[0].state_dict(),"models/mnist_encoder.pt")
 
 
 
