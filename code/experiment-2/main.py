@@ -1,21 +1,16 @@
 """
     ...
 """
- 
 
 import numpy as np
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-from torch.utils import data
-from torchvision import datasets, transforms
-from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
-from model import AutoEncoder
 from matplotlib import rc
 rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 rc('text', usetex=True)
 plt.style.use('seaborn-whitegrid')
+from model import AutoEncoder
 
 with_training = False
 noise = 0.1
@@ -25,35 +20,6 @@ batch_size = 32
 
 # ---------------
 def noise_vs_energy():
-    pass
-
-# ---------------
-def seen_vs_unseen():
-    pass
-
-# ---------------
-if __name__ == "__main__":
-    X0_train, X0_valid, X1_valid = torch.load('test_data/zeroandone.pt')
-    X0 = (X0_train.float(), X0_valid.float())
-    X1_valid = X1_valid.float()
-
-    # Train on zeros
-    if with_training:
-        model = AutoEncoder(28*28, 1024).float()
-        optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        model, curves = train(loader, model, optimizer, max_epochs)
-        torch.save(model.state_dict(),"dump-models/autoencoder.pt")
-        plot_curves(curves)
-    else:
-        model = AutoEncoder(28*28, 1024).float()
-        model.load_state_dict(torch.load("dump-models/autoencoder.pt"))
-
-    # Experiments
-    model.eval()
-    noise_vs_energy()
-    seen_vs_unseen()
-
-    # Exp 4-1: Noise versus energy with bands
     measures = []
     for noise in np.linspace(0, 10, 30):
         energies = []
@@ -75,7 +41,9 @@ if __name__ == "__main__":
     # plt.show()
     plt.savefig('results/noise_vs_energy')
 
-    # Exp 4-2: seen versus unseen
+
+# ---------------
+def seen_vs_unseen():
     plt.figure()
     energies_0 = []
     energies_1 = []
@@ -94,6 +62,28 @@ if __name__ == "__main__":
     plt.tick_params(axis='both', which='major', labelsize=11)
     # plt.show()
     plt.savefig('results/seen_vs_unseen')
+
+
+# ---------------
+if __name__ == "__main__":
+    X0_train, X0_valid, X1_valid = torch.load('test_data/zeroandone.pt')
+    X0 = (X0_train.float(), X0_valid.float())
+    X1_valid = X1_valid.float()
+
+    if with_training:
+        model = AutoEncoder(28*28, 1024).float()
+        optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
+        model, curves = train(loader, model, optimizer, max_epochs)
+        torch.save(model.state_dict(),"dump-models/autoencoder.pt")
+        plot_curves(curves)
+    else:
+        model = AutoEncoder(28*28, 1024).float()
+        model.load_state_dict(torch.load("dump-models/autoencoder.pt"))
+
+    model.eval()
+    noise_vs_energy()
+    seen_vs_unseen()
+    
     
 
 

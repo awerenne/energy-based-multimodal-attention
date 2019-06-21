@@ -8,7 +8,9 @@ setup was the following,
 2. Use/fix the encoders trained in (1). Fuse the two modes in a dual-decoder
 3. Evaluate on noisy modes
 4. Insert EMMA
+
 The objectives are summarized below:
+
 - Compare the results
 - Check initialization and end values of the trained parameters (view distributions ...)
 - Asses different cooling schedules

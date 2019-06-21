@@ -11,6 +11,7 @@ vector fields and quantifier heatmaps.
 - Add the noise processes in the inference step 'train' in main.py
 - Move 'train' to emma/
 - Add early stopping
+- Try different loss functions: MSE, Cross-entropy, Binary cross-entropy, ...
 
 
 

@@ -8,6 +8,9 @@ on the seen and unseen classes. Two different experiments are made:
 - Comparing the quantifier on the seen and unseen class (expected: higher engery
 on the unseen class)
 
+### TODO:
+- Preprocess of HIGGS dataset
+- In main take 100 sample of HIGGS
 
 
 
