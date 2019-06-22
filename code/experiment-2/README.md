@@ -9,8 +9,10 @@ on the seen and unseen classes. Two different experiments are made:
 on the unseen class)
 
 ### TODO:
-- Preprocess of HIGGS dataset
-- In main take 100 sample of HIGGS
+- Put HIGGS dataset in form
+- Add noise
+- Early stopping to avoid overfitting
+
 
 
 
