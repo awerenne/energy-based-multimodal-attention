@@ -1,5 +1,6 @@
 """
-    ...
+    A set of schedulers controlling the temperature decrease in simulated 
+    annealing.
 """
 
 import torch
@@ -12,13 +13,17 @@ from abc import ABC, abstractmethod
 # --------------- 
 class Scheduler(ABC):
     """
-        ...
+        Base class.
+        
+        Arguments
+            - temperature: starting temperature
+            - alpha: rate of decrease
     """
 
     def __init__(self, temperature, alpha=0):
         self.T = temperature
         self.alpha = alpha
-        self.init_T = T
+        self.init_T = self.T
         self.step = 0
         super().__init__()
 
@@ -34,7 +39,7 @@ class Scheduler(ABC):
 # --------------- 
 class ExponentialScheduler(Scheduler):
     def cooldown(self):
-        self.T = self.init_T * np.pow(self.alpha, self.step)
+        self.T = self.init_T * pow(self.alpha, self.step)
         self.step += 1
         return self
 
@@ -62,6 +67,15 @@ class QuadraticScheduler(Scheduler):
         self.step += 1
         return self
 
+
+if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+    scheduler = QuadraticScheduler(10, 0.1)
+    t = []
+    for i in range(100):
+        t.append(scheduler.cooldown().temperature)
+    plt.plot(t)
+    plt.show()
 
     
 

@@ -13,3 +13,5 @@
 
 
 code/datasets/
+
+*.pyc

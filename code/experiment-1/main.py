@@ -7,7 +7,8 @@ import torch.nn as nn
 from model import AutoEncoder
 from helper import *
 from manifolds import *
-
+sys.path.append('../../master/')
+from utils import Parameters, Container, xy2ij, center2xy
 seed = 42
 batch_size = 32
 d_input = 2

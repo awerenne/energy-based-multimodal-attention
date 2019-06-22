@@ -1,17 +1,20 @@
 """
-    ...
+    Implementation of two different quantifiers models: the denoising 
+    autoencoder and the convolutional autoencoder.
 """
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
+from abc import ABC, abstractmethod
+from cooling import Scheduler
 
 
 # --------------- 
 class Quantifier(ABC):
     """
-        ...
+        Base class.
     """
 
     def __init__(self):
@@ -23,15 +26,30 @@ class Quantifier(ABC):
 
 
 # ---------------
-class DenoisingAutoEncoder(nn.Module, Scheduler):
+class DenoisingAutoEncoder(nn.Module, Quantifier):
     """
-        ...
+        Denoising Autoencoder.
+        
+        Inputs
+            - x: input tensor, size N x D
+                    + N: batch size
+                    + D: dimension of each input sample
+            - add_noise: boolean value, true forces the model to use the
+                         corruption process
+
+        Arguments
+            - d_input: dimension of input (D)
+            - d_hidden: number of hidden units (H)
+            - activation: type of activation function
+            - noise: noise amplitude
+
     """
 
     def __init__(self, d_input, d_hidden, activation='sigmoid', noise=0):
         super().__init__()
-        self.d_input = d_input
-        self.d_hidden = d_hidden
+        self.D = d_input
+        self.H = d_hidden
+        self.noise = noise
         self.activation = activation
         self.encoder = nn.Linear(d_input, d_hidden, bias=False)
         self.bias_h = torch.nn.Parameter(torch.zeros(d_hidden).float())
@@ -50,7 +68,7 @@ class DenoisingAutoEncoder(nn.Module, Scheduler):
     def energy_sigmoid(self, x):
         energy = 0
         W = self.encoder.weight
-        for i in range(self.d_hidden):
+        for i in range(self.H):
             e_unit = torch.exp(torch.matmul(x, W.t()[:,i]) + self.bias_h[i])
             energy -= torch.log(1 + e_unit)
         energy += 0.5 * (x - self.bias_r).norm(p=2).pow(2)
@@ -74,31 +92,45 @@ class DenoisingAutoEncoder(nn.Module, Scheduler):
 
     # -------
     def corruption(self, x):
-        noise = Variable(x.data.new(x.size()).normal_(mean, stddev))
-        return x + noise
+        return x + Variable(x.data.new(x.size()).normal_(0, self.noise))
 
     # -------
     def forward(self, x, add_noise):
+        assert x.size(1) == self.D
         if add_noise:
-            x = self.corruption(x)
+            x = self.corruption(x)  # N x D
         if self.activation == 'relu':
-            u = F.relu(self.encoder(x) + self.bias_h)
+            u = F.relu(self.encoder(x) + self.bias_h)  # N x H
         elif self.activation == 'tanh':
-            u = F.tanh(self.encoder(x) + self.bias_h)
+            u = F.tanh(self.encoder(x) + self.bias_h)  # N x H
         else:
-            u = F.sigmoid(self.encoder(x) + self.bias_h)
-        output = F.linear(u, self.encoder.weight.t()) + self.bias_r
+            u = F.sigmoid(self.encoder(x) + self.bias_h)  # N x H
+        output = F.linear(u, self.encoder.weight.t()) + self.bias_r  # N x D
         return output
 
 
 # ---------------
-class ConvDenoisingAutoEncoder(nn.Module, Scheduler):
+class ConvDenoisingAutoEncoder(nn.Module, Quantifier):
     """
-        ...
+        Convolutional Denoising Autoencoder.
+        
+        Inputs
+            - x: input tensor, size N x 1 x D x D
+                    + N: batch size
+                    + D: image width/height
+            - add_noise: boolean value, true forces the model to use the
+                         corruption process
+
+        Arguments
+            - d_input: image width/height (D)
+            - activation: type of activation function
+            - noise: noise amplitude
     """
 
-    def __init__(self):
+    def __init__(self, d_input, activation='sigmoid', noise=0):
         super().__init__()
+        self.D = d_input
+        self.noise = noise
         self.conv1 = nn.Conv2d(1, 16, 3, stride=1, padding=1) 
         self.conv2 = nn.Conv2d(16, 8, 3, stride=1, padding=1)
         self.conv3 = nn.Conv2d(8, 8, 3, stride=1, padding=1)
@@ -138,10 +170,21 @@ class ConvDenoisingAutoEncoder(nn.Module, Scheduler):
         return logits
 
     # -------
-    def forward(self, x):
-        encoding = self.encoder(x)
-        logits = self.decoder(encoding)
-        return encoding, logits
+    def reconstruction(self, x, add_noise=True):
+        return (self.forward(x, add_noise)-x).norm(p=2)
+
+    # -------
+    def corruption(self, x):
+        return x + Variable(x.data.new(x.size()).normal_(0, self.noise))
+
+    # -------
+    def forward(self, x, add_noise):
+        assert x.size(2), x.size(3) == self.D, self.D
+        if add_noise:
+            x = self.corruption(x)  # N x 1 x D x D
+        encoding = self.encoder(x)  # N x ...
+        output = self.decoder(encoding)  # N x 1 x D x D
+        return encoding, output
 
 
         
