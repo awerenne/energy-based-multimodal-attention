@@ -1,5 +1,8 @@
 """ 
-    ...
+    Generation of the different two-dimensional manifolds. Each function returns
+    a N x D (D = 2) tensor. 
+        - N: number of samples
+        - D: number of dimensions 
 """
 
 import numpy as np
@@ -11,6 +14,7 @@ param_mesh = np.linspace(0, 2*3.1415, N)
 
 # ---------------
 def make_wave(n_samples):
+    assert n_samples <= N
     samples = param_mesh[np.random.randint(0, N, n_samples)]
     x1 = samples 
     x2 = np.sin(samples)
@@ -19,6 +23,7 @@ def make_wave(n_samples):
 
 # ---------------
 def make_circle(n_samples):
+    assert n_samples <= N
     samples = param_mesh[np.random.randint(0, N, n_samples)]
     x1 = np.sin(samples)
     x2 = np.cos(samples)
@@ -27,6 +32,7 @@ def make_circle(n_samples):
 
 # ---------------
 def make_spiral(n_samples):
+    assert n_samples <= N
     samples = param_mesh[np.random.randint(0, N, n_samples)]
     r = np.sqrt(samples)
     x1 = r * np.cos(samples)

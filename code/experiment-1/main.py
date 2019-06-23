@@ -1,56 +1,42 @@
 """
-    ...
+    Experiment I: train an Autoencoder on simple toy data manifolds. Visualize 
+    the reconstruction vector field and energy landscape.
 """
 
 import torch
 import torch.nn as nn
-from model import AutoEncoder
 from helper import *
 from manifolds import *
-sys.path.append('../../master/')
-from utils import Parameters, Container, xy2ij, center2xy
-seed = 42
-batch_size = 32
-d_input = 2
-n_hidden = 8
-max_epochs = 200
-n_samples = 1000
-noise = 0.08
-retrain = False
+sys.path.append('../emma/')
+from quantifier import DenoisingAutoEncoder
 
+seed = 42
 
 # ---------------
-def train(loaders, model, optimizer, max_epochs, noise):
+def train(loaders, model, optimizer, criterion, max_epochs):
     train_loader, test_loader = loaders
-    train_curve = []
-    test_curve = []
-    criterion = nn.MSELoss()
+    train_curve, test_curve = [], []
     for epoch in range(max_epochs):
+        """ Train """
         model.train()
-        loss = inference(train_loader, model, optimizer, noise, train=true)
+        loss = train_step(train_loader, model, optimizer, criterion, train=true)
         train_curve.append(loss)
 
+        """ Validation """
         model.eval()
         with torch.set_grad_enabled(False):
-            loss = inference(test_loader, model, optimizer, noise, train=false)
+            loss = train_step(test_loader, model, optimizer, criterion, train=false)
         test_curve.append(loss)
         print("Epoch: " + str(epoch))
     return model, (train_curve, test_curve)
 
 
 # ---------------
-def inference(loader, model, optimizer, noise, train):
-        sum_loss = 0
-        n_steps = 0
+def train_step(loader, model, optimizer, criterion, train):
+        sum_loss, n_steps = 0, 0
         for i, X in enumerate(loader):
             optimizer.zero_grad()
-            X = X[0]
-            X_noisy = torch.tensor(X)
-            for j in range(X_noisy.size(-1)):
-                n = noise * np.random.normal(loc=0.0, scale=1,
-                        size=X_noisy.size(0))
-                X_noisy[:,j] += torch.tensor(n).float()
-            Xhat = model(X_noisy)
+            Xhat = model(X, add_noise=true)  # N x D
             loss = criterion(Xhat, X)
             sum_loss += loss.item()
             n_steps += 1
@@ -62,18 +48,34 @@ def inference(loader, model, optimizer, noise, train):
 
 # ---------------
 if __name__ == "__main__":
-    X = make_wave(n_samples)
+    """ Parameters of experiment """
+    batch_size = 100
+    n_samples = 2000
+    max_epochs = 100
+    d_input = 2
+    n_hidden = 8
+    noise = 0.08
+    retrain = False
+    criterion = nn.MSELoss()
+    activation = 'sigmoid'
+
+    """ Manifold """
+    X = make_wave(n_samples)  # N x D (with D = 2)
+
+    """ Load and train model """ 
     loaders = make_loaders(X)
     if retrain:
-        model = AutoEncoder(d_input, n_hidden).float()
+        model = DenoisingAutoEncoder(d_input, n_hidden, activation, noise).float()
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        model, curves = train(loaders, model, optimizer, max_epochs, noise)
+        model, curves = train(loaders, model, optimizer, criterion, max_epochs,
+                                noise)
         plot_curves(curves)
         torch.save(model.state_dict(),"dump-models/autoencoder.pt")
     else:
-        model = AutoEncoder(d_input, n_hidden).float()
+        model = AutoEncoder(d_input, n_hidden, activation, noise).float()
         model.load_state_dict(torch.load("dump-models/autoencoder.pt"))
 
+    """ Compare the two quantifiers """ 
     model.eval()
     plot_vector_field(model, X)
     plot_quantifier(model)

@@ -1,41 +1,42 @@
-import os
-from torch.utils import data
+"""
+    Manipulation of HIGGS dataset.
+"""
+
 import torch
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd 
 
 
-#---------------
-# def make_data(name="training"):
-#     X, y = torch.load('./data_mnist/processed/' + name + '.pt')
-        
-#     numpy_y = y.data.numpy()
-#     sorted_y = np.sort(numpy_y)
-#     idx_X = np.argsort(numpy_y)
-#     _, occur_y = np.unique(numpy_y, return_counts=True)
-#     n_zeros = occur_y[0]
-#     n_train = int(0.7*float(n_zeros))
-#     n_valid = n_zeros - n_train
-#     X0_train = torch.zeros(n_train, X.size(1), X.size(2))
-#     X0_valid = torch.zeros(n_valid, X.size(1), X.size(2))
-#     X1_valid = torch.zeros(n_valid, X.size(1), X.size(2))
-
-#     X0_train = X[idx_X[0:0+n_train]]
-#     X0_valid = X[idx_X[n_train:n_train+n_valid]]
-#     X1_valid = X[idx_X[occur_y[1]:occur_y[1]+n_valid]]
-
-#     torch.save([X0_train, X0_valid, X1_valid], 'test_data/zeroandone.pt')
-
-
-#---------------
+# ---------------
 def Generator():
     for chunk in pd.read_csv("../datasets/higgs/HIGGS.csv", header=None, chunksize=1e5):
-        X1 = torch.tensor(chunk[range(1,22)].values)
-        X2 = torch.tensor(chunk[range(22,29)].values)
-        X = [X1, X2]
-        y = torch.tensor(chunk[0].values)
-        yield (X, y)
+        X = np.asarray(chunk[range(1,22)].values)  # Discard the high-level features
+        y = np.asarray(chunk[0].values)
+        X_train = torch.tensor(X[0:int(0.8e5)]).float()
+        y_train = torch.tensor(y[0:int(0.8e5)]).float()
+        X_valid = torch.tensor(X[int(0.8e5):]).float()
+        y_valid = torch.tensor(y[int(0.8e5):]).float()
+        yield (X_train, X_valid, y_train, y_valid)
+
+
+# ---------------
+def signal_only(X, y):
+    y = y.data.numpy()
+    idx = np.argsort(y)
+    _, counts_y = np.unique(y, return_counts=True)
+    n_zeros = counts_y[0]
+    return X[idx[n_zeros:]]
+
+
+# ---------------
+def background_only(X, y):
+    y = y.data.numpy()
+    idx = np.argsort(y)
+    _, counts_y = np.unique(y, return_counts=True)
+    n_zeros = counts_y[0]
+    return X[idx[:n_zeros]]
+
+
 
 
 

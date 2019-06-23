@@ -1,5 +1,5 @@
 """
-    ...
+    Helper functions. Mostly plotting.
 """
 
 import torch
@@ -10,7 +10,8 @@ from sklearn.model_selection import train_test_split
 
 
 # ---------------
-def plot_curves(curves):
+def plot_curves(curves, save=False):
+    """ Plot train- and validation curves """
     train_curve, test_curve = curves
     train_curve = np.asarray(train_curve)
     test_curve = np.asarray(test_curve)
@@ -18,6 +19,8 @@ def plot_curves(curves):
     plt.plot(epochs, train_curve, label="Train")
     plt.plot(epochs, test_curve, label="Validation")
     plt.legend()
+    plt.show()
+    if save: plt.savefig('results/train-valid-curves')
     plt.show()
     
 
@@ -42,6 +45,7 @@ def make_mesh():
 
 # ---------------
 def plot_vector_field(X, model, save=False):
+    """ Plots the reconstruction vector field alongside the data manifolds """
     xmesh, ymesh, nx, ny = make_mesh()
     xnorm = np.zeros(xmesh.shape)
     ynorm = np.zeros(ymesh.shape)
@@ -58,11 +62,12 @@ def plot_vector_field(X, model, save=False):
     plt.xlim(-2, 2)
     plt.ylim(-2, 2)
     if save: plt.savefig('results/vector-field')
-    else: plt.show()
+    plt.show()
 
 
 # ---------------
 def plot_quantifier(model, save=False):
+    """ Plots two heatmaps: energy and reconstruction norm """
     xmesh, ymesh, nx, ny = make_mesh()
     q = np.zeros((2, ymesh.shape[0], ymesh.shape[1]))
 
@@ -84,13 +89,13 @@ def plot_quantifier(model, save=False):
     plt.pcolormesh(xmesh, ymesh, q[0,:,:], cmap = 'plasma') 
     plt.colorbar()
     if save: plt.savefig('results/quantifier-energy')
-    else: plt.show()
+    plt.show()
 
     plt.title('Reconstruction heatmap')
     plt.pcolormesh(xmesh, ymesh, q[0,:,:], cmap = 'plasma') 
     plt.colorbar()
     if save: plt.savefig('results/quantifier-reconstruction')
-    else: plt.show()
+    plt.show()
 
 
 

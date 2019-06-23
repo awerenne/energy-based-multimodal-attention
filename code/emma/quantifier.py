@@ -93,6 +93,11 @@ class DenoisingAutoEncoder(nn.Module, Quantifier):
     # -------
     def corruption(self, x):
         return x + Variable(x.data.new(x.size()).normal_(0, self.noise))
+        # X_noisy = torch.tensor(X)  # N x D
+        #     for j in range(X_noisy.size(-1)):
+        #         n = noise * np.random.normal(loc=0.0, scale=1,
+        #                 size=X_noisy.size(0))
+        #         X_noisy[:,j] += torch.tensor(n).float()
 
     # -------
     def forward(self, x, add_noise):
