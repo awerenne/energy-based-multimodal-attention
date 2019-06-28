@@ -6,6 +6,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.autograd import Variable
 import numpy as np
 from abc import ABC, abstractmethod
 from cooling import Scheduler
@@ -92,6 +93,8 @@ class DenoisingAutoEncoder(nn.Module, Quantifier):
 
     # -------
     def corruption(self, x):
+        if self.noise == 0:
+            return x
         return x + Variable(x.data.new(x.size()).normal_(0, self.noise))
         # X_noisy = torch.tensor(X)  # N x D
         #     for j in range(X_noisy.size(-1)):
@@ -105,11 +108,11 @@ class DenoisingAutoEncoder(nn.Module, Quantifier):
         if add_noise:
             x = self.corruption(x)  # N x D
         if self.activation == 'relu':
-            u = F.relu(self.encoder(x) + self.bias_h)  # N x H
+            u = torch.relu(self.encoder(x) + self.bias_h)  # N x H
         elif self.activation == 'tanh':
-            u = F.tanh(self.encoder(x) + self.bias_h)  # N x H
+            u = torch.tanh(self.encoder(x) + self.bias_h)  # N x H
         else:
-            u = F.sigmoid(self.encoder(x) + self.bias_h)  # N x H
+            u = torch.sigmoid(self.encoder(x) + self.bias_h)  # N x H
         output = F.linear(u, self.encoder.weight.t()) + self.bias_r  # N x D
         return output
 
@@ -184,7 +187,7 @@ class ConvDenoisingAutoEncoder(nn.Module, Quantifier):
 
     # -------
     def forward(self, x, add_noise):
-        assert x.size(2), x.size(3) == self.D, self.D
+        assert x.size(2) == self.D and x.size(3) == self.D
         if add_noise:
             x = self.corruption(x)  # N x 1 x D x D
         encoding = self.encoder(x)  # N x ...

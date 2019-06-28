@@ -13,15 +13,17 @@
 
 import numpy as np
 import torch
+import torch.nn as nn
 from helper import *
 from data import *
+import sys
 sys.path.append('../emma/')
 from quantifier import DenoisingAutoEncoder
 
 seed =  42
 
 # ---------------
-def noise_quantifier(generator):
+def noise_quantifier(generator, quantifier):
     """ Test on validation set on the signal class """
     _, X_valid, _, y_valid = next(generator)
     X_signal = signal_only(X_valid, y_valid)
@@ -38,8 +40,9 @@ def noise_quantifier(generator):
         for i in range(100):
             x = X_signal[i,:]
             x = add_noise(x, 10**noise)
-            potential = quantifier(x).energy.data
-            recon_error = quantifier(x).reconstruction.data
+            x = x.unsqueeze(0)
+            potential = quantifier.energy(x).data
+            recon_error = quantifier.reconstruction(x, add_noise=False).data
             q.append([potential, recon_error])
         q = np.asarray(q)
         measures.append([[noise, noise], np.mean(q, axis=0), np.std(q, axis=0)])
@@ -47,7 +50,7 @@ def noise_quantifier(generator):
 
 
 # ---------------
-def seen_unseen(generator):
+def seen_unseen(generator, quantifier):
     """ Test on validation set on the signal class """
     _, X_valid, _, y_valid = next(generator)
     X_signal = signal_only(X_valid, y_valid)
@@ -66,13 +69,15 @@ def seen_unseen(generator):
     q_unseen = []
     for i in range(100):
         x = X_signal[i]
-        potential = quantifier(x).energy.data
-        recon_error = quantifier(x).reconstruction.data
+        x = x.unsqueeze(0)
+        potential = quantifier.energy(x).data
+        recon_error = quantifier.reconstruction(x, add_noise=False).data
         q_seen.append([potential, recon_error])
 
         x = X_background[i]
-        potential = quantifier(x).energy.data
-        recon_error = quantifier(x).reconstruction.data
+        x = x.unsqueeze(0)
+        potential = quantifier.energy(x).data
+        recon_error = quantifier.reconstruction(x, add_noise=False).data
         q_unseen.append([potential, recon_error])
     return [np.asarray(q_seen), np.asarray(q_unseen)]
 
@@ -81,27 +86,28 @@ def seen_unseen(generator):
 def train(generator, model, optimizer, criterion, batch_size, max_epochs):
     train_curve, test_curve = [], []
     for epoch in range(max_epochs):
+        print("Epoch: " + str(epoch+1))
         for (X_train, X_valid, y_train, y_valid) in generator:
             """ Train """
             model.train()
-            X_train, y_train = signal_only(X_train, y_train)
-            loss = train_step(X_train, y_train, model, optimizer, criterion, 
+            X_train = signal_only(X_train, y_train)
+            loss = train_step(X_train, model, optimizer, criterion, 
                                 batch_size, train=True)
             train_curve.append(loss)
 
             """ Validation """
             model.eval()
-            X_valid, y_valid = signal_only(X_valid, y_valid)
+            X_valid = signal_only(X_valid, y_valid)
             with torch.set_grad_enabled(False):
-                loss = train_step(X_valid, y_valid, model, optimizer, criterion, 
+                loss = train_step(X_valid, model, optimizer, criterion, 
                                 batch_size, train=False)
             test_curve.append(loss)
-            print("Epoch: " + str(epoch))
+            print("\t\t loss: " + str(loss))
     return model, (train_curve, test_curve)
 
 
 # ---------------
-def train_step(X, y, model, optimizer, criterion, batch_size, train):
+def train_step(X, model, optimizer, criterion, batch_size, train):
         sum_loss, n_steps = 0, 0
         indices = np.arange(X.size(0))
         np.random.shuffle(indices)
@@ -109,8 +115,8 @@ def train_step(X, y, model, optimizer, criterion, batch_size, train):
             optimizer.zero_grad()
             idx = indices[i:i+batch_size]
             batch = X[idx].view(batch_size, -1)
-            Xhat = model(batch, add_noise=true)  # N x D
-            loss = criterion(Xhat, X)
+            Xhat = model(batch, add_noise=True)  # N x D
+            loss = criterion(Xhat, batch)
             sum_loss += loss.item()
             n_steps += 1
             if train:
@@ -123,35 +129,37 @@ def train_step(X, y, model, optimizer, criterion, batch_size, train):
 if __name__ == "__main__":
     """ Parameters of experiment """
     retrain = False
-    max_epochs = 15
-    batch_size = 100
+    max_epochs = 1
+    batch_size = 256
     noise = 0.1
     activation = "sigmoid"
+    d_input = 7
+    n_hidden = 32
+    criterion = nn.MSELoss()
 
     """ Data """
     generator = Generator()
 
     """ Load and train model """ 
     if retrain:
-        model = DenoisingAutoEncoder(d_input=21, d_hidden=128, activation,
-                    noise).float()
+        model = DenoisingAutoEncoder(d_input, n_hidden, activation, noise).float()
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        model, curves = train(generator, model, optimizer, batch_size, max_epochs)
+        model, curves = train(generator, model, optimizer, criterion, batch_size, max_epochs)
         torch.save(model.state_dict(),"dump-models/autoencoder.pt")
         plot_curves(curves)
     else:
-        model = DenoisingAutoEncoder(d_input=21, d_hidden=128, activation,
+        model = DenoisingAutoEncoder(d_input, n_hidden, activation,
                     noise).float()
         model.load_state_dict(torch.load("dump-models/autoencoder.pt"))
     model.eval()
 
     """ Experiment 2.1 """
-    measures = noise_quantifier(generator)
-    plot_noise_quantifier(measures)
+    # measures = noise_quantifier(generator, model)
+    # plot_noise_quantifier(measures, save=True)
 
     """ Experiment 2.2 """
-    measures = seen_unseen(generator)
-    plot_seen_unseen(measures)
+    measures = seen_unseen(generator, model)
+    plot_seen_unseen(measures, save=True)
     
     
 

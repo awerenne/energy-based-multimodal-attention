@@ -10,7 +10,7 @@ import pandas as pd
 # ---------------
 def Generator():
     for chunk in pd.read_csv("../datasets/higgs/HIGGS.csv", header=None, chunksize=1e5):
-        X = np.asarray(chunk[range(1,22)].values)  # Discard the high-level features
+        X = np.asarray(chunk[range(22,29)].values)  # Discard the high-level features
         y = np.asarray(chunk[0].values)
         X_train = torch.tensor(X[0:int(0.8e5)]).float()
         y_train = torch.tensor(y[0:int(0.8e5)]).float()

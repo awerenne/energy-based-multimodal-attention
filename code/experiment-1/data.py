@@ -16,7 +16,7 @@ param_mesh = np.linspace(0, 2*3.1415, N)
 def make_wave(n_samples):
     assert n_samples <= N
     samples = param_mesh[np.random.randint(0, N, n_samples)]
-    x1 = samples 
+    x1 = samples-3
     x2 = np.sin(samples)
     return np.concatenate((np.expand_dims(x1,1), np.expand_dims(x2,1)), axis=1)
 
@@ -25,8 +25,8 @@ def make_wave(n_samples):
 def make_circle(n_samples):
     assert n_samples <= N
     samples = param_mesh[np.random.randint(0, N, n_samples)]
-    x1 = np.sin(samples)
-    x2 = np.cos(samples)
+    x1 = 3*np.sin(samples)
+    x2 = 3*np.cos(samples)
     return np.concatenate((np.expand_dims(x1,1), np.expand_dims(x2,1)), axis=1)
 
 

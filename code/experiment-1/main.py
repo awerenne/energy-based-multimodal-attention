@@ -6,7 +6,8 @@
 import torch
 import torch.nn as nn
 from helper import *
-from manifolds import *
+from data import *
+import sys
 sys.path.append('../emma/')
 from quantifier import DenoisingAutoEncoder
 
@@ -19,13 +20,13 @@ def train(loaders, model, optimizer, criterion, max_epochs):
     for epoch in range(max_epochs):
         """ Train """
         model.train()
-        loss = train_step(train_loader, model, optimizer, criterion, train=true)
+        loss = train_step(train_loader, model, optimizer, criterion, train=True)
         train_curve.append(loss)
 
         """ Validation """
         model.eval()
         with torch.set_grad_enabled(False):
-            loss = train_step(test_loader, model, optimizer, criterion, train=false)
+            loss = train_step(test_loader, model, optimizer, criterion, train=False)
         test_curve.append(loss)
         print("Epoch: " + str(epoch))
     return model, (train_curve, test_curve)
@@ -36,8 +37,8 @@ def train_step(loader, model, optimizer, criterion, train):
         sum_loss, n_steps = 0, 0
         for i, X in enumerate(loader):
             optimizer.zero_grad()
-            Xhat = model(X, add_noise=true)  # N x D
-            loss = criterion(Xhat, X)
+            Xhat = model(X[0], add_noise=True)  # N x D
+            loss = criterion(Xhat, X[0])
             sum_loss += loss.item()
             n_steps += 1
             if train:
@@ -54,31 +55,32 @@ if __name__ == "__main__":
     max_epochs = 100
     d_input = 2
     n_hidden = 8
-    noise = 0.08
-    retrain = False
+    noise = 0.01
+    retrain = True
     criterion = nn.MSELoss()
     activation = 'sigmoid'
 
     """ Manifold """
-    X = make_wave(n_samples)  # N x D (with D = 2)
+    # X = make_wave(n_samples)  # N x D (with D = 2)
+    # X = make_circle(n_samples)  # N x D (with D = 2)
+    X = make_spiral(n_samples)  # N x D (with D = 2)
 
     """ Load and train model """ 
     loaders = make_loaders(X)
     if retrain:
         model = DenoisingAutoEncoder(d_input, n_hidden, activation, noise).float()
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        model, curves = train(loaders, model, optimizer, criterion, max_epochs,
-                                noise)
+        model, curves = train(loaders, model, optimizer, criterion, max_epochs)
         plot_curves(curves)
         torch.save(model.state_dict(),"dump-models/autoencoder.pt")
     else:
-        model = AutoEncoder(d_input, n_hidden, activation, noise).float()
+        model = DenoisingAutoEncoder(d_input, n_hidden, activation, noise).float()
         model.load_state_dict(torch.load("dump-models/autoencoder.pt"))
 
     """ Compare the two quantifiers """ 
     model.eval()
-    plot_vector_field(model, X)
-    plot_quantifier(model)
+    plot_vector_field(model, X, save=False)
+    plot_quantifier(model, save=False)
     
 
 

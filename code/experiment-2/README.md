@@ -9,9 +9,9 @@ on the seen and unseen classes. Two different experiments are made:
 on the unseen class)
 
 ### TODO:
-- Put HIGGS dataset in form
 - Add noise
 - Early stopping to avoid overfitting
+- Same axis plot noise vs quantifier
 
 
 
