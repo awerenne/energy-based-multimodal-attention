@@ -2,42 +2,55 @@
     ...
 """
 
-import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import rc
-rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
-rc('text', usetex=True)
-plt.style.use('seaborn-whitegrid')
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.optim as optim
 
 
 # ---------------
-def plot_noise_energy(measures):
-    plt.figure()
-    plt.fill_between(measures[:,0], measures[:,1]-2*measures[:,2],
-            measures[:,1]+2*measures[:,2])
-    plt.plot(measures[:,0], measures[:,1],c='black')
-    plt.xlabel('Noise', fontsize=18)
-    plt.ylabel('Reconstruction norm', fontsize=18)
-    plt.tick_params(axis='both', which='major', labelsize=11)
+class Model(nn.Module):
+    """
+        Simple model used for ...
+    """
+
+    def __init__(self, d_input):
+        super().__init__()
+        self.linear1 = nn.Linear(d_input, int(d_input/2))
+        self.linear2 = nn.Linear(int(d_input/2), 1)
+
+    def forward(self, x):
+        x = self.linear1(x)
+        x = torch.relu(x)
+        x = self.linear2(x)
+        return torch.sigmoid(x)
+
+
+# ---------------
+def zero_one_loss(groundtruth, predictions):
+    n_errors = (predictions != groundtruth.unsqueeze(-1).byte()).sum()
+    return n_errors.float()/predictions.size(0)
+
+
+# ---------------
+def plot_curves(curves, save=False):
+    curves = np.asarray(curves)
+    epochs = np.arange(curves.shape[0])
+    plt.plot(epochs, curves[:,0], label="Normal")
+    plt.plot(epochs, curves[:,1], label="IP-noisy")
+    plt.plot(epochs, curves[:,2], label="SNR-noisy")
+    plt.plot(epochs, curves[:,3], label="All-noisy")
+    plt.legend()
     plt.show()
-    plt.savefig('results/noise_vs_energy')
-
-
-# ---------------
-def plot_seen_unseen(measures):
-    plt.figure()
-    plt.boxplot([energies_0, energies_1])
-    plt.xticks([1, 2], [0, 1])
-    plt.xlabel('Mode', fontsize=18)
-    plt.ylabel('Reconstruction norm', fontsize=18)
-    plt.tick_params(axis='both', which='major', labelsize=11)
+    if save: plt.savefig('results/curves')
     plt.show()
-    plt.savefig('results/seen_vs_unseen')
 
 
-# ---------------
-def add_noise(X, noise):
-    pass
+
+
+
+
 
 
 

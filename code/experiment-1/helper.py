@@ -91,7 +91,7 @@ def plot_quantifier(model, save=False):
     plt.show()
 
     plt.title('Reconstruction heatmap')
-    plt.pcolormesh(xmesh, ymesh, q[0,:,:], cmap = 'plasma') 
+    plt.pcolormesh(xmesh, ymesh, q[1,:,:], cmap = 'plasma') 
     plt.colorbar()
     if save: plt.savefig('results/quantifier-reconstruction')
     plt.show()

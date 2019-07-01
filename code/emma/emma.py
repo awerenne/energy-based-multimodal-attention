@@ -29,11 +29,12 @@ class EMMA(nn.Module):
             - scheduler: cooling scheduler
     """
 
-    def __init__(self, n_modes, quantifiers, scheduler):
+    def __init__(self, n_modes, quantifiers, scheduler, qmin):
         super().__init__()
         self.M = n_modes
-        self.quantifier = quantifier
+        self.quantifiers = quantifiers   
         self.scheduler = scheduler
+        self.qmin = qmin
 
         self.qmin = torch.empty(n_modes).float()
         self.qmin.fill_(float("Inf"))
@@ -44,14 +45,14 @@ class EMMA(nn.Module):
         self.gammas.data *= 0.5 
         self.tau = 1e-9  
 
-        self.gain = torch.nn.Parameter(torch.zeros(d_hidden).float())
-        self.b_a = torch.nn.Parameter(torch.zeros(d_input).float())
+        self.gain = torch.nn.Parameter(torch.ones(1).float())
+        self.b_a = torch.nn.Parameter(torch.zeros(1).float())
 
     # -------
     def correction(self, q, train):
-        if train:
-            batch_min = torch.min(q, dim=0)[0]
-            self.qmin = np.minimum(self.qmin, batch_min)
+        # if train:
+        #     batch_min = torch.min(q, dim=0)[0]
+        #     self.qmin = np.minimum(self.qmin, batch_min)
         q = q - self.qmin.unsqueeze(0) + np.exp(1)
         q[q < np.exp(1)] = np.exp(1)
         return q
@@ -80,7 +81,7 @@ class EMMA(nn.Module):
 
     # -------
     def fusion(self, q, train):
-        phi = (1 + self.w) * self.correction(q, train).t() + self.b_f  # N x M
+        phi = self.correction(q, train) * (1 + self.w) + self.b_f  # N x M
         partial_energies = self.to_partial(phi)  # N x M x M
         modal_energies = self.to_modal(partial_energies)  # N x M
         logs = F.log_softmax(-self.tau * modal_energies, dim=-1)  
@@ -88,24 +89,27 @@ class EMMA(nn.Module):
         return alphas, logs
 
     # -------
-    def attention(self, m, alphas):
-        betas = self.relu(self.tanh(self.gain * alphas + self.b_a))  # N x M
-        mprime = []
-        for i, m_i in enumerate(m):
-            mprime.append(m_i * betas[:,i])
-        return mprime
+    def attention(self, x, alphas):
+        betas = torch.relu(torch.tanh(self.gain * alphas + self.b_a))  # N x M
+        # xprime = torch.zeros(self.M, x[0].size(0), x[0].size(-1))
+        # for i in range(self.M):
+        #     x[i] = betas[:,i].unsqueeze(-1) * x[i]
+        return betas
 
     # -------
-    def forward(self, x, m, train=True):
+    def cooling(self):
+        self.scheduler.cooldown()
+
+    # -------
+    def forward(self, x, train=True):
         assert len(x) == self.M
-        assert len(m) == self.M
         N = x[0].size(0)
-        q = torch.zeros(N, M)
+        q = torch.zeros(N, self.M)
         for i in range(self.M): 
-            if energy: q[:,i] = self.quantifier.energy(x[i])
-            else: q[:,i] = self.quantifier.reconstruction(x[i])
+            q[:,i] = self.quantifiers[i].energy(x[i])
+            # else: q[:,i] = self.quantifier[i].reconstruction(x[i])
         alphas, _ = self.fusion(q, train)  # N x M
-        return self.attention(m, alphas)  # list of M tensors (N x D_i)
+        return self.attention(x, alphas)  # list of M tensors (N x D_i)
         
 
 if __name__ == "__main__":

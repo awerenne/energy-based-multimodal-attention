@@ -56,14 +56,14 @@ if __name__ == "__main__":
     d_input = 2
     n_hidden = 8
     noise = 0.01
-    retrain = True
+    retrain = False
     criterion = nn.MSELoss()
     activation = 'sigmoid'
 
     """ Manifold """
     # X = make_wave(n_samples)  # N x D (with D = 2)
-    # X = make_circle(n_samples)  # N x D (with D = 2)
-    X = make_spiral(n_samples)  # N x D (with D = 2)
+    X = make_circle(n_samples)  # N x D (with D = 2)
+    # X = make_spiral(n_samples)  # N x D (with D = 2)
 
     """ Load and train model """ 
     loaders = make_loaders(X)
@@ -79,8 +79,8 @@ if __name__ == "__main__":
 
     """ Compare the two quantifiers """ 
     model.eval()
-    plot_vector_field(model, X, save=False)
-    plot_quantifier(model, save=False)
+    plot_vector_field(model, X, save=True)
+    plot_quantifier(model, save=True)
     
 
 

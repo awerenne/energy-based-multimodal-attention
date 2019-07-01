@@ -9,7 +9,7 @@ import pandas as pd
 
 # ---------------
 def Generator():
-    for chunk in pd.read_csv("../datasets/higgs/HIGGS.csv", header=None, chunksize=1e5):
+    for chunk in pd.read_csv("../datasets/higgs.csv", header=None, chunksize=1e5):
         X = np.asarray(chunk[range(22,29)].values)  # Discard the high-level features
         y = np.asarray(chunk[0].values)
         X_train = torch.tensor(X[0:int(0.8e5)]).float()
@@ -21,20 +21,16 @@ def Generator():
 
 # ---------------
 def signal_only(X, y):
-    y = y.data.numpy()
-    idx = np.argsort(y)
-    _, counts_y = np.unique(y, return_counts=True)
-    n_zeros = counts_y[0]
-    return X[idx[n_zeros:]]
+    X, y = X.data.numpy(), y.data.numpy()
+    _, idx = np.unique(y, return_index=True)
+    return torch.tensor(X[idx[1]:]).float()
 
 
 # ---------------
 def background_only(X, y):
-    y = y.data.numpy()
-    idx = np.argsort(y)
-    _, counts_y = np.unique(y, return_counts=True)
-    n_zeros = counts_y[0]
-    return X[idx[:n_zeros]]
+    X, y = X.data.numpy(), y.data.numpy()
+    _, idx = np.unique(y, return_index=True)
+    return torch.tensor(X[idx[0]:idx[1]]).float()
 
 
 
