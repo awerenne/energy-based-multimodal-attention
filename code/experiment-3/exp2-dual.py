@@ -1,7 +1,6 @@
 """
-    Experiment 3.1: 
-        Train models on separate modes and analyze results of predictions
-        on both normal and noisy data.
+    Experiment 3.2: 
+        ...
 """
 
 from __future__ import print_function
@@ -10,12 +9,16 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
+from helper import *
+from data import *
+
 
 # ---------------
 def train(model, optimizer, criterion, meta):
     loss_curves = []
     X_train, X_valid, y_train, y_valid = get_pulsar_data()
-    X_valid = corruption(X_valid, meta['noise'])
+    X_train = apply_corruption(X_train, meta['noise_train'])
+    X_valid = apply_corruption(X_valid, meta['noise_valid'])
     for epoch in range(meta['max_epochs']):
         print("Epoch: " + str(epoch+1))
         """ Train """
@@ -25,8 +28,8 @@ def train(model, optimizer, criterion, meta):
         """ Validation """
         model.eval()
         with torch.set_grad_enabled(False):
-            X_normal, X_ip_noisy, X_snr_noisy, X_all_noisy = split(X_valid)
-            y_normal, y_ip_noisy, y_snr_noisy, y_all_noisy = split(y_valid)
+            X_normal, X_ip_noisy, X_snr_noisy, X_all_noisy = split_corruption(X_valid)
+            y_normal, y_ip_noisy, y_snr_noisy, y_all_noisy = split_corruption(y_valid)
             loss_normal = train_step(X_normal, y_normal, model, optimizer, 
                             criterion, meta['batch_size'], train=False)
             loss_ip_noisy = train_step(X_ip_noisy, y_ip_noisy, model, optimizer, 
@@ -64,14 +67,65 @@ def train_step(X, y, model, optimizer, criterion, batch_size, train):
 
 # ---------------
 if __name__ == "__main__":   
+    multi_run = True
+
     meta = {}
     meta['max_epochs'] = 20
     meta['batch_size'] = 128
-    meta['noise'] = 5
+    meta['noise_train'] = 5
+    meta['noise_valid'] = 5
     criterion = nn.BCELoss()
-    model = Model(d_input=4).float()
+    model = Model(d_input=8).float()
     optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
 
-    model, curves = train(model, optimizer, criterion, meta)
-    torch.save(model.state_dict(), "models/exp1-model.pt")
-    plot_curves(curves, save=False)
+    if not multi_run:
+        model, curves = train(model, optimizer, criterion, meta)
+        torch.save(model.state_dict(), "models/exp2-model.pt")
+        plot_curves(curves, save=False)
+    else:
+        loss = {
+            'normal': 0,
+            'ip-noisy': 0,
+            'snr-noisy': 0,
+            'all-noisy': 0
+            }
+        n_runs = 50
+        for i in range(n_runs):
+            print(i)
+            model = Model(d_input=8).float()
+            optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
+            model, _ = train(model, optimizer, criterion, meta)
+            _, X_valid, _, y_valid = get_pulsar_data()
+            X_valid = apply_corruption(X_valid, meta['noise_valid'])
+            X_normal, X_ip_noisy, X_snr_noisy, X_all_noisy = split_corruption(X_valid)
+            y_normal, y_ip_noisy, y_snr_noisy, y_all_noisy = split_corruption(y_valid)
+            loss['normal'] += train_step(X_normal, y_normal, model, optimizer, 
+                            criterion, meta['batch_size'], train=False)
+            loss['ip-noisy'] += train_step(X_ip_noisy, y_ip_noisy, model, optimizer, 
+                            criterion, meta['batch_size'], train=False)
+            loss['snr-noisy'] += train_step(X_snr_noisy, y_snr_noisy, model, optimizer,
+                            criterion, meta['batch_size'], train=False)
+            loss['all-noisy'] += train_step(X_all_noisy, y_all_noisy, model, optimizer, 
+                            criterion, meta['batch_size'], train=False)
+
+        for key, val in loss.items():
+            print(key + ": " + str(val/n_runs))
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
