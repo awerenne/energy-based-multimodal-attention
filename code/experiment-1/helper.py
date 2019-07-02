@@ -82,7 +82,7 @@ def plot_quantifier(model, save=False):
             sample = torch.tensor([xmesh[i,j], ymesh[i,j]]).float().unsqueeze(0)
             energy = model.energy(sample) - qmin
             q[0,i,j] = torch.log(1e-1 + energy.data)
-            q[1,i,j] = torch.log(1e-1 + model.reconstruction(sample).data)
+            q[1,i,j] = -np.log(1e-1) + torch.log(1e-1 + model.reconstruction(sample).data)
 
     plt.title('Energy heatmap')
     plt.pcolormesh(xmesh, ymesh, q[0,:,:], cmap = 'plasma') 

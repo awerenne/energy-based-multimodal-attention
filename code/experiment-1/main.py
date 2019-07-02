@@ -52,18 +52,18 @@ if __name__ == "__main__":
     """ Parameters of experiment """
     batch_size = 100
     n_samples = 2000
-    max_epochs = 100
+    max_epochs = 15
     d_input = 2
-    n_hidden = 8
-    noise = 0.01
-    retrain = False
+    n_hidden = 6
+    noise = 0.008
+    retrain = True
     criterion = nn.MSELoss()
     activation = 'sigmoid'
 
     """ Manifold """
     # X = make_wave(n_samples)  # N x D (with D = 2)
-    X = make_circle(n_samples)  # N x D (with D = 2)
-    # X = make_spiral(n_samples)  # N x D (with D = 2)
+    # X = make_circle(n_samples)  # N x D (with D = 2)
+    X = make_spiral(n_samples)  # N x D (with D = 2)
 
     """ Load and train model """ 
     loaders = make_loaders(X)
@@ -72,10 +72,10 @@ if __name__ == "__main__":
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
         model, curves = train(loaders, model, optimizer, criterion, max_epochs)
         plot_curves(curves)
-        torch.save(model.state_dict(),"dump-models/autoencoder.pt")
+        torch.save(model.state_dict(),"models/autoencoder.pt")
     else:
         model = DenoisingAutoEncoder(d_input, n_hidden, activation, noise).float()
-        model.load_state_dict(torch.load("dump-models/autoencoder.pt"))
+        model.load_state_dict(torch.load("models/autoencoder.pt"))
 
     """ Compare the two quantifiers """ 
     model.eval()
@@ -83,7 +83,16 @@ if __name__ == "__main__":
     plot_quantifier(model, save=True)
     
 
-
+    # Circle
+    # batch_size = 100
+    # n_samples = 2000
+    # max_epochs = 100
+    # d_input = 2
+    # n_hidden = 8
+    # noise = 0.01
+    # retrain = False
+    # criterion = nn.MSELoss()
+    # activation = 'sigmoid'
 
 
 

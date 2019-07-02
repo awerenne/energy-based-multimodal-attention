@@ -29,7 +29,7 @@ class EMMA(nn.Module):
             - scheduler: cooling scheduler
     """
 
-    def __init__(self, n_modes, quantifiers, scheduler, qmin):
+    def __init__(self, n_modes, quantifiers, qmin, scheduler):
         super().__init__()
         self.M = n_modes
         self.quantifiers = quantifiers   
@@ -91,10 +91,10 @@ class EMMA(nn.Module):
     # -------
     def attention(self, x, alphas):
         betas = torch.relu(torch.tanh(self.gain * alphas + self.b_a))  # N x M
-        # xprime = torch.zeros(self.M, x[0].size(0), x[0].size(-1))
-        # for i in range(self.M):
-        #     x[i] = betas[:,i].unsqueeze(-1) * x[i]
-        return betas
+        xprime = []
+        for i in range(self.M):
+            xprime.append(torch.mul(betas[:,i].unsqueeze(-1), x[i].clone()))
+        return xprime
 
     # -------
     def cooling(self):
@@ -107,10 +107,9 @@ class EMMA(nn.Module):
         q = torch.zeros(N, self.M)
         for i in range(self.M): 
             q[:,i] = self.quantifiers[i].energy(x[i])
-            # else: q[:,i] = self.quantifier[i].reconstruction(x[i])
         alphas, _ = self.fusion(q, train)  # N x M
         return self.attention(x, alphas)  # list of M tensors (N x D_i)
-        
+   
 
 if __name__ == "__main__":
     x = []

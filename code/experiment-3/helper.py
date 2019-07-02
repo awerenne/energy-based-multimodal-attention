@@ -34,6 +34,36 @@ def zero_one_loss(groundtruth, predictions):
 
 
 # ---------------
+def true_positives(gt, preds):
+    return ((gt == 1) * (preds == 1)).sum()
+
+
+# ---------------
+def false_positives(gt, preds):
+    return ((gt == 0) * (preds == 1)).sum()
+    
+
+# ---------------
+def false_negatives(gt, preds):
+    return ((gt == 1) * (preds == 0)).sum()
+    
+
+# ---------------
+def F1_loss(groundtruth, predictions, threshold):
+    predictions = predictions >= threshold
+    gt = groundtruth.unsqueeze(-1).byte().clone()
+    TP = true_positives(gt, predictions)
+    FP = false_positives(gt, predictions)
+    FN = false_negatives(gt, predictions)
+    precision = TP.float() / (TP+FP).float()
+    recall = TP.float() / (TP+FN).float()
+    if precision + recall == 0:
+        return torch.tensor(0).float(), torch.tensor(0).float(), torch.tensor(0).float()
+    f1_score = (2 * precision * recall) / (precision + recall)
+    return f1_score, precision, recall
+
+
+# ---------------
 def plot_curves(curves, save=False):
     curves = np.asarray(curves)
     epochs = np.arange(curves.shape[0])
@@ -42,11 +72,8 @@ def plot_curves(curves, save=False):
     plt.plot(epochs, curves[:,2], label="SNR-noisy")
     plt.plot(epochs, curves[:,3], label="All-noisy")
     plt.legend()
-    plt.show()
     if save: plt.savefig('results/curves')
     plt.show()
-
-
 
 
 

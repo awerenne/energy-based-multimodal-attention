@@ -17,7 +17,7 @@ from data import *
 def train(model, optimizer, criterion, meta):
     loss_curves = []
     X_train, X_valid, y_train, y_valid = get_pulsar_data()
-    X_train = apply_corruption(X_train, meta['noise_train'])
+    # X_train = apply_corruption(X_train, meta['noise_train'])
     X_valid = apply_corruption(X_valid, meta['noise_valid'])
     for epoch in range(meta['max_epochs']):
         print("Epoch: " + str(epoch+1))
@@ -44,7 +44,7 @@ def train(model, optimizer, criterion, meta):
 
 # ---------------
 def train_step(X, y, model, optimizer, criterion, batch_size, train):
-        sum_loss, n_steps = 0, 0
+        f1_score, sum_loss, n_steps = 0, 0, 0
         indices = np.arange(X.size(0))
         np.random.shuffle(indices)
         for i in range(0, len(X)-batch_size, batch_size):
@@ -58,22 +58,23 @@ def train_step(X, y, model, optimizer, criterion, batch_size, train):
                 loss.backward()
                 optimizer.step()
             else:
-                yhat = yhat >= 0.5
-                loss = zero_one_loss(y[idx], yhat)
-                sum_loss += loss.data
+                f1, precision, recall = F1_loss(y[idx], yhat, 0.5)
+                f1_score += f1.data
             n_steps += 1
-        return (sum_loss/n_steps)
+        if train:
+            return (sum_loss/n_steps)
+        return (f1_score/n_steps)
 
 
 # ---------------
 if __name__ == "__main__":   
-    multi_run = True
+    multi_run = False
 
     meta = {}
     meta['max_epochs'] = 20
     meta['batch_size'] = 128
-    meta['noise_train'] = 5
-    meta['noise_valid'] = 5
+    meta['noise_train'] = 0
+    meta['noise_valid'] = 2
     criterion = nn.BCELoss()
     model = Model(d_input=8).float()
     optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
@@ -81,7 +82,7 @@ if __name__ == "__main__":
     if not multi_run:
         model, curves = train(model, optimizer, criterion, meta)
         torch.save(model.state_dict(), "models/exp2-model.pt")
-        plot_curves(curves, save=False)
+        plot_curves(curves, save=True)
     else:
         loss = {
             'normal': 0,
