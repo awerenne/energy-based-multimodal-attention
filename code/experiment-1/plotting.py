@@ -1,5 +1,5 @@
 """
-    Helper functions. Mostly plotting.
+    ...
 """
 
 import torch
@@ -7,32 +7,24 @@ from torch.utils import data
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
+rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+rc('text', usetex=True)
+plt.style.use('seaborn-whitegrid')
 
 seed = 42
 
 # ---------------
 def plot_curves(curves, save=False):
     """ Plot train- and validation curves """
-    train_curve, test_curve = curves
+    train_curve, valid_curve = curves
     train_curve = np.asarray(train_curve)
-    test_curve = np.asarray(test_curve)
+    test_curve = np.asarray(valid_curve)
     epochs = np.arange(len(train_curve))
     plt.plot(epochs, train_curve, label="Train")
-    plt.plot(epochs, test_curve, label="Validation")
+    plt.plot(epochs, valid_curve, label="Validation")
     plt.legend()
-    plt.show()
     if save: plt.savefig('results/train-valid-curves')
     plt.show()
-    
-
-# ---------------
-def make_loaders(X):
-    X_train, X_test = train_test_split(X, test_size=0.33, random_state=seed)
-    train_dataset = torch.utils.data.TensorDataset(torch.tensor(X_train).float())
-    train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=16)
-    test_dataset = torch.utils.data.TensorDataset(torch.tensor(X_test).float())
-    test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=16)
-    return (train_loader, test_loader)
 
 
 # ---------------
@@ -74,26 +66,26 @@ def plot_quantifier(model, save=False):
     for i in range(nx):
         for j in range(ny):
             sample = torch.tensor([xmesh[i,j], ymesh[i,j]]).float().unsqueeze(0)
-            energy = model.energy(sample)
-            if energy < qmin: qmin = energy
+            potential = model.potential(sample)
+            if potential < qmin: qmin = potential
 
     for i in range(nx):
         for j in range(ny):
             sample = torch.tensor([xmesh[i,j], ymesh[i,j]]).float().unsqueeze(0)
-            energy = model.energy(sample) - qmin
-            q[0,i,j] = torch.log(1e-1 + energy.data)
-            q[1,i,j] = -np.log(1e-1) + torch.log(1e-1 + model.reconstruction(sample).data)
+            potential = model.potential(sample) - qmin
+            q[0,i,j] = torch.log(1e-1 + potential.data)
+            q[1,i,j] = -np.log(1e-1) + torch.log(1e-1 + model.reconstruction_norm(sample).data)
 
-    plt.title('Energy heatmap')
+    plt.title('Potential heatmap')
     plt.pcolormesh(xmesh, ymesh, q[0,:,:], cmap = 'plasma') 
     plt.colorbar()
-    if save: plt.savefig('results/quantifier-energy')
+    if save: plt.savefig('results/potential')
     plt.show()
 
-    plt.title('Reconstruction heatmap')
+    plt.title('Reconstruction norm heatmap')
     plt.pcolormesh(xmesh, ymesh, q[1,:,:], cmap = 'plasma') 
     plt.colorbar()
-    if save: plt.savefig('results/quantifier-reconstruction')
+    if save: plt.savefig('results/reconstruction')
     plt.show()
 
 

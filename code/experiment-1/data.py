@@ -41,13 +41,13 @@ def make_spiral(n_samples):
 
 
 # ---------------
-if __name__ == "__main__":
-    # X = make_wave(200)
-    # X = make_circle(200)
-    X = make_spiral(200)
-
-    plt.scatter(X[:,0], X[:,1], marker='o', alpha=0.3)
-    plt.show()
+def make_loaders(X):
+    X_train, X_test = train_test_split(X, test_size=0.33, random_state=seed)
+    train_dataset = torch.utils.data.TensorDataset(torch.tensor(X_train).float())
+    train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=16)
+    test_dataset = torch.utils.data.TensorDataset(torch.tensor(X_test).float())
+    test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=16)
+    return (train_loader, test_loader)
 
 
 

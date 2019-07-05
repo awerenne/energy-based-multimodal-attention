@@ -1,8 +1,6 @@
-*.png
 *.pt
 *.DS_Store
 *.ubyte
-
 
 *.log
 *.aux
@@ -10,8 +8,6 @@
 *.out
 *.synctex.gz
 *.toc
-
-
-code/datasets/
-
 *.pyc
+
+report/figs/

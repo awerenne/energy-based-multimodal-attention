@@ -7,6 +7,9 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
+rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+rc('text', usetex=True)
+plt.style.use('seaborn-whitegrid')
 
 
 # ---------------
