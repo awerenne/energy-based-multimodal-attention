@@ -26,10 +26,10 @@ class EMMA(nn.Module):
             - ...
     """
 
-    def __init__(self, n_modes, autoencoders, vmin, tau):
+    def __init__(self, n_modes, autoencoders, vmin, tau=None):
         super().__init__()
-        self.n_modes = n_modes
-        self.autoencoders = autoencoders   
+        self._n_modes = n_modes
+        self._autoencoders = autoencoders   
         self.vmin = vmin
         self.tau = tau  
         
@@ -39,6 +39,25 @@ class EMMA(nn.Module):
         self.gammas.data *= 0.5 
         self.gain = torch.nn.Parameter(torch.ones(1).float())
         self.bias_attention = torch.nn.Parameter(torch.zeros(1).float())
+
+    # -------
+    def set_coldness(self, tau):
+        self.tau = tau
+
+    # -------
+    @property
+    def n_modes(self):
+        return self._n_modes
+
+    # -------
+    @property
+    def autoencoders(self):
+        return self._autoencoders
+
+    # -------
+    @property
+    def min_potentials(self):
+        return self.vmin
 
     # -------
     def correction(self, v, train):
@@ -53,14 +72,13 @@ class EMMA(nn.Module):
         return self.gammas[j,i]
 
     # -------
-    def compute_partial(self, phi):
-        N = phi.size(0)
-        partial_energies = torch.zeros(N, self.M, self.M)
-        for i in range(M):
-            for j in range(M):
+    def compute_partial(self, v):
+        partial_energies = torch.zeros(v.size(0), self._n_modes, self._n_modes)
+        for i in range(self._n_modes):
+            for j in range(self._n_modes):
                 gamma_ij = self.gamma(i,j)
-                partial_energies[:,i,j] = torch.pow(phi[:,i], gamma_ij) * \
-                                          torch.pow(phi[:,j], 1-gamma_ij)
+                partial_energies[:,i,j] = torch.pow(v[:,i], gamma_ij) * \
+                                          torch.pow(v[:,j], 1-gamma_ij)
         return partial_energies
 
     # -------
@@ -82,11 +100,11 @@ class EMMA(nn.Module):
 
     # -------
     def forward(self, x, train=True):
-        assert len(x) == self.n_modes
+        assert len(x) == self._n_modes
         N = x[0].size(0)
-        potentials = torch.zeros(N, self.n_modes)
-        for i in range(self.n_modes): 
-            potentials[:,i] = self.quantifiers[i].energy(x[i])
+        potentials = torch.zeros(N, self._n_modes)
+        for i in range(self._n_modes): 
+            potentials[:,i] = self._autoencoders[i].potential(x[i])
         alphas, logs = self.compute_importance_scores(potentials, train)  # N x M
         return self.apply_attention(x, alphas), logs
 
@@ -100,7 +118,7 @@ class WeightClipper(object):
             param = param.clamp(min=1)
 
         if hasattr(emma, 'bias_correction'): 
-            param = emma.b_f.data
+            param = emma.bias_correction.data
             param = param.clamp(min=0)
 
         if hasattr(emma, 'gain'): 
@@ -108,7 +126,7 @@ class WeightClipper(object):
             param = param.clamp(min=0)
 
         if hasattr(emma, 'bias_attention'): 
-            param = emma.b_a.data
+            param = emma.bias_attention.data
             param = param.clamp(min=0, max=1)
 
         if hasattr(emma, 'gammas'): 
