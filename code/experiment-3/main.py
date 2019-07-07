@@ -45,6 +45,19 @@ def copy_emma_model(model_original):
 
 
 # ---------------
+def regul_loss(indicator, log_alphas):
+    return (indicator * log_alphas).sum()
+
+
+# ---------------
+def indic2regul(indicator):
+    regul_indic = torch.zeros(indicator.size()).float()
+    regul_indic[indicator[:,0] == 1, 1] = -1
+    regul_indic[indicator[:,1] == 1, 0] = -1
+    return -regul_indic
+
+
+# ---------------
 def train_autoencoder(model, optimizer, batch_size, n_epochs, X_train, X_valid=None):
     valid_curve = []
     for epoch in range(n_epochs):
@@ -95,53 +108,64 @@ def get_min_potential(X, model):
 
 # ---------------
 def train_clf(model_original, optimizer, meta, X_train, y_train, X_valid=None,
-        y_valid=None, with_emma=False):
+        y_valid=None, with_emma=False, indicator=None):
     n_epochs = meta['max_epochs']
     if not with_emma:
-        measures = torch.zeros(n_epochs, 2, requires_grad=False)
+        measures = torch.zeros(n_epochs, 4, requires_grad=False)
         for epoch in range(n_epochs):
             model_original.train()
             train_step_clf(X_train, y_train, model_original, optimizer, meta, train=True)
             if (not X_valid is None) and (not y_valid is None):
                 model_original.eval()
                 with torch.set_grad_enabled(False):
-                    F1, best_threshold = train_step_clf(X_valid, y_valid, model_original,
+                    best_threshold, scores = train_step_clf(X_valid, y_valid, model_original,
                             optimizer, meta, train=False)
-                    measures[epoch, 0] = F1
-                    measures[epoch, 1] = best_threshold
-        print(measures[n_epochs-1, 0])
-        print(measures[n_epochs-1, 1])
-        return model_original, measures
+                    measures[epoch, 0] = best_threshold
+                    measures[epoch, 1] = scores[0]
+                    measures[epoch, 2] = scores[1]
+                    measures[epoch, 3] = scores[2]
+        if (not X_valid is None) and (not y_valid is None):
+            return model_original, measures
+        return model_original
     
     coldness = meta['coldness']
     lambdas = meta['lambda']
-    measures = torch.zeros(len(coldness), len(lambdas), n_epochs, 2,
-                    requires_grad=False)
+    best_model = None
+    best_F1 = -float("Inf")
+    measures = torch.zeros(len(coldness), len(lambdas), n_epochs, 4, requires_grad=False)
     for i, tau in enumerate(coldness):
         for j, lambda_ in enumerate(lambdas):
             model = copy_emma_model(model_original)
             model[0].set_coldness(tau)
+            optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
             for epoch in range(n_epochs):
                 model.train()
-                train_step_clf(X_train, y_train, model, optimizer, meta, True, True, lambda_)
+                train_step_clf(X_train, y_train, model, optimizer, meta, True, True, lambda_, indicator=indicator)
                 if (not X_valid is None) and (not y_valid is None):
                     model.eval()
                     with torch.set_grad_enabled(False):
-                        F1, best_threshold = train_step_clf(X_valid, y_valid, model,
-                                optimizer, meta, train=False, with_emma=True, lambda_=lambda_)
-                        measures[i, j, epoch, 0] = F1
-                        measures[i, j, epoch, 1] = best_threshold
-            print(measures[i, j, n_epochs-1, 0])
-            print(measures[i, j, n_epochs-1, 1])
-    return model, measures
+                        best_threshold, scores = train_step_clf(X_valid, y_valid, model,
+                                optimizer, meta, train=False, with_emma=True,
+                                lambda_=lambda_, indicator=indicator)
+                        measures[i, j, epoch, 0] = best_threshold
+                        measures[i, j, epoch, 1] = scores[0]
+                        measures[i, j, epoch, 2] = scores[1]
+                        measures[i, j, epoch, 3] = scores[2]
+                        if scores[0] > best_F1:
+                            best_model = model
+                            best_F1 = scores[0]
+
+    if (not X_valid is None) and (not y_valid is None):
+        return best_model, measures
+    return model
 
 
 # ---------------
 def train_step_clf(X, y, model, optimizer, meta, train=True, with_emma=False,
-        lambda_=None):
+        lambda_=None, indicator=None):
     n_steps = 0
     thresholds = np.linspace(0.1,0.9,9)
-    F1 = np.zeros(11)
+    scores = np.zeros((11, 3))
     batch_size = meta['batch_size']
     indices = np.arange(X.size(0))
     np.random.shuffle(indices)
@@ -163,27 +187,75 @@ def train_step_clf(X, y, model, optimizer, meta, train=True, with_emma=False,
             if not with_emma:
                 loss = meta['criterion'](yhat, y[idx].unsqueeze(-1))
             else:
-                loss = meta['criterion'](yhat, y[idx].unsqueeze(-1))
-                # loss = meta['criterion'](yhat, y[idx].unsqueeze(-1)) + \
-                #             regularizer(without_noise[idx], log_alphas)
+                loss = meta['criterion'](yhat, y[idx].unsqueeze(-1)) - \
+                            lambda_ * regul_loss(indicator[idx], log_alphas)
             loss.backward()
             optimizer.step()
             if with_emma:
                 model[0].apply(meta['clipper'])
         else:
             for j, threshold in enumerate(thresholds):
-                f1, _, _ = compute_F1(y[idx], yhat, threshold)
-                F1[j] += f1
+                f1, precision, recall = compute_F1(y[idx], yhat, threshold)
+                scores[j, 0] += f1
+                scores[j, 1] += precision
+                scores[j, 2] += recall
         n_steps += 1
     if not train:
-        F1 /= n_steps
-        idx = np.argmax(F1)
-        return F1[idx], thresholds[idx]
+        scores /= n_steps
+        idx = np.argmax(scores[:,0])
+        return thresholds[idx], scores[idx,:]
 
 
 # ---------------
-def model_evaluation():
-    pass
+def evaluation(X, y, model, threshold, with_emma):
+    f1, precision, recall = 0, 0, 0
+    n_steps = 0
+    batch_size = 32
+    indices = np.arange(X.size(0))
+    for i in range(0, len(X)-batch_size, batch_size):
+        optimizer.zero_grad()
+        idx = indices[i:i+batch_size]
+        batch = X[idx].view(batch_size, -1)
+        if not with_emma:
+            yhat = model(batch)
+        else:
+            modes = [batch[:,:4], batch[:,4:]]
+            modes, log_alphas = model[0](modes, False)
+            new_batch = torch.zeros(batch.size()).float()
+            new_batch[:, :4], new_batch[:, 4:]  = modes[0], modes[1]
+            yhat = model[1](new_batch)  # N x D
+        f1_, precision_, recall_ = compute_F1(y[idx], yhat, threshold)
+        f1 += f1_
+        precision += precision_
+        recall += recall_
+        n_steps += 1
+    return (f1/n_steps).data.numpy(), (precision/n_steps).data.numpy(), (recall/n_steps).data.numpy()
+
+# ---------------
+def model_evaluation(X, y, indic, models, thresholds):
+    for name, model in models.items():
+        print(name + ": ")
+        if name == "model-with":
+            with_emma = True
+        else: 
+            with_emma = False
+        threshold = thresholds[name]
+
+        """ Average """
+        F1, precision, recall = evaluation(X, y, model, threshold, with_emma)
+        print("  Average: " + str(F1) + " - " + str(precision) + " - " + str(recall))
+        
+        idx = (indic[:,0] == 0) * (indic[:,1] == 0)
+        F1, precision, recall = evaluation(X[idx], y[idx], model, threshold, with_emma)
+        print("  Normal: " + str(F1) + " - " + str(precision) + " - " + str(recall))
+        
+        idx = (indic[:,0] == 1) * (indic[:,1] == 0)
+        F1, precision, recall = evaluation(X[idx], y[idx], model, threshold, with_emma)
+        print("  Noisy-ip: " + str(F1) + " - " + str(precision) + " - " + str(recall))
+        
+        idx = (indic[:,0] == 0) * (indic[:,1] == 1)
+        F1, precision, recall = evaluation(X[idx], y[idx], model, threshold, with_emma)
+        print("  Noisy-dm: " + str(F1) + " - " + str(precision) + " - " + str(recall))
 
 
 # ---------------
@@ -229,11 +301,6 @@ def unfreeze(model):
     for name, param in model.named_parameters():
         param.requires_grad = True
 
-# TODO
-    # Do corruptions in retrain!
-    # Regularizer
-    # Check EMMA is well reloaded when training a second time (train+valid)
-    # Plot a written evaluation from returned matrix
 
 # ---------------
 if __name__ == "__main__":  
@@ -243,9 +310,11 @@ if __name__ == "__main__":
     d_input = [4, 4]
     n_hidden = 12  # Number of hidden units in autoencoders
     noise_std_autoenc = 0.01
-    noise_std_data = 1 
+    noise_std_data = 4
     coldness = [0, 1e-4, 1e-3, 1e-2, 1e-1, 1, 1e2]
-    lambda_ = np.linspace(0, 2, 19)
+    lambda_ = np.linspace(0, 2, 4)
+    # coldness = [0]
+    # lambda_ = np.linspace(0, 2, 1)
 
     meta = {}
     meta['criterion'] = nn.BCELoss()
@@ -258,8 +327,14 @@ if __name__ == "__main__":
     """ Data """
     train_set, valid_set, test_set = get_pulsar_data("../data/pulsar.csv")
     X_train, y_train = train_set
+    X_train_noisy, y_train_noisy, indic_train = apply_corruption(X_train, y_train,
+                                                    noise_std_data)
     X_valid, y_valid = valid_set
+    X_valid_noisy, y_valid_noisy, indic_valid = apply_corruption(X_valid, y_valid,
+                                                    noise_std_data)
     X_test, y_test = test_set
+    X_test_noisy, y_test_noisy, indic_test = apply_corruption(X_test, y_test,
+                                                    noise_std_data)
 
     """ Training """
     autoencoders = {'integrated-profile': None, 'DM-SNR': None}
@@ -290,24 +365,25 @@ if __name__ == "__main__":
         model = Model(d_input=np.sum(d_input)).float()
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
         models['base-model'], measures_base = train_clf(model, optimizer, meta,
-                                            X_train, y_train, X_valid, y_valid)
+                                            X_train, y_train, X_valid_noisy, y_valid_noisy)
 
         """ Train model without EMMA noisy train-set, eval on noisy valid-set """
         model = Model(d_input=np.sum(d_input)).float()
         model.load_state_dict(models['base-model'].state_dict())
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
         models['model-without'], measures_without = train_clf(model, optimizer, meta,
-                                            X_train, y_train, X_valid, y_valid)
+                                            X_train_noisy, y_train_noisy, X_valid_noisy, y_valid_noisy)
 
         """ Train model with EMMA noisy train-set, eval on noisy valid-set """
+        regul_indicator = indic2regul(indic_train)
         model = Model(d_input=np.sum(d_input)).float()
         model.load_state_dict(models['base-model'].state_dict())
         emma = EMMA(n_modes, list(autoencoders.values()), min_potentials).float()
         model = nn.ModuleList([emma, model])
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
         models['model-with'], measures_with = train_clf(model, optimizer, meta,
-                                            X_train, y_train, X_valid, y_valid,
-                                            with_emma=True)
+                                            X_train_noisy, y_train_noisy, X_valid_noisy, y_valid_noisy,
+                                            with_emma=True, indicator=regul_indicator)
 
         """ Retrain autoencoders on concat normal signal train-set + valid-set """
         X_signal = torch.cat((X_signal_train, X_signal_valid), dim=0)
@@ -336,29 +412,43 @@ if __name__ == "__main__":
         """ Retrain base model on concat normal train-set + noisy valid-set """
         X = torch.cat((X_train, X_valid), dim=0)
         y = torch.cat((y_train, y_valid), dim=0)
-
         meta['max_epochs'] = int(meta['max_epochs']/2)
+
         model = Model(d_input=np.sum(d_input)).float()
         model.load_state_dict(models['base-model'].state_dict())
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        models['base-model'], _ = train_clf(model, optimizer, meta, X, y)
+        models['base-model'] = train_clf(model, optimizer, meta, X, y)
         torch.save((model.state_dict(), measures_base), "dumps/base-model.pt")
 
         """ Retrain model without EMMA on concat noisy train-set + noisy valid-set """
+        X = torch.cat((X_train_noisy, X_valid_noisy), dim=0)
+        y = torch.cat((y_train_noisy, y_valid_noisy), dim=0)
+
         model = Model(d_input=np.sum(d_input)).float()
         model.load_state_dict(models['model-without'].state_dict())
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        models['model-without'], _ = train_clf(model, optimizer, meta, X, y)
+        models['model-without'] = train_clf(model, optimizer, meta, X, y)
         torch.save((model.state_dict(), measures_without), "dumps/model-without.pt")
 
         """ Retrain model with EMMA on concat noisy train-set + noisy valid-set """
+        regul_indicator = torch.cat((indic2regul(indic_train), indic2regul(indic_valid)), dim=0)
         model = Model(d_input=np.sum(d_input)).float()
         emma = EMMA(n_modes, list(autoencoders.values()), min_potentials).float()
         model = nn.ModuleList([emma, model])
         model.load_state_dict(models['model-with'].state_dict())
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        models['model-with'], _ = train_clf(model, optimizer, meta, X, y, with_emma=True)
+        m_ = measures_with.data.numpy()[:,:,-1,1]  # last epoch
+        idx = np.unravel_index(np.argmax(m_, axis=None), m_.shape)
+        meta['coldness'] = [coldness[idx[0]]]
+        print(meta['coldness'])
+        meta['lambda'] = [lambda_[idx[1]]]
+        print(meta['lambda'])
+        models['model-with'] = train_clf(model, optimizer, meta, X, y,
+                                    with_emma=True, indicator=regul_indicator)
         torch.save((model.state_dict(), measures_with), "dumps/model-with.pt")
+
+        """ Save noisy test-set (with indicator) """
+        torch.save((X_test_noisy, y_test_noisy, indic_test), "dumps/test-set.pt")
 
     else:
         """ Load autoencoders """
@@ -386,10 +476,24 @@ if __name__ == "__main__":
         model = nn.ModuleList([emma, model])
         params, measures_with = torch.load("dumps/model-with.pt")
         models['model-with'].load_state_dict(params.state_dict())
+
+        """ Load noisy test-set (with indicator) """
+        X_test_noisy, y_test_noisy, indic_test = torch.load("dumps/test-set.pt")
     
     # Clone noisy test-set with indicator
     # Eval the three models on noisy test-set
-    
+    # best_threshold = np.linspace(0.1,0.9,9)[-1,0]
+    for model in models.values():
+        model.eval()
+
+    thresholds = {}
+    thresholds['base-model'] = measures_base[-1,0]
+    thresholds['model-without'] = measures_without[-1,0]
+    m_ = measures_with.data.numpy()[:,:,-1,1]  # last epoch
+    idx = np.unravel_index(np.argmax(m_, axis=None), m_.shape)
+    thresholds['model-with'] = measures_with[idx[0], idx[1], -1, 0]
+    print(thresholds)
+    model_evaluation(X_test_noisy, y_test_noisy, indic_test, models, thresholds)
 
 
 

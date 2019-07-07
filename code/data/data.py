@@ -5,6 +5,7 @@
 import numpy as np
 import pandas as pd
 import torch
+import random
 from sklearn.model_selection import train_test_split
 
 
@@ -35,48 +36,38 @@ def standardize(df):
 
 # ---------------    
 def white_noise(x, noise_std):
-    x_ = x.data.numpy()
-    noise = np.random.normal(loc=0, scale=noise_std, size=np.shape(x_))
-    out = np.add(x_, noise)
+    noise = np.random.normal(loc=0, scale=noise_std, size=np.shape(x))
+    out = np.add(x, noise)
     return torch.from_numpy(out).float()
 
 
 # ---------------
-# def apply_corruption(X, noise_sttdev):
-#     if noise_sttdev == 0: return X
-#     a = int(X.size(0)/2)
-#     b = int(X.size(0)/6)
-#     for j in range(X.size(1)):
-#         if j < 4:
-#             X[a:a+b,j] = add_noise(X[a:a+b,j], noise)
-#         else:
-#             X[a+b:a+2*b,j] = add_noise(X[a+b:a+2*b,j], noise)
-#         X[a+2*b:,j] = add_noise(X[a+2*b:,j], noise)
-#     return X
+def apply_corruption(X, y, noise_std):
+    if noise_std <= 0: return X
+    indicator = torch.zeros(X.size(0), 2)
+    X_, y_ = X.data.numpy(), y.data.numpy()
+    X_ = X_[np.argsort(y_),:]
+    y_ = np.sort(y_)
+    _, start_idx = np.unique(y_, return_index=True)
+    index_first_signal = start_idx[1]
+    index_last_signal = X_.shape[0]-1
+
+    size_set = index_last_signal - index_first_signal + 1
+    set_indices = set(range(index_first_signal, index_last_signal+1))
+    idx_noisy = random.sample(set_indices, int(np.floor(size_set/2)))
+    mid = int(len(idx_noisy)/2)
+    indicator[idx_noisy[:mid],0] = 1
+    indicator[idx_noisy[mid:],1] = 1
+
+    for i in range(4):
+        X_[indicator[:,0] == 1, i] = white_noise(X_[indicator[:,0] == 1, i], noise_std)
+        X_[indicator[:,1] == 1, 4+i] = white_noise(X_[indicator[:,1] == 1, 4+i], noise_std)
+    return torch.tensor(X_).float(), torch.tensor(y_).float(), indicator
 
 
 # ---------------
 def noise_power(noise_std):
     return 10 * np.log10(noise_std**2)
-
-
-# ---------------
-def split_corruption(X):
-    a = int(X.size(0)/2)
-    b = int(X.size(0)/6)
-    return X[:a], X[a:a+b], X[a+b:a+2*b], X[a+2*b:]
-
-
-# ---------------
-def get_without_noise(N):
-    n = torch.ones(N, 2)
-    a = int(N/2)
-    b = int(N/6)
-    n[:a, :] = 0
-    n[a:a+b, 0] = -1
-    n[a+b:a+2*b, 1] = -1
-    n[a+2*b:, :] = 0
-    return n
 
 
 # ---------------

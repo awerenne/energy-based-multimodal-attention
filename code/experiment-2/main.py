@@ -90,7 +90,7 @@ def noisy_signal(X_signal, model):
         q = []
         X = X_signal.clone()
         for i in range(X_signal.size(-1)):
-            X[:,i] = white_noise(X[:,i], noise_std).unsqueeze(0)
+            X[:,i] = white_noise(X[:,i].data.numpy(), noise_std).unsqueeze(0)
         potentials = model.potential(X)
         mean_ = torch.mean(potentials).data
         stddev_ = torch.std(potentials).data
