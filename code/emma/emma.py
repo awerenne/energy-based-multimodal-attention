@@ -45,6 +45,30 @@ class EMMA(nn.Module):
         self.tau = tau
 
     # -------
+    def get_coldness(self):
+        return self.tau
+
+    # -------
+    def get_alpha_beta(self, x):
+        N = x[0].size(0)
+        potentials = torch.zeros(N, self._n_modes)
+        for i in range(self._n_modes): 
+            potentials[:,i] = self._autoencoders[i].potential(x[i])
+        alphas, _ = self.compute_importance_scores(potentials)  # N x M
+        _, betas = self.apply_attention(x, alphas)
+        return alphas, betas
+
+
+    # -------
+    @property
+    def capacity(self):
+        return 1/self.gain * torch.log(torch.cosh(self.gain + self.bias_attention)/torch.cosh(self.bias_attention))
+
+    # -------
+    def get_learned_gamma(self):
+        return self.tau
+
+    # -------
     @property
     def n_modes(self):
         return self._n_modes
@@ -60,7 +84,7 @@ class EMMA(nn.Module):
         return self.vmin
 
     # -------
-    def correction(self, v, train):
+    def correction(self, v):
         v = v - self.vmin.unsqueeze(0) + np.exp(1)
         v[v < np.exp(1)] = np.exp(1)
         return v * self.w + self.bias_correction
@@ -82,8 +106,8 @@ class EMMA(nn.Module):
         return partial_energies
 
     # -------
-    def compute_importance_scores(self, potentials, train):
-        potentials = self.correction(potentials, train)  # N x M
+    def compute_importance_scores(self, potentials):
+        potentials = self.correction(potentials)  # N x M
         partial_energies = self.compute_partial(potentials)  # N x M x M
         modal_energies = torch.sum(partial_energies, dim=-1)  # N x M
         logs = F.log_softmax(-self.tau * modal_energies, dim=-1)  
@@ -96,7 +120,7 @@ class EMMA(nn.Module):
         xprime = []
         for i in range(self.n_modes):
             xprime.append(torch.mul(betas[:,i].unsqueeze(-1), x[i].clone()))
-        return xprime
+        return xprime, betas
 
     # -------
     def forward(self, x, train=True):
@@ -105,8 +129,9 @@ class EMMA(nn.Module):
         potentials = torch.zeros(N, self._n_modes)
         for i in range(self._n_modes): 
             potentials[:,i] = self._autoencoders[i].potential(x[i])
-        alphas, logs = self.compute_importance_scores(potentials, train)  # N x M
-        return self.apply_attention(x, alphas), logs
+        alphas, logs = self.compute_importance_scores(potentials)  # N x M
+        xprime, _ = self.apply_attention(x, alphas)
+        return xprime, logs
 
 
 # ---------------

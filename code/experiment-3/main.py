@@ -132,7 +132,7 @@ def train_clf(model_original, optimizer, meta, X_train, y_train, X_valid=None,
     lambdas = meta['lambda']
     best_model = None
     best_F1 = -float("Inf")
-    measures = torch.zeros(len(coldness), len(lambdas), n_epochs, 4, requires_grad=False)
+    measures = torch.zeros(len(coldness), len(lambdas), n_epochs, 5, requires_grad=False)
     for i, tau in enumerate(coldness):
         for j, lambda_ in enumerate(lambdas):
             model = copy_emma_model(model_original)
@@ -151,6 +151,7 @@ def train_clf(model_original, optimizer, meta, X_train, y_train, X_valid=None,
                         measures[i, j, epoch, 1] = scores[0]
                         measures[i, j, epoch, 2] = scores[1]
                         measures[i, j, epoch, 3] = scores[2]
+                        measures[i, j, epoch, 4] = model[0].capacity.data
                         if scores[0] > best_F1:
                             best_model = model
                             best_F1 = scores[0]
@@ -213,7 +214,6 @@ def evaluation(X, y, model, threshold, with_emma):
     batch_size = 32
     indices = np.arange(X.size(0))
     for i in range(0, len(X)-batch_size, batch_size):
-        optimizer.zero_grad()
         idx = indices[i:i+batch_size]
         batch = X[idx].view(batch_size, -1)
         if not with_emma:
@@ -230,6 +230,7 @@ def evaluation(X, y, model, threshold, with_emma):
         recall += recall_
         n_steps += 1
     return (f1/n_steps).data.numpy(), (precision/n_steps).data.numpy(), (recall/n_steps).data.numpy()
+
 
 # ---------------
 def model_evaluation(X, y, indic, models, thresholds):
@@ -305,23 +306,21 @@ def unfreeze(model):
 # ---------------
 if __name__ == "__main__":  
     """ Parameters experiment """
-    retrain = True
+    retrain = False
     n_modes = 2
     d_input = [4, 4]
     n_hidden = 12  # Number of hidden units in autoencoders
     noise_std_autoenc = 0.01
-    noise_std_data = 4
-    coldness = [0, 1e-4, 1e-3, 1e-2, 1e-1, 1, 1e2]
-    lambda_ = np.linspace(0, 2, 4)
-    # coldness = [0]
-    # lambda_ = np.linspace(0, 2, 1)
+    noise_std_data = 1.2
+    coldness = [0, 1e-4, 1e-3, 1e-2, 1e-1, 1, 1e2, 1e3, 1e4]
+    lambda_ = np.linspace(0, 2, 5)
 
     meta = {}
     meta['criterion'] = nn.BCELoss()
     meta['clipper'] = WeightClipper()
     meta['coldness'] = coldness
     meta['lambda'] = lambda_
-    meta['max_epochs'] = 20
+    meta['max_epochs'] = 25
     meta['batch_size'] = 128
 
     """ Data """
@@ -346,14 +345,16 @@ if __name__ == "__main__":
         X_signal_valid = signal_only(X_valid, y_valid)
         model = DenoisingAutoEncoder(d_input[0], n_hidden, noise_std_autoenc).float()
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        autoencoders['integrated-profile'], _ = train_autoencoder(model, optimizer,
+        model, _ = train_autoencoder(model, optimizer,
                 64, 30, X_signal_train[:,:4], X_signal_valid[:,:4])
+        autoencoders['integrated-profile'] = model
         min_potentials[0] = get_min_potential(X_signal_train[:,:4], model)
 
         model = DenoisingAutoEncoder(d_input[1], n_hidden, noise_std_autoenc).float()
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        autoencoders['DM-SNR'], _ = train_autoencoder(model, optimizer, 64, 30,
+        model, _ = train_autoencoder(model, optimizer, 64, 30,
                 X_signal_train[:,4:], X_signal_valid[:,4:])
+        autoencoders['DM-SNR'] = model
         min_potentials[1] = get_min_potential(X_signal_train[:,4:], model)
         min_potentials = torch.tensor(min_potentials).float()
 
@@ -364,15 +365,18 @@ if __name__ == "__main__":
         """ Train base model on normal train-set, eval on noisy valid-set """
         model = Model(d_input=np.sum(d_input)).float()
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        models['base-model'], measures_base = train_clf(model, optimizer, meta,
+        model, measures_base = train_clf(model, optimizer, meta,
                                             X_train, y_train, X_valid_noisy, y_valid_noisy)
+        models['base-model'] = model
 
         """ Train model without EMMA noisy train-set, eval on noisy valid-set """
         model = Model(d_input=np.sum(d_input)).float()
         model.load_state_dict(models['base-model'].state_dict())
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        models['model-without'], measures_without = train_clf(model, optimizer, meta,
+        model, measures_without = train_clf(model, optimizer, meta,
                                             X_train_noisy, y_train_noisy, X_valid_noisy, y_valid_noisy)
+        models['model-without'] = model
+
 
         """ Train model with EMMA noisy train-set, eval on noisy valid-set """
         regul_indicator = indic2regul(indic_train)
@@ -381,9 +385,10 @@ if __name__ == "__main__":
         emma = EMMA(n_modes, list(autoencoders.values()), min_potentials).float()
         model = nn.ModuleList([emma, model])
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        models['model-with'], measures_with = train_clf(model, optimizer, meta,
+        model, measures_with = train_clf(model, optimizer, meta,
                                             X_train_noisy, y_train_noisy, X_valid_noisy, y_valid_noisy,
                                             with_emma=True, indicator=regul_indicator)
+        models['model-with'] = model
 
         """ Retrain autoencoders on concat normal signal train-set + valid-set """
         X_signal = torch.cat((X_signal_train, X_signal_valid), dim=0)
@@ -393,16 +398,18 @@ if __name__ == "__main__":
         model = DenoisingAutoEncoder(d_input[0], n_hidden, noise_std_autoenc).float()
         model.load_state_dict(autoencoders['integrated-profile'].state_dict())
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        autoencoders['integrated-profile'], _ = train_autoencoder(model, optimizer,
+        model, _ = train_autoencoder(model, optimizer,
                 128, 10, X_signal_train[:,:4])
         min_potentials[0] = get_min_potential(X_signal[:,:4], model)
+        autoencoders['integrated-profile'] = model
         torch.save((model.state_dict(), min_potentials[0]), "dumps/autoencoder-ip.pt")
 
         model = DenoisingAutoEncoder(d_input[1], n_hidden, noise_std_autoenc).float()
         model.load_state_dict(autoencoders['DM-SNR'].state_dict())
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        autoencoders['DM-SNR'], _ = train_autoencoder(model, optimizer, 128, 10,
+        model, _ = train_autoencoder(model, optimizer, 128, 10,
                 X_signal_train[:,4:])
+        autoencoders['DM-SNR'] = model
         min_potentials[1] = get_min_potential(X_signal[:,4:], model)
         torch.save((model.state_dict(), min_potentials[1]), "dumps/autoencoder-dm-snr.pt")
 
@@ -417,7 +424,8 @@ if __name__ == "__main__":
         model = Model(d_input=np.sum(d_input)).float()
         model.load_state_dict(models['base-model'].state_dict())
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        models['base-model'] = train_clf(model, optimizer, meta, X, y)
+        model = train_clf(model, optimizer, meta, X, y)
+        models['base-model'] = model
         torch.save((model.state_dict(), measures_base), "dumps/base-model.pt")
 
         """ Retrain model without EMMA on concat noisy train-set + noisy valid-set """
@@ -427,7 +435,8 @@ if __name__ == "__main__":
         model = Model(d_input=np.sum(d_input)).float()
         model.load_state_dict(models['model-without'].state_dict())
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        models['model-without'] = train_clf(model, optimizer, meta, X, y)
+        model = train_clf(model, optimizer, meta, X, y)
+        models['model-without'] = model
         torch.save((model.state_dict(), measures_without), "dumps/model-without.pt")
 
         """ Retrain model with EMMA on concat noisy train-set + noisy valid-set """
@@ -443,9 +452,11 @@ if __name__ == "__main__":
         print(meta['coldness'])
         meta['lambda'] = [lambda_[idx[1]]]
         print(meta['lambda'])
-        models['model-with'] = train_clf(model, optimizer, meta, X, y,
+        model = train_clf(model, optimizer, meta, X, y,
                                     with_emma=True, indicator=regul_indicator)
-        torch.save((model.state_dict(), measures_with), "dumps/model-with.pt")
+        models['model-with'] = model
+        torch.save((model.state_dict(), model[0].get_coldness(), measures_with), "dumps/model-with.pt")
+        print(model[0].get_coldness())
 
         """ Save noisy test-set (with indicator) """
         torch.save((X_test_noisy, y_test_noisy, indic_test), "dumps/test-set.pt")
@@ -454,28 +465,31 @@ if __name__ == "__main__":
         """ Load autoencoders """
         autoencoders['integrated-profile'] = DenoisingAutoEncoder(d_input[0], n_hidden, noise_std_autoenc).float()
         params, min_potentials[0] = torch.load("dumps/autoencoder-ip.pt")
-        autoencoders['integrated-profile'].load_state_dict(params.state_dict())
+        autoencoders['integrated-profile'].load_state_dict(params)
 
         autoencoders['DM-SNR'] = DenoisingAutoEncoder(d_input[1], n_hidden, noise_std_autoenc).float()
         params, min_potentials[1] = torch.load("dumps/autoencoder-dm-snr.pt")
-        autoencoders['DM-SNR'].load_state_dict(params.state_dict())
+        autoencoders['DM-SNR'].load_state_dict(params)
+        min_potentials = torch.tensor(min_potentials).float()
 
         """ Load base model """
         models['base-model'] = Model(d_input=np.sum(d_input)).float()
         params, measures_base = torch.load("dumps/base-model.pt")
-        models['base-model'].load_state_dict(params.state_dict())
+        models['base-model'].load_state_dict(params)
 
         """ Load model-without """
         models['model-without'] = Model(d_input=np.sum(d_input)).float()
         params, measures_without = torch.load("dumps/model-without.pt")
-        models['model-without'].load_state_dict(params.state_dict())
+        models['model-without'].load_state_dict(params)
 
         """ Load model-with """
-        models['model-with'] = Model(d_input=np.sum(d_input)).float()
-        emma = EMMA(n_modes, autoencoders.values(), min_potentials).float()
-        model = nn.ModuleList([emma, model])
-        params, measures_with = torch.load("dumps/model-with.pt")
-        models['model-with'].load_state_dict(params.state_dict())
+        model = Model(d_input=np.sum(d_input)).float()
+        emma = EMMA(n_modes, list(autoencoders.values()), min_potentials).float()
+        models['model-with'] = nn.ModuleList([emma, model])
+        params, tau, measures_with = torch.load("dumps/model-with.pt")
+        print(tau)
+        models['model-with'].load_state_dict(params)
+        models['model-with'][0].set_coldness(tau)
 
         """ Load noisy test-set (with indicator) """
         X_test_noisy, y_test_noisy, indic_test = torch.load("dumps/test-set.pt")
@@ -492,8 +506,15 @@ if __name__ == "__main__":
     m_ = measures_with.data.numpy()[:,:,-1,1]  # last epoch
     idx = np.unravel_index(np.argmax(m_, axis=None), m_.shape)
     thresholds['model-with'] = measures_with[idx[0], idx[1], -1, 0]
+    print()
     print(thresholds)
+    print(models['model-with'][0].get_coldness())
+    print()
     model_evaluation(X_test_noisy, y_test_noisy, indic_test, models, thresholds)
+
+    # plot_6(measures_with)
+    # plot_7(measures_with)
+    # plot_2(X_test_noisy, indic_test, models['model-with'])
 
 
 

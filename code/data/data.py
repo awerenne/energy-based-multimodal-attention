@@ -53,6 +53,7 @@ def apply_corruption(X, y, noise_std):
     index_last_signal = X_.shape[0]-1
 
     size_set = index_last_signal - index_first_signal + 1
+    print(size_set)
     set_indices = set(range(index_first_signal, index_last_signal+1))
     idx_noisy = random.sample(set_indices, int(np.floor(size_set/2)))
     mid = int(len(idx_noisy)/2)
