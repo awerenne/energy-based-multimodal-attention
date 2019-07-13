@@ -1,0 +1,82 @@
+\chapter{Background} 
+\label{chapter-2} 
+
+Explain goal of chapter: introduce necessary background and concepts used in rest of work. Notation: vectors in bold.
+
+%----------------------------------------------------------------------------------------
+%	SECTION 
+%----------------------------------------------------------------------------------------
+
+\section{Machine Learning}
+\begin{itemize}
+\item supervised, unsupervised, RL
+\item supervised
+\begin{itemize}
+	\item task T, performance P, data D -- D high, P high on T
+	\item types: classification, regression most common tasks T
+\end{itemize}
+\end{itemize}
+
+%-----------------------------------
+%	SUBSECTION 
+%-----------------------------------
+\subsection{Deep Learning}
+\begin{itemize}
+\item subcategory of ML (difference with others, it extracts its own features)
+\item Data distribution, manifold (explain why DL works, intuition of manifold, definition mathematics)
+\item Cost, (surrogate) loss (crossentropy), metric, gradient, forward/backward (backprop, update optimization)
+\item MLP, CNN, LSTM
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 
+%----------------------------------------------------------------------------------------
+
+\section{Modalities}
+\begin{itemize}
+\item More general than sensorial. Give examples. Toy example of multimodal DL.
+\item Outlying. What happens on DL model. Show on our simple toy example, noise -- high activations -- wrong prediction -- model seems certain, we cannot know model was uncertain
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 
+%----------------------------------------------------------------------------------------
+
+\section{Energy-models}
+
+\begin{itemize}
+\item Negative log likelihood. Ising model (thermodynamics, stat mechanics). Gibbs distribution. Explain how relate to outlying (high E, low p)
+\item Boltzmann. MC training. Contrastive divergence. Explain why difficult. Thus we will explore approximators.
+\item To avoid confusion when we speak about neg likeli, we name it true energy and write it $E^{(T)}$
+\end{itemize}
+
+\href{https://www.lapasserelle.com/statistical_mechanics/lesson_4.pdf}{Boltzmann distrib}
+\href{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.441.2811&rep=rep1&type=pdf}{Energy-based models}
+
+
+%----------------------------------------------------------------------------------------
+%	SECTION 
+%----------------------------------------------------------------------------------------
+
+\section{Attention mechanisms}
+
+\begin{itemize}
+\item Attention how it is used in DL (image captioning, speech recognition)
+\item Different types of attention (most important ones)
+\item Link to humans, different models and not exclusive, most interesting one in my opinion Kahnemann (the attention part of our model is inspired from this)
+\end{itemize}
+
+\href{https://scholar.princeton.edu/sites/default/files/kahneman/files/attention_hi_quality.pdf}{Kahnemann book}
+\href{https://krntneja.github.io/blog/2018/06/02/attention-based-models-1}{tutorial on attention}
+\href{https://jhui.github.io/2017/03/15/Soft-and-hard-attention/}{soft vs hard attention}
+\href{https://lilianweng.github.io/lil-log/2018/06/24/attention-attention.html}{other tutorial attention}
+
+
+
+%----------------------------------------------------------------------------------------
+%	SECTION 
+%----------------------------------------------------------------------------------------
+
+\section{Physics}
+
+Motivation why, otherwise it will be weird. With a fun example go through model differential equations -- condition field -- potential - force field - gradient, divergence

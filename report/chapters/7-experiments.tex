@@ -1,0 +1,107 @@
+\chapter{Experiments \& Results} 
+\label{chapter-6} 
+
+Explain ideo of chapter, experiment 2 and 3.
+
+%----------------------------------------------------------------------------------------
+%	SECTION 
+%----------------------------------------------------------------------------------------
+
+\section{Dataset}
+
+Explain pulsar dataset in details (2-3 pages) with cool images from his thesis. 
+
+%----------------------------------------------------------------------------------------
+%	SECTION 
+%----------------------------------------------------------------------------------------
+
+\section{Evaluation}
+
+Standardize: explain important because of noise snr, explain only on train-set and apply same on valid test. Binary crossentropy. Only signal is corrupted. Train-valid-test, valid choose best threshold, temperature and lambda. F1-score (not AUC) explain why, recall. standardize on different, apply from train to test valid. 
+\href{https://stats.stackexchange.com/questions/327294/data-standardization-for-training-and-testing-sets-for-different-scenarios}{error standardize}
+\href{https://stats.stackexchange.com/questions/210700/how-to-choose-between-roc-auc-and-f1-score}{F1vsAUC1}
+\href{https://www.quora.com/What-does-it-mean-to-have-high-AUC-but-low-F1-score}{F1vsAUC2}
+\href{https://stackoverflow.com/questions/44172162/f1-score-vs-roc-auc}{F1vsAUC3}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 
+%----------------------------------------------------------------------------------------
+
+\section{Experiment II}
+
+Describe experiment + external noise (note the diff with corruption DAE) in dB SNR. Setup in appendix.\\
+
+trained on signal-train. Eval on signal - val+test, background - val + test. Observations.
+
+\begin{figure}[!h]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\linewidth]{figures/logo-uliege}
+  \caption{IP}
+  \label{fig:dae}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\linewidth]{figures/logo-uliege}
+  \caption{DM-SNR}
+  \label{fig:dae-process}
+\end{subfigure}
+\caption{Potential seen vs unseen}
+\end{figure}
+
+Eval on noisy signal - val+test . Observations.
+
+\begin{figure}[!h]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\linewidth]{figures/logo-uliege}
+  \caption{IP}
+  \label{fig:dae}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\linewidth]{figures/logo-uliege}
+  \caption{DM-SNR}
+  \label{fig:dae-process}
+\end{subfigure}
+\caption{Potential vs noise}
+\end{figure}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 
+%----------------------------------------------------------------------------------------
+
+\section{Experiment III}
+
+Sed ullamcorper quam eu nisl interdum at interdum enim egestas. Aliquam placerat justo sed lectus lobortis ut porta nisl porttitor. Vestibulum mi dolor, lacinia molestie gravida at, tempus vitae ligula. Donec eget quam sapien, in viverra eros. Donec pellentesque justo a massa fringilla non vestibulum metus vestibulum. Vestibulum in orci quis felis tempor lacinia. Vivamus ornare ultrices facilisis. Ut hendrerit volutpat vulputate. Morbi condimentum venenatis augue, id porta ipsum vulputate in. Curabitur luctus tempus justo. Vestibulum risus lectus, adipiscing nec condimentum quis, condimentum nec nisl. Aliquam dictum sagittis velit sed iaculis. Morbi tristique augue sit amet nulla pulvinar id facilisis ligula mollis. Nam elit libero, tincidunt ut aliquam at, molestie in quam. Aenean rhoncus vehicula hendrerit.
+
+%-----------------------------------
+%	SUBSECTION 
+%-----------------------------------
+\subsection{F1-score}
+
+Nunc posuere quam at lectus tristique eu ultrices augue venenatis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam erat volutpat. Vivamus sodales tortor eget quam adipiscing in vulputate ante ullamcorper. Sed eros ante, lacinia et sollicitudin et, aliquam sit amet augue. In hac habitasse platea dictumst.
+
+%-----------------------------------
+%	SUBSECTION 
+%-----------------------------------
+
+\subsection{Interpretation}
+Morbi rutrum odio eget arcu adipiscing sodales. Aenean et purus a est pulvinar pellentesque. Cras in elit neque, quis varius elit. Phasellus fringilla, nibh eu tempus venenatis, dolor elit posuere quam, quis adipiscing urna leo nec orci. Sed nec nulla auctor odio aliquet consequat. Ut nec nulla in ante ullamcorper aliquam at sed dolor. Phasellus fermentum magna in augue gravida cursus. Cras sed pretium lorem. Pellentesque eget ornare odio. Proin accumsan, massa viverra cursus pharetra, ipsum nisi lobortis velit, a malesuada dolor lorem eu neque.
+
+%-----------------------------------
+%	SUBSECTION 
+%-----------------------------------
+\subsection{Regularizer}
+
+Nunc posuere quam at lectus tristique eu ultrices augue venenatis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam erat volutpat. Vivamus sodales tortor eget quam adipiscing in vulputate ante ullamcorper. Sed eros ante, lacinia et sollicitudin et, aliquam sit amet augue. In hac habitasse platea dictumst.
+
+%-----------------------------------
+%	SUBSECTION 
+%-----------------------------------
+
+\subsection{Coldness}
+Morbi rutrum odio eget arcu adipiscing sodales. Aenean et purus a est pulvinar pellentesque. Cras in elit neque, quis varius elit. Phasellus fringilla, nibh eu tempus venenatis, dolor elit posuere quam, quis adipiscing urna leo nec orci. Sed nec nulla auctor odio aliquet consequat. Ut nec nulla in ante ullamcorper aliquam at sed dolor. Phasellus fermentum magna in augue gravida cursus. Cras sed pretium lorem. Pellentesque eget ornare odio. Proin accumsan, massa viverra cursus pharetra, ipsum nisi lobortis velit, a malesuada dolor lorem eu neque.
+

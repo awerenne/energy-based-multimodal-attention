@@ -9,5 +9,12 @@
 *.synctex.gz
 *.toc
 *.pyc
+*main-blx*
 
 report/figs/
+
+*.lof
+
+*.lot
+
+report/main\.run\.xml
