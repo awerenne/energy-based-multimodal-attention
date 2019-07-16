@@ -137,8 +137,6 @@ def train_clf(models, name, meta, X_train, y_train, indicator_train,
     X = torch.cat((X_train, X_valid), dim=0)
     y = torch.cat((y_train, y_valid), dim=0)
     indic = torch.cat((indic_train, indic_valid), dim=0)
-    dict_curves = {}
-    dict_curves[name] = {}
 
     """ Train models without emma """
     if not name == 'model-with':
@@ -147,20 +145,20 @@ def train_clf(models, name, meta, X_train, y_train, indicator_train,
         best_model = None
         best_epoch = 0
         state_optim = None
-        curves = np.zeros((2, n_epochs+1))
+        train_curve, valid_curve = np.zeros(n_epochs+1), np.zeros(n_epochs+1)
         model = models[name]
         optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
         model.eval()
         with torch.set_grad_enabled(False):
-            curves[1,0] = train_step(model, name, optimizer, meta['batch_size'], X_train, y_train, valid=True)     
+            valid_curve[0] = train_step(model, name, optimizer, meta['batch_size'], X_train, y_train, valid=True)     
         for epoch in range(1, n_epochs+1):
             model.train()
-            curves[0,epoch] = train_step(model, name, optimizer, meta['batch_size'], X_train, y_train)
+            train_curve[epoch] = train_step(model, name, optimizer, meta['batch_size'], X_train, y_train)
             model.eval()
             with torch.set_grad_enabled(False):
-                curves[1,epoch] = train_step(model, name, optimizer, meta['batch_size'], X_train, y_train, valid=True)
-            if curves[1,epoch] < best_loss:
-                best_loss = curves[1,epoch]
+                valid_curve[epoch] = train_step(model, name, optimizer, meta['batch_size'], X_train, y_train, valid=True)
+            if valid_curve[epoch] < best_loss:
+                best_loss = valid_curve[epoch]
                 best_model = copy_mlp(model)
                 best_epoch = epoch
                 state_optim = optimizer.state_dict()
@@ -173,8 +171,7 @@ def train_clf(models, name, meta, X_train, y_train, indicator_train,
         for epoch in range(best_epoch):
             train_step(best_model, name, optimizer, meta['batch_size'], X, y)
         models[name] = best_model
-        dict_curves[name] = curves
-        return dict_curves
+        return (train_curve, valid_curve)
         
     """ Train models with emma """
     for tau in meta['coldness']:
@@ -188,21 +185,21 @@ def train_clf(models, name, meta, X_train, y_train, indicator_train,
                 best_model = None
                 best_epoch = 0
                 state_optim = None
-                curves = np.zeros((2, n_epochs+1))
+                train_curve, valid_curve = np.zeros(n_epochs+1), np.zeros(n_epochs+1)
                 model = copy_emma(models[name][(-1,-1,-1)])
                 model[0].set_coldness(tau)
                 optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
                 model.eval()
                 with torch.set_grad_enabled(False):
-                    curves[1,0] = train_step(model, name, optimizer, meta['batch_size'], X_train, y_train, indic_train, lambda_regul, lambda_capacity, valid=True)
+                    valid_curve[0] = train_step(model, name, optimizer, meta['batch_size'], X_train, y_train, indic_train, lambda_regul, lambda_capacity, valid=True)
                 for epoch in range(1, n_epochs+1):
                     model.train()
-                    curves[0,epoch] = train_step(model, name, optimizer, meta['batch_size'], X_train, y_train, indic_train, lambda_regul, lambda_capacity)
+                    train_curve[epoch] = train_step(model, name, optimizer, meta['batch_size'], X_train, y_train, indic_train, lambda_regul, lambda_capacity)
                     model.eval()
                     with torch.set_grad_enabled(False):
-                        curves[1,epoch] = train_step(model, name, optimizer, meta['batch_size'], X_train, y_train, indic_train, lambda_regul, lambda_capacity, valid=True)
-                    if curves[1,epoch] < best_loss:
-                        best_loss = curves[1,epoch]
+                        valid_curve[epoch] = train_step(model, name, optimizer, meta['batch_size'], X_train, y_train, indic_train, lambda_regul, lambda_capacity, valid=True)
+                    if valid_curve[epoch] < best_loss:
+                        best_loss = valid_curve[epoch]
                         best_model = copy_emma(model)
                         state_optim = optimizer.state_dict()
                 optimizer = torch.optim.Adam(nn.ParameterList(best_model.parameters()))
@@ -214,9 +211,8 @@ def train_clf(models, name, meta, X_train, y_train, indicator_train,
                 for epoch in range(n_epochs):
                     train_step(best_model, name, optimizer, meta['batch_size'], X, y)
                 models[name][tau, lambda_regul, lambda_capacity] = best_model
-                dict_curves[name][tau, lambda_regul, lambda_capacity] = curves
     del models[name][(-1,-1,-1)]
-    return dict_curves
+    return (train_curve, valid_curve)
 
 
 # ---------------
@@ -382,7 +378,9 @@ if __name__ == "__main__":
     d_input = [4, 4]
     n_hidden = 12  # Number of hidden units in autoencoders
     noise_std_autoenc = 0.01
-    noise_std_data = 4
+    noise_std_data = 10
+    # coldness = [0, 1e-4, 1e-3, 1e-2, 1e-1, 1, 1e2, 1e3, 1e4]
+    # lambda_ = np.linspace(0, 2, 5)
     coldness = [1e-2, 1e-1, 1]
     lambda_regul = np.linspace(0, 2, 3)
     lambda_capacity = np.linspace(0, 2, 3)
@@ -392,42 +390,42 @@ if __name__ == "__main__":
     meta['coldness'] = coldness
     meta['lambda_regul'] = lambda_regul
     meta['lambda_capacity'] = lambda_capacity
-    meta['max_epochs'] = 30
+    meta['max_epochs'] = 20
     meta['batch_size'] = 32
 
     """ Data """
     train_set, valid_set, test_set = get_pulsar_data("../data/pulsar.csv")
     X_train, y_train = train_set
-    X_train_noisy, y_train_noisy, indic_train = apply_corruption_test(X_train, y_train,
+    X_train_noisy, y_train_noisy, indic_train = apply_corruption(X_train, y_train,
                                                     noise_std_data)
     X_valid, y_valid = valid_set
-    X_valid_noisy, y_valid_noisy, indic_valid = apply_corruption_test(X_valid, y_valid,
+    X_valid_noisy, y_valid_noisy, indic_valid = apply_corruption(X_valid, y_valid,
                                                     noise_std_data)
     X_test, y_test = test_set
     X_test_noisy, y_test_noisy, indic_test = apply_corruption_test(X_test, y_test,
                                                     noise_std_data)
 
     """ EDA """
-    table_occur = np.zeros((9,2))
-    table_occur[0,0] = int(((y_train_noisy == 1) * (indic_train[:,0] == 0) * (indic_train[:,1] == 0)).sum().data.numpy())
-    table_occur[0,1] = int(((y_train_noisy == 0) * (indic_train[:,0] == 0) * (indic_train[:,1] == 0)).sum().data.numpy())
-    table_occur[1,0] = int(((y_train_noisy == 1) * (indic_train[:,0] == 1) * (indic_train[:,1] == 0)).sum().data.numpy())
-    table_occur[1,1] = int(((y_train_noisy == 0) * (indic_train[:,0] == 1) * (indic_train[:,1] == 0)).sum().data.numpy())
-    table_occur[2,0] = int(((y_train_noisy == 1) * (indic_train[:,0] == 0) * (indic_train[:,1] == 1)).sum().data.numpy())
-    table_occur[2,1] = int(((y_train_noisy == 0) * (indic_train[:,0] == 0) * (indic_train[:,1] == 1)).sum().data.numpy())
-    table_occur[3,0] = int(((y_valid_noisy == 1) * (indic_valid[:,0] == 0) * (indic_valid[:,1] == 0)).sum().data.numpy())
-    table_occur[3,1] = int(((y_valid_noisy == 0) * (indic_valid[:,0] == 0) * (indic_valid[:,1] == 0)).sum().data.numpy())
-    table_occur[4,0] = int(((y_valid_noisy == 1) * (indic_valid[:,0] == 1) * (indic_valid[:,1] == 0)).sum().data.numpy())
-    table_occur[4,1] = int(((y_valid_noisy == 0) * (indic_valid[:,0] == 1) * (indic_valid[:,1] == 0)).sum().data.numpy())
-    table_occur[5,0] = int(((y_valid_noisy == 1) * (indic_valid[:,0] == 0) * (indic_valid[:,1] == 1)).sum().data.numpy())
-    table_occur[5,1] = int(((y_valid_noisy == 0) * (indic_valid[:,0] == 0) * (indic_valid[:,1] == 1)).sum().data.numpy())
-    table_occur[6,0] = int(((y_test_noisy == 1) * (indic_test[:,0] == 0) * (indic_test[:,1] == 0)).sum().data.numpy())
-    table_occur[6,1] = int(((y_test_noisy == 0) * (indic_test[:,0] == 0) * (indic_test[:,1] == 0)).sum().data.numpy())
-    table_occur[7,0] = int(((y_test_noisy == 1) * (indic_test[:,0] == 1) * (indic_test[:,1] == 0)).sum().data.numpy())
-    table_occur[7,1] = int(((y_test_noisy == 0) * (indic_test[:,0] == 1) * (indic_test[:,1] == 0)).sum().data.numpy())
-    table_occur[8,0] = int(((y_test_noisy == 1) * (indic_test[:,0] == 0) * (indic_test[:,1] == 1)).sum().data.numpy())
-    table_occur[8,1] = int(((y_test_noisy == 0) * (indic_test[:,0] == 0) * (indic_test[:,1] == 1)).sum().data.numpy())
-    print(table_occur)
+    # table_occur = np.zeros((9,2))
+    # table_occur[0,0] = int(((y_train_noisy == 1) * (indic_train[:,0] == 0) * (indic_train[:,1] == 0)).sum().data.numpy())
+    # table_occur[0,1] = int(((y_train_noisy == 0) * (indic_train[:,0] == 0) * (indic_train[:,1] == 0)).sum().data.numpy())
+    # table_occur[1,0] = int(((y_train_noisy == 1) * (indic_train[:,0] == 1) * (indic_train[:,1] == 0)).sum().data.numpy())
+    # table_occur[1,1] = int(((y_train_noisy == 0) * (indic_train[:,0] == 1) * (indic_train[:,1] == 0)).sum().data.numpy())
+    # table_occur[2,0] = int(((y_train_noisy == 1) * (indic_train[:,0] == 0) * (indic_train[:,1] == 1)).sum().data.numpy())
+    # table_occur[2,1] = int(((y_train_noisy == 0) * (indic_train[:,0] == 0) * (indic_train[:,1] == 1)).sum().data.numpy())
+    # table_occur[3,0] = int(((y_valid_noisy == 1) * (indic_valid[:,0] == 0) * (indic_valid[:,1] == 0)).sum().data.numpy())
+    # table_occur[3,1] = int(((y_valid_noisy == 0) * (indic_valid[:,0] == 0) * (indic_valid[:,1] == 0)).sum().data.numpy())
+    # table_occur[4,0] = int(((y_valid_noisy == 1) * (indic_valid[:,0] == 1) * (indic_valid[:,1] == 0)).sum().data.numpy())
+    # table_occur[4,1] = int(((y_valid_noisy == 0) * (indic_valid[:,0] == 1) * (indic_valid[:,1] == 0)).sum().data.numpy())
+    # table_occur[5,0] = int(((y_valid_noisy == 1) * (indic_valid[:,0] == 0) * (indic_valid[:,1] == 1)).sum().data.numpy())
+    # table_occur[5,1] = int(((y_valid_noisy == 0) * (indic_valid[:,0] == 0) * (indic_valid[:,1] == 1)).sum().data.numpy())
+    # table_occur[6,0] = int(((y_test_noisy == 1) * (indic_test[:,0] == 0) * (indic_test[:,1] == 0)).sum().data.numpy())
+    # table_occur[6,1] = int(((y_test_noisy == 0) * (indic_test[:,0] == 0) * (indic_test[:,1] == 0)).sum().data.numpy())
+    # table_occur[7,0] = int(((y_test_noisy == 1) * (indic_test[:,0] == 1) * (indic_test[:,1] == 0)).sum().data.numpy())
+    # table_occur[7,1] = int(((y_test_noisy == 0) * (indic_test[:,0] == 1) * (indic_test[:,1] == 0)).sum().data.numpy())
+    # table_occur[8,0] = int(((y_test_noisy == 1) * (indic_test[:,0] == 0) * (indic_test[:,1] == 1)).sum().data.numpy())
+    # table_occur[8,1] = int(((y_test_noisy == 0) * (indic_test[:,0] == 0) * (indic_test[:,1] == 1)).sum().data.numpy())
+    # print(table_occur)
 
     """ Training """
     autoencoders = {'IP': None, 'DM-SNR': None}
@@ -436,65 +434,50 @@ if __name__ == "__main__":
     curves = {'base-model': None, 'model-without': None, 'model-with': {(-1,-1,-1): None}}
     if retrain:
         """ Train autoencoders on normal signal train-set """
-        X_signal_train = signal_only(X_train, y_train)
-        X_signal_valid = signal_only(X_valid, y_valid)
-        model = DenoisingAutoEncoder(d_input[0], n_hidden, noise_std_autoenc).float()
-        optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        model, _ = train_autoencoder(model, optimizer, meta['batch_size'], 30, X_signal_train[:,:4], X_signal_valid[:,:4])
-        autoencoders['IP'] = model
-        min_potentials[0] = get_min_potential(X_signal_train[:,:4], model)
-        torch.save((model.state_dict(), min_potentials[0]), "dumps/autoencoder-ip.pt")
+        # X_signal_train = signal_only(X_train, y_train)
+        # X_signal_valid = signal_only(X_valid, y_valid)
+        # model = DenoisingAutoEncoder(d_input[0], n_hidden, noise_std_autoenc).float()
+        # optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
+        # model, _ = train_autoencoder(model, optimizer, meta['batch_size'], 30, X_signal_train[:,:4], X_signal_valid[:,:4])
+        # autoencoders['IP'] = model
+        # min_potentials[0] = get_min_potential(X_signal_train[:,:4], model)
 
-        model = DenoisingAutoEncoder(d_input[1], n_hidden, noise_std_autoenc).float()
-        optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        model, _ = train_autoencoder(model, optimizer, meta['batch_size'], 30, X_signal_train[:,4:], X_signal_valid[:,4:])
-        autoencoders['DM-SNR'] = model
-        min_potentials[1] = get_min_potential(X_signal_train[:,4:], model)
-        min_potentials = torch.tensor(min_potentials).float()
-        torch.save((model.state_dict(), min_potentials[1]), "dumps/autoencoder-dm-snr.pt")
+        # model = DenoisingAutoEncoder(d_input[1], n_hidden, noise_std_autoenc).float()
+        # optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
+        # model, _ = train_autoencoder(model, optimizer, meta['batch_size'], 30, X_signal_train[:,4:], X_signal_valid[:,4:])
+        # autoencoders['DM-SNR'] = model
+        # min_potentials[1] = get_min_potential(X_signal_train[:,4:], model)
+        # min_potentials = torch.tensor(min_potentials).float()
 
-        """ Freeze autoencoders """
-        for key, autoencoder in autoencoders.items():
-            freeze(autoencoder)
+        # """ Freeze autoencoders """
+        # for key, autoencoder in autoencoders.items():
+        #     freeze(autoencoder)
 
         """ Train base model on normal train-set, eval on valid-set """
         model = MLP(d_input=np.sum(d_input)).float()
         models['base-model'] = model
-        curves = train_clf(models, 'base-model', meta, X_train, y_train, indic_train, 
+        train_clf(models, 'base-model', meta, X_train, y_train, indic_train, 
             X_valid, y_valid, indic_valid)
-        torch.save((curves), "dumps/curve-base")
 
         """ Train model without EMMA noisy train-set, eval on noisy valid-set """
-        mlp = copy_mlp(models['base-model'])
-        models['model-without'] = mlp
-        curves = train_clf(models, 'model-without', meta, X_train_noisy, y_train_noisy, indic_train, 
-            X_valid_noisy, y_valid_noisy, indic_valid)
-        torch.save((curves), "dumps/curve-without")
+        # mlp = copy_mlp(models['base-model'])
+        # models['model-without'] = mlp
+        # train_clf(models, 'model-without', meta, X_train_noisy, y_train_noisy, indic_train, 
+        #     X_valid_noisy, y_valid_noisy, indic_valid)
 
-        """ Train model with EMMA noisy train-set, eval on noisy valid-set """
-        mlp = copy_mlp(models['base-model'])
-        emma = EMMA(n_modes, list(autoencoders.values()), min_potentials).float()
-        model = nn.ModuleList([emma, mlp])
-        models['model-with'][(-1,-1,-1)] = model
-        curves = train_clf(models, 'model-with', meta, X_train_noisy, y_train_noisy, indic_train, 
-            X_valid_noisy, y_valid_noisy, indic_valid)
-        torch.save((curves), "dumps/curve-with")
+        # """ Train model with EMMA noisy train-set, eval on noisy valid-set """
+        # mlp = copy_mlp(models['base-model'])
+        # emma = EMMA(n_modes, list(autoencoders.values()), min_potentials).float()
+        # model = nn.ModuleList([emma, mlp])
+        # models['model-with'][(-1,-1,-1)] = model
+        # train_clf(models, 'model-with', meta, X_train_noisy, y_train_noisy, indic_train, 
+        #     X_valid_noisy, y_valid_noisy, indic_valid)
 
-        """ Save """
-        torch.save((models), "dumps/models")
-        torch.save((X_test_noisy, y_test_noisy, indic_test), "dumps/test-set.pt")
+        # """ Save """
+        # torch.save((models), "dumps/models")
+        # torch.save((X_test_noisy, y_test_noisy, indic_test), "dumps/test-set.pt")
 
     else:
-        """ Load autoencoders """
-        autoencoders['IP'] = DenoisingAutoEncoder(d_input[0], n_hidden, noise_std_autoenc).float()
-        params, min_potentials[0] = torch.load("dumps/autoencoder-ip.pt")
-        autoencoders['IP'].load_state_dict(params)
-
-        autoencoders['DM-SNR'] = DenoisingAutoEncoder(d_input[1], n_hidden, noise_std_autoenc).float()
-        params, min_potentials[1] = torch.load("dumps/autoencoder-dm-snr.pt")
-        autoencoders['DM-SNR'].load_state_dict(params)
-        min_potentials = torch.tensor(min_potentials).float()
-
         """ Load models """
         models = torch.load("dumps/models")
 

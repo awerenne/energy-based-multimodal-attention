@@ -34,6 +34,8 @@ class EMMA(nn.Module):
         self.tau = tau  
         
         self.w = torch.nn.Parameter(torch.ones(n_modes).float())
+        self.W_coupling = torch.nn.Parameter(torch.ones(n_modes, n_modes).float())
+        self.W_coupling.data.uniform_(-1.0/n_modes, 1.0/n_modes)
         self.bias_correction = torch.nn.Parameter(torch.zeros(n_modes).float())
         self.gammas = torch.nn.Parameter(torch.ones(n_modes, n_modes)) 
         self.gammas.data *= 0.5 
@@ -49,6 +51,10 @@ class EMMA(nn.Module):
         return self.tau
 
     # -------
+    def get_gain(self):
+        return self.gain
+
+    # -------
     def get_alpha_beta(self, x):
         N = x[0].size(0)
         potentials = torch.zeros(N, self._n_modes)
@@ -58,15 +64,14 @@ class EMMA(nn.Module):
         _, betas = self.apply_attention(x, alphas)
         return alphas, betas
 
-
     # -------
     @property
     def capacity(self):
         return 1/self.gain * torch.log(torch.cosh(self.gain + self.bias_attention)/torch.cosh(self.bias_attention))
 
     # -------
-    def get_learned_gamma(self):
-        return self.tau
+    def get_gammas(self):
+        return self.gammas
 
     # -------
     @property
@@ -101,8 +106,12 @@ class EMMA(nn.Module):
         for i in range(self._n_modes):
             for j in range(self._n_modes):
                 gamma_ij = self.gamma(i,j)
-                partial_energies[:,i,j] = torch.pow(v[:,i], gamma_ij) * \
-                                          torch.pow(v[:,j], 1-gamma_ij)
+                if i == j:
+                    partial_energies[:,i,j] = v[:,i]
+                else:
+                    partial_energies[:,i,j] = self.W_coupling[i,j] * \
+                                torch.pow(v[:,i], gamma_ij) * \
+                                torch.pow(v[:,j], 1-gamma_ij)
         return partial_energies
 
     # -------
@@ -123,7 +132,7 @@ class EMMA(nn.Module):
         return xprime, betas
 
     # -------
-    def forward(self, x, train=True):
+    def forward(self, x):
         assert len(x) == self._n_modes
         N = x[0].size(0)
         potentials = torch.zeros(N, self._n_modes)
@@ -139,24 +148,22 @@ class WeightClipper(object):
 
     def __call__(self, emma):
         if hasattr(emma, 'w'): 
-            param = emma.w.data
-            param = param.clamp(min=1)
+            emma.w.data = emma.w.data.clamp(min=1)
 
         if hasattr(emma, 'bias_correction'): 
-            param = emma.bias_correction.data
-            param = param.clamp(min=0)
+            emma.bias_correction.data = emma.bias_correction.data.clamp(min=0)
 
         if hasattr(emma, 'gain'): 
-            param = emma.gain.data
-            param = param.clamp(min=0)
+            emma.gain.data = emma.gain.data.clamp(min=0)
 
         if hasattr(emma, 'bias_attention'): 
-            param = emma.bias_attention.data
-            param = param.clamp(min=0, max=1)
+            emma.bias_attention.data = emma.bias_attention.data.clamp(min=0, max=1)
 
         if hasattr(emma, 'gammas'): 
-            param = emma.gammas.data
-            param = param.clamp(min=0, max=1)
+            emma.gammas.data = emma.gammas.data.clamp(min=0, max=1)
+
+        if hasattr(emma, 'W_coupling'): 
+            emma.W_coupling.data = emma.W_coupling.data.clamp(min=-0.5, max=0.5)
 
     
 

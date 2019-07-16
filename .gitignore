@@ -18,3 +18,5 @@ report/figs/
 *.lot
 
 report/main\.run\.xml
+
+code/experiment-3/dumps/

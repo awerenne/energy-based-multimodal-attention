@@ -63,7 +63,7 @@ if __name__ == "__main__":
     """ Manifold """
     X = make_wave(n_samples)  # N x 2 
     # X = make_circle(n_samples)  # N x 2
-    # X = make_spiral(n_samples)  # N x 2
+    # X = make_spiral(n_samples)  # N x 2 TODO: close-up, more hidden inputs
 
     """ Load and train model """ 
     loaders = make_loaders(X)
