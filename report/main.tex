@@ -45,10 +45,14 @@ headsepline, % Uncomment to get a line under the header
 %\usepackage{mathpazo} % Use the Palatino font by default
 %\usepackage{xfrac,unicode-math}
 \usepackage[eng,exjobb]{KTHEEtitlepage}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{cancel}
+\usepackage{booktabs, lscape}
 
 \usepackage[backend=bibtex,style=authoryear,natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
 
-\addbibresource{example.bib} % The filename of the bibliography
+\addbibresource{biblio.bib} % The filename of the bibliography
 
 \usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
 \usepackage{subcaption}
@@ -81,7 +85,7 @@ headsepline, % Uncomment to get a line under the header
 \addresses{} % Your address, this is not currently used anywhere in the template, print it elsewhere with \addressname
 
 \subject{Artificial Intelligence} % Your subject area, this is not currently used anywhere in the template, print it elsewhere with \subjectname
-\keywords{Multimodal, Deep Learning, Attention, Robustness} % Keywords for your thesis, this is not currently used anywhere in the template, print it elsewhere with \keywordnames
+\keywords{Multimodal, Deep Learning, Attention, Robustness, Crossmodal} % Keywords for your thesis, this is not currently used anywhere in the template, print it elsewhere with \keywordnames
 \university{University of Liège} % Your university's name and URL, this is used in the title page and abstract, print it elsewhere with \univname
 \faculty{Faculty of Applied Sciences} % Your faculty's name and URL, this is used in the title page and abstract, print it elsewhere with \facname
 \department{Montefiore Institute} % Your department's name and URL, this is used in the title page and abstract, print it elsewhere with \deptname
@@ -104,9 +108,9 @@ headsepline, % Uncomment to get a line under the header
 %----------------------------------------------------------------------------------------
 \ititle{Energy-based Multi-Modal Attention}
 \idate{August 2019}
-\iauthor{Aurelien Werenne}
+\color{white}\iauthor{Aurelien Werenne}
 \makeititle
-
+\color{black}
 \begin{titlepage}
 \begin{center}
 
@@ -139,6 +143,7 @@ headsepline, % Uncomment to get a line under the header
 \large \textit{A thesis submitted in partial fulfillment of the requirements\\ for the degree of \degreename}\\[1cm] % University requirement text
 \deptname\\
 \facname\\
+\univname\\
 Liège, Belgium\\[4cm] 
  
 
@@ -157,8 +162,8 @@ Liège, Belgium\\[4cm]
 
 \vspace*{0.2\textheight}
 
-\noindent\enquote{\itshape Artificial Intelligence has the same relation to intelligence as artificial flowers have to\\ flowers.}\bigbreak
-\hfill David Parnas
+\noindent\enquote{\itshape Sometimes it seems as though each new step towards Artificial Intelligence, rather than producing something which everyone agrees is real intelligence, merely reveals what real intelligence is not.}\bigbreak
+\hfill Douglas Hofstadter
 %\ldots
 
 %----------------------------------------------------------------------------------------
@@ -181,6 +186,8 @@ Aliquam vulputate magna lectus, at consequat ante congue et. Sed congue ullamcor
 \begin{acknowledgements}
 \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec ultrices felis, eu suscipit orci. Nunc laoreet odio velit. Mauris tincidunt quam at purus vulputate vehicula. Etiam eu purus lorem. Sed hendrerit condimentum tellus, ut posuere libero laoreet nec. 
+
+Thank contributions opens
 \end{acknowledgements}
 
 %----------------------------------------------------------------------------------------
@@ -197,21 +204,40 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec ultrices felis,
 %Abbreviations and Notation
 \begin{symbols}{ll}
 
-$\Omega$ & Regularizer \\
-$E^{(T)}$ & True energy \\
-$E^{(P)}$ & Partial energy \\
-$E^{(M)}$ & Modal energy \\
-$E^{(S)}$ & System energy \\
-$\Psi$ & Potential energy \\
+$\triangleq$ & Is defined as \\
+$N$ & Number of samples \\
+$M$ & Number of modes\\
+$\mathcal{L}$ & Loss function \\
+$\lambda_c$ & Weight of capacity penalty \\
+$\lambda_e$ & Weight of energy penalty \\
+$\Omega$ & Energy regularizer \\
+$\mathrm{e}$ & Euler's number, base of the natural logarithm ($2.71828$) \\
+$\Psi_i$ & Potential energy of mode $i$ \\
+$E_{\text{total}}$ & Total energy \\
+$E_i$ & Modal energy of mode $i$ \\
+$e_i$ & Self-energy of mode $i$ \\
+$e_{ij}$ & Shared energy of mode $j$ on mode $i$ \\
+$\rho$ & Coldness parameter in Gibbs distribution \\
 
 \addlinespace 
 \addlinespace 
+\addlinespace 
+\addlinespace 
 
-ML & \textbf{M}achine \textbf{L}earning\\
-DL & \textbf{D}eep \textbf{L}earning\\
-EMMA & \textbf{E}nergy-based \textbf{M}ulti-\textbf{M}odal \textbf{A}ttention module\\
 AE & \textbf{A}uto\textbf{e}conder\\
+CNN & \textbf{C}onvolutional \textbf{N}eural \textbf{N}etwork\\
 DAE & \textbf{D}enoising \textbf{A}uto\textbf{e}conder\\
+DL & \textbf{D}eep \textbf{L}earning\\
+DM & \textbf{D}ispersion \textbf{M}easure\\
+EMMA & \textbf{E}nergy-based \textbf{M}ulti-\textbf{M}odal \textbf{A}ttention\\
+ISM & \textbf{I}nter\textbf{s}tellar \textbf{M}edium\\
+IP & \textbf{I}ntegrated \textbf{P}rofile\\
+LSTM & \textbf{L}ong \textbf{S}hort \textbf{T}erm \textbf{M}emory\\
+ML & \textbf{M}achine \textbf{L}earning\\
+MLP & \textbf{M}ulti \textbf{L}ayer \textbf{P}erceptron\\
+MMDL & \textbf{M}ulti \textbf{M}odal \textbf{D}eep \textbf{L}earning\\
+MMN & \textbf{M}ulti \textbf{M}odal \textbf{N}etwork\\
+RNN & \textbf{R}ecurrent \textbf{N}eural \textbf{N}etwork\\
 
 \end{symbols}
 
@@ -231,9 +257,9 @@ DAE & \textbf{D}enoising \textbf{A}uto\textbf{e}conder\\
 \include{chapters/3-literature-review}
 \include{chapters/4-energy-approx} 
 \include{chapters/5-emma} 
-\include{chapters/6-dataset} 
 \include{chapters/7-experiments} 
-\include{chapters/8-conclusion} 
+\include{chapters/8-unified} 
+\include{chapters/9-conclusion} 
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - APPENDICES

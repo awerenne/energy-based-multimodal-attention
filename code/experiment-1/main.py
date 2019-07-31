@@ -52,13 +52,13 @@ def train_step(loader, model, optimizer, train):
 # ---------------
 if __name__ == "__main__":
     """ Parameters of experiment """
-    retrain = True
+    retrain = False
     batch_size = 100
     n_samples = 2000
-    max_epochs = 15
+    max_epochs = 25
     d_input = 2
-    n_hidden = 6  # 8
-    noise_stddev = 0.008
+    n_hidden = 14  # 8
+    noise_stddev = 0.004 # 0.008
 
     """ Manifold """
     X = make_wave(n_samples)  # N x 2 
@@ -74,13 +74,13 @@ if __name__ == "__main__":
         plot_curves(curves)
         torch.save(model.state_dict(),"dumps/autoencoder.pt")
     else:
-        model = DenoisingAutoEncoder(d_input, n_hidden, noise).float()
+        model = DenoisingAutoEncoder(d_input, n_hidden, noise_stddev).float()
         model.load_state_dict(torch.load("dumps/autoencoder.pt"))
 
     """ Compare the two quantifiers """ 
     model.eval()
     plot_vector_field(model, X, save=False)
-    plot_quantifier(model, save=False)
+    # plot_quantifier(model, save=False)
 
 
 

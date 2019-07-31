@@ -60,7 +60,7 @@ class EMMA(nn.Module):
         potentials = torch.zeros(N, self._n_modes)
         for i in range(self._n_modes): 
             potentials[:,i] = self._autoencoders[i].potential(x[i])
-        alphas, _ = self.compute_importance_scores(potentials)  # N x M
+        alphas, _, _ = self.compute_importance_scores(potentials)  # N x M
         _, betas = self.apply_attention(x, alphas)
         return alphas, betas
 
@@ -72,6 +72,15 @@ class EMMA(nn.Module):
     # -------
     def get_gammas(self):
         return self.gammas
+
+    # -------
+    def total_energy(self, x):
+        N = x[0].size(0)
+        potentials = torch.zeros(N, self._n_modes)
+        for i in range(self._n_modes): 
+            potentials[:,i] = self._autoencoders[i].potential(x[i])
+        _, _, total_energy = self.compute_importance_scores(potentials)  # N x M
+        return total_energy
 
     # -------
     @property
@@ -121,7 +130,7 @@ class EMMA(nn.Module):
         modal_energies = torch.sum(partial_energies, dim=-1)  # N x M
         logs = F.log_softmax(-self.tau * modal_energies, dim=-1)  
         alphas = torch.exp(logs)
-        return alphas, logs
+        return alphas, logs, torch.sum(modal_energies, dim=-1)
 
     # -------
     def apply_attention(self, x, alphas):
@@ -138,7 +147,7 @@ class EMMA(nn.Module):
         potentials = torch.zeros(N, self._n_modes)
         for i in range(self._n_modes): 
             potentials[:,i] = self._autoencoders[i].potential(x[i])
-        alphas, logs = self.compute_importance_scores(potentials)  # N x M
+        alphas, logs, _ = self.compute_importance_scores(potentials)  # N x M
         xprime, _ = self.apply_attention(x, alphas)
         return xprime, logs
 

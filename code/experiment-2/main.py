@@ -76,6 +76,29 @@ def signal_vs_bckg(X_signal, X_background, model):
         q_unseen.append(model.potential(x).data)
     return [np.asarray(q_seen), np.asarray(q_unseen)]
 
+# ---------------
+def new_signal_vs_bckg(X_signal, X_background, model):
+    """ Extract random sample (size = 100) """
+    indices = np.arange(X_signal.size(0))
+    np.random.shuffle(indices)
+    X_signal = X_signal[indices]
+    indices = np.arange(X_background.size(0))
+    np.random.shuffle(indices)
+    X_background = X_background[indices]
+
+    """ Test """
+    q_seen = []
+    q_unseen = []
+    for i in range(100):
+        x = X_signal[i]
+        x = x.unsqueeze(0)
+        q_seen.append(model.potential(x).data)
+
+        x = X_background[i]
+        x = x.unsqueeze(0)
+        q_unseen.append(model.potential(x).data)
+    return [np.asarray(q_seen), np.asarray(q_unseen)]
+
 
 # ---------------
 def noisy_signal(X_signal, model):
@@ -86,7 +109,7 @@ def noisy_signal(X_signal, model):
 
     """ Test """
     measures = []
-    for noise_std in np.linspace(0, 10, 30):
+    for noise_std in np.linspace(0, 2, 30):
         q = []
         X = X_signal.clone()
         for i in range(X_signal.size(-1)):
@@ -114,9 +137,9 @@ if __name__ == "__main__":
     """ Load and train model """ 
     if retrain:
         X_train, y_train = train_set
-        X_train = signal_only(X_train, y_train)
+        # X_train = signal_only(X_train, y_train)
         X_valid, y_valid = valid_set
-        X_valid = signal_only(X_valid, y_valid)
+        # X_valid = signal_only(X_valid, y_valid)
 
         X_train_ip, X_valid_ip = X_train[:,:4], X_valid[:,:4] 
         model_ip = DenoisingAutoEncoder(d_input, n_hidden, noise_std).float()
@@ -143,16 +166,18 @@ if __name__ == "__main__":
     model_dm_snr.eval()
 
     X_test, y_test = test_set
-    X_signal = signal_only(X_test, y_test)
-    X_bckg = background_only(X_test, y_test)
+    # X_signal = signal_only(X_test, y_test)
+    # X_bckg = background_only(X_test, y_test)
+    X_signal = X_test
+    X_bckg = X_test
     X_signal_ip, X_bckg_ip = X_signal[:,:4], X_bckg[:,:4] 
     X_signal_dm_snr, X_bckg_dm_snr = X_signal[:,4:], X_bckg[:,4:] 
 
     """ Experiment 2.1 """
-    measures_ip = signal_vs_bckg(X_signal_ip, X_bckg_ip, model_ip)
-    measures_dm_snr = signal_vs_bckg(X_signal_dm_snr, X_bckg_dm_snr, model_dm_snr)
-    plot_signal_bckg(measures_ip, save=True, fname="results/signal-vs-background-ip")
-    plot_signal_bckg(measures_dm_snr, save=True, fname="results/signal-vs-background-dm-snr")
+    # measures_ip = signal_vs_bckg(X_signal_ip, X_bckg_ip, model_ip)
+    # measures_dm_snr = signal_vs_bckg(X_signal_dm_snr, X_bckg_dm_snr, model_dm_snr)
+    # plot_signal_bckg(measures_ip, save=True, fname="results/signal-vs-background-ip")
+    # plot_signal_bckg(measures_dm_snr, save=True, fname="results/signal-vs-background-dm-snr")
 
     """ Experiment 2.2 """
     measures_ip = noisy_signal(X_signal_ip, model_ip)

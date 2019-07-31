@@ -1,0 +1,1656 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.9 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{nyt/global//global/global}
+  \entry{afouras}{article}{}
+    \name{author}{5}{}{%
+      {{hash=AT}{%
+         family={{Afouras}},
+         familyi={A\bibinitperiod},
+         given={Triantafyllos},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=SJ}{%
+         family={{Son Chung}},
+         familyi={S\bibinitperiod},
+         given={Joon},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=SA}{%
+         family={{Senior}},
+         familyi={S\bibinitperiod},
+         given={Andrew},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=VO}{%
+         family={{Vinyals}},
+         familyi={V\bibinitperiod},
+         given={Oriol},
+         giveni={O\bibinitperiod},
+      }}%
+      {{hash=ZA}{%
+         family={{Zisserman}},
+         familyi={Z\bibinitperiod},
+         given={Andrew},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Computer Vision and Pattern Recognition}
+    \strng{namehash}{AT+1}
+    \strng{fullhash}{ATSJSAVOZA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2018}
+    \field{labeldatesource}{year}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{eid}{arXiv:1809.02108}
+    \verb{eprint}
+    \verb 1809.02108
+    \endverb
+    \field{pages}{arXiv:1809.02108}
+    \field{title}{{Deep Audio-Visual Speech Recognition}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.CV}
+    \field{year}{2018}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{alainbengio}{article}{}
+    \name{author}{2}{}{%
+      {{hash=AG}{%
+         family={{Alain}},
+         familyi={A\bibinitperiod},
+         given={Guillaume},
+         giveni={G\bibinitperiod},
+      }}%
+      {{hash=BY}{%
+         family={{Bengio}},
+         familyi={B\bibinitperiod},
+         given={Yoshua},
+         giveni={Y\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Machine Learning, Statistics - Machine Learning}
+    \strng{namehash}{AGBY1}
+    \strng{fullhash}{AGBY1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2012}
+    \field{labeldatesource}{year}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{eid}{arXiv:1211.4246}
+    \verb{eprint}
+    \verb 1211.4246
+    \endverb
+    \field{pages}{arXiv:1211.4246}
+    \field{title}{{What Regularized Auto-Encoders Learn from the Data
+  Generating Distribution}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.LG}
+    \field{year}{2012}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{taxomany-multimodal}{article}{}
+    \name{author}{3}{}{%
+      {{hash=BT}{%
+         family={{Baltrušaitis}},
+         familyi={B\bibinitperiod},
+         given={T.},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=AC}{%
+         family={{Ahuja}},
+         familyi={A\bibinitperiod},
+         given={C.},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=ML}{%
+         family={{Morency}},
+         familyi={M\bibinitperiod},
+         given={L.},
+         giveni={L\bibinitperiod},
+      }}%
+    }
+    \keyw{artificial intelligence;learning (artificial intelligence);signal
+  processing;user interfaces;multimodal signals;specific multimodal
+  applications;vibrant multidisciplinary field;multimodal machine
+  learning;Speech recognition;Visualization;Media;Speech;Multimedia
+  communication;Streaming media;Hidden Markov models;Multimodal;machine
+  learning;introductory;survey}
+    \strng{namehash}{BTACML1}
+    \strng{fullhash}{BTACML1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2019}
+    \field{labeldatesource}{year}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \verb{doi}
+    \verb 10.1109/TPAMI.2018.2798607
+    \endverb
+    \field{issn}{0162-8828}
+    \field{number}{2}
+    \field{pages}{423\bibrangedash 443}
+    \field{title}{Multimodal Machine Learning: A Survey and Taxonomy}
+    \field{volume}{41}
+    \field{journaltitle}{IEEE Transactions on Pattern Analysis and Machine
+  Intelligence}
+    \field{year}{2019}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{lidar-camera}{article}{}
+    \name{author}{4}{}{%
+      {{hash=CL}{%
+         family={{Caltagirone}},
+         familyi={C\bibinitperiod},
+         given={Luca},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=BM}{%
+         family={{Bellone}},
+         familyi={B\bibinitperiod},
+         given={Mauro},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=SL}{%
+         family={{Svensson}},
+         familyi={S\bibinitperiod},
+         given={Lennart},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=WM}{%
+         family={{Wahde}},
+         familyi={W\bibinitperiod},
+         given={Mattias},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Computer Vision and Pattern Recognition}
+    \strng{namehash}{CL+1}
+    \strng{fullhash}{CLBMSLWM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2018}
+    \field{labeldatesource}{year}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{eid}{arXiv:1809.07941}
+    \verb{eprint}
+    \verb 1809.07941
+    \endverb
+    \field{pages}{arXiv:1809.07941}
+    \field{title}{{LIDAR-Camera Fusion for Road Detection Using Fully
+  Convolutional Neural Networks}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.CV}
+    \field{year}{2018}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{cocktail-party}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=C}{%
+         family={{Cocktail party effect}},
+         familyi={C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{C1}
+    \strng{fullhash}{C1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2010}
+    \field{labeldatesource}{year}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{note}{[Online; accessed 29-April-2019]}
+    \field{title}{Cocktail party effect --- {W}ikipedia{,} The Free
+  Encyclopedia}
+    \verb{url}
+    \verb https://en.wikipedia.org/wiki/Cocktail_party_effect
+    \endverb
+    \field{year}{2010}
+  \endentry
+
+  \entry{lorimer}{book}{}
+    \name{author}{2}{}{%
+      {{hash=DL}{%
+         family={D.R.},
+         familyi={D\bibinitperiod},
+         given={Lorimer},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=MK}{%
+         family={M.},
+         familyi={M\bibinitperiod},
+         given={Kramer},
+         giveni={K\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Cambridge Uni- versity Press}%
+    }
+    \strng{namehash}{DLMK1}
+    \strng{fullhash}{DLMK1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2005}
+    \field{labeldatesource}{year}
+    \field{sortinit}{D}
+    \field{sortinithash}{D}
+    \field{title}{Handbook of pulsar astronomy.}
+    \field{year}{2005}
+  \endentry
+
+  \entry{crossmodal}{article}{}
+    \name{author}{2}{}{%
+      {{hash=DJ}{%
+         family={Driver},
+         familyi={D\bibinitperiod},
+         given={Jon},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=SC}{%
+         family={Spence},
+         familyi={S\bibinitperiod},
+         given={Charles},
+         giveni={C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{DJSC1}
+    \strng{fullhash}{DJSC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1998}
+    \field{labeldatesource}{year}
+    \field{sortinit}{D}
+    \field{sortinithash}{D}
+    \field{abstract}{%
+    Most selective attention research has considered only a single sensory
+  modality at a time, but in the real world, our attention must be coordinated
+  crossmodally. Recent studies reveal extensive crossmodal links in attention
+  across the various modalities (i.e. audition, vision, touch and
+  proprioception). Attention typically shifts to a common location across the
+  modalities, despite the vast differences in their initial coding of space.
+  These spatial synergies in attention can be maintained even when receptors
+  are realigned across the modalities by changes in posture. Some crossmodal
+  integration can arise preattentively. The mechanisms underlying these
+  crossmodal links can be examined in a convergent manner by integrating
+  behavioural studies of normal subjects and brain-damaged patients with
+  neuroimaging and neurophysiological studies.%
+    }
+    \verb{doi}
+    \verb https://doi.org/10.1016/S0959-4388(98)80147-5
+    \endverb
+    \field{issn}{0959-4388}
+    \field{number}{2}
+    \field{pages}{245 \bibrangedash  253}
+    \field{title}{Crossmodal attention}
+    \verb{url}
+    \verb http://www.sciencedirect.com/science/article/pii/S0959438898801475
+    \endverb
+    \field{volume}{8}
+    \field{journaltitle}{Current Opinion in Neurobiology}
+    \field{year}{1998}
+  \endentry
+
+  \entry{looking-to-listen}{article}{}
+    \name{author}{8}{}{%
+      {{hash=EA}{%
+         family={{Ephrat}},
+         familyi={E\bibinitperiod},
+         given={Ariel},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=MI}{%
+         family={{Mosseri}},
+         familyi={M\bibinitperiod},
+         given={Inbar},
+         giveni={I\bibinitperiod},
+      }}%
+      {{hash=LO}{%
+         family={{Lang}},
+         familyi={L\bibinitperiod},
+         given={Oran},
+         giveni={O\bibinitperiod},
+      }}%
+      {{hash=DT}{%
+         family={{Dekel}},
+         familyi={D\bibinitperiod},
+         given={Tali},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=WK}{%
+         family={{Wilson}},
+         familyi={W\bibinitperiod},
+         given={Kevin},
+         giveni={K\bibinitperiod},
+      }}%
+      {{hash=HA}{%
+         family={{Hassidim}},
+         familyi={H\bibinitperiod},
+         given={Avinatan},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=FWT}{%
+         family={{Freeman}},
+         familyi={F\bibinitperiod},
+         given={William\bibnamedelima T.},
+         giveni={W\bibinitperiod\bibinitdelim T\bibinitperiod},
+      }}%
+      {{hash=RM}{%
+         family={{Rubinstein}},
+         familyi={R\bibinitperiod},
+         given={Michael},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Sound, Computer Science - Computer Vision and
+  Pattern Recognition, Electrical Engineering and Systems Science - Audio and
+  Speech Processing}
+    \strng{namehash}{EA+1}
+    \strng{fullhash}{EAMILODTWKHAFWTRM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2018}
+    \field{labeldatesource}{year}
+    \field{sortinit}{E}
+    \field{sortinithash}{E}
+    \field{eid}{arXiv:1804.03619}
+    \verb{eprint}
+    \verb 1804.03619
+    \endverb
+    \field{pages}{arXiv:1804.03619}
+    \field{title}{{Looking to Listen at the Cocktail Party: A
+  Speaker-Independent Audio-Visual Model for Speech Separation}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.SD}
+    \field{year}{2018}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{deeplearning-overview}{article}{}
+    \name{author}{3}{}{%
+      {{hash=FJ}{%
+         family={{Fan}},
+         familyi={F\bibinitperiod},
+         given={Jianqing},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=MC}{%
+         family={{Ma}},
+         familyi={M\bibinitperiod},
+         given={Cong},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=ZY}{%
+         family={{Zhong}},
+         familyi={Z\bibinitperiod},
+         given={Yiqiao},
+         giveni={Y\bibinitperiod},
+      }}%
+    }
+    \keyw{Statistics - Machine Learning, Computer Science - Machine Learning,
+  Mathematics - Statistics Theory, Statistics - Methodology}
+    \strng{namehash}{FJMCZY1}
+    \strng{fullhash}{FJMCZY1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2019}
+    \field{labeldatesource}{year}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \field{eid}{arXiv:1904.05526}
+    \verb{eprint}
+    \verb 1904.05526
+    \endverb
+    \field{pages}{arXiv:1904.05526}
+    \field{title}{{A Selective Overview of Deep Learning}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{stat.ML}
+    \field{year}{2019}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{attention-review}{article}{}
+    \name{author}{3}{}{%
+      {{hash=GA}{%
+         family={{Galassi}},
+         familyi={G\bibinitperiod},
+         given={Andrea},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=LM}{%
+         family={{Lippi}},
+         familyi={L\bibinitperiod},
+         given={Marco},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=TP}{%
+         family={{Torroni}},
+         familyi={T\bibinitperiod},
+         given={Paolo},
+         giveni={P\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Computation and Language, Computer Science -
+  Artificial Intelligence, Computer Science - Machine Learning, Statistics -
+  Machine Learning}
+    \strng{namehash}{GALMTP1}
+    \strng{fullhash}{GALMTP1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2019}
+    \field{labeldatesource}{year}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{eid}{arXiv:1902.02181}
+    \verb{eprint}
+    \verb 1902.02181
+    \endverb
+    \field{pages}{arXiv:1902.02181}
+    \field{title}{{Attention, please! A Critical Review of Neural Attention
+  Models in Natural Language Processing}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.CL}
+    \field{year}{2019}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{ghosh}{article}{}
+    \name{author}{1}{}{%
+      {{hash=GP}{%
+         family={Ghosh},
+         familyi={G\bibinitperiod},
+         given={Pranab},
+         giveni={P\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{GP1}
+    \strng{fullhash}{GP1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2007}
+    \field{labeldatesource}{year}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{title}{Rotation and Accretion Powered Pulsars}
+    \field{journaltitle}{World Scientific Series in Astronomy and Astrophysics}
+    \field{year}{2007}
+  \endentry
+
+  \entry{latent-attention}{article}{}
+    \name{author}{6}{}{%
+      {{hash=GC}{%
+         family={{Grimm}},
+         familyi={G\bibinitperiod},
+         given={Christopher},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=AD}{%
+         family={{Arumugam}},
+         familyi={A\bibinitperiod},
+         given={Dilip},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=KS}{%
+         family={{Karamcheti}},
+         familyi={K\bibinitperiod},
+         given={Siddharth},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=AD}{%
+         family={{Abel}},
+         familyi={A\bibinitperiod},
+         given={David},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=WLLS}{%
+         family={{Wong}},
+         familyi={W\bibinitperiod},
+         given={Lawson L.\bibnamedelima S.},
+         giveni={L\bibinitperiod\bibinitdelim L\bibinitperiod\bibinitdelim
+  S\bibinitperiod},
+      }}%
+      {{hash=LML}{%
+         family={{Littman}},
+         familyi={L\bibinitperiod},
+         given={Michael\bibnamedelima L.},
+         giveni={M\bibinitperiod\bibinitdelim L\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Artificial Intelligence}
+    \strng{namehash}{GC+1}
+    \strng{fullhash}{GCADKSADWLLSLML1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2017}
+    \field{labeldatesource}{year}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{eid}{arXiv:1706.00536}
+    \verb{eprint}
+    \verb 1706.00536
+    \endverb
+    \field{pages}{arXiv:1706.00536}
+    \field{title}{{Modeling Latent Attention Within Neural Networks}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.AI}
+    \field{year}{2017}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{image-recognition}{inproceedings}{}
+    \name{author}{4}{}{%
+      {{hash=HK}{%
+         family={{He}},
+         familyi={H\bibinitperiod},
+         given={K.},
+         giveni={K\bibinitperiod},
+      }}%
+      {{hash=ZX}{%
+         family={{Zhang}},
+         familyi={Z\bibinitperiod},
+         given={X.},
+         giveni={X\bibinitperiod},
+      }}%
+      {{hash=RS}{%
+         family={{Ren}},
+         familyi={R\bibinitperiod},
+         given={S.},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=SJ}{%
+         family={{Sun}},
+         familyi={S\bibinitperiod},
+         given={J.},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \keyw{image classification;learning (artificial intelligence);neural
+  nets;object detection;COCO segmentation;ImageNet localization;ILSVRC & COCO
+  2015 competitions;deep residual nets;COCO object detection dataset;visual
+  recognition tasks;CIFAR-10;ILSVRC 2015 classification task;ImageNet test
+  set;VGG nets;residual nets;ImageNet dataset;residual function learning;deeper
+  neural network training;image recognition;deep residual
+  learning;Training;Degradation;Complexity theory;Image recognition;Neural
+  networks;Visualization;Image segmentation}
+    \strng{namehash}{HK+1}
+    \strng{fullhash}{HKZXRSSJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2016}
+    \field{labeldatesource}{year}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \field{booktitle}{2016 IEEE Conference on Computer Vision and Pattern
+  Recognition (CVPR)}
+    \verb{doi}
+    \verb 10.1109/CVPR.2016.90
+    \endverb
+    \field{issn}{1063-6919}
+    \field{pages}{770\bibrangedash 778}
+    \field{title}{Deep Residual Learning for Image Recognition}
+    \field{year}{2016}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{attention-is-effort}{inproceedings}{}
+    \name{author}{1}{}{%
+      {{hash=KD}{%
+         family={Kahneman},
+         familyi={K\bibinitperiod},
+         given={Daniel},
+         giveni={D\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{KD1}
+    \strng{fullhash}{KD1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1975}
+    \field{labeldatesource}{year}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \field{title}{Attention and effort}
+    \field{year}{1975}
+  \endentry
+
+  \entry{potentialenergy}{article}{}
+    \name{author}{2}{}{%
+      {{hash=KH}{%
+         family={{Kamyshanska}},
+         familyi={K\bibinitperiod},
+         given={Hanna},
+         giveni={H\bibinitperiod},
+      }}%
+      {{hash=MR}{%
+         family={{Memisevic}},
+         familyi={M\bibinitperiod},
+         given={Roland},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Machine Learning, Statistics - Machine Learning}
+    \strng{namehash}{KHMR1}
+    \strng{fullhash}{KHMR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2014}
+    \field{labeldatesource}{year}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \field{title}{{The Potential Energy of an Autoencoder}}
+    \field{journaltitle}{IEEE TRANSACTIONS ON PATTERN ANALYSIS AND MACHINE
+  INTELLIGENCE (TPAMI)}
+    \field{year}{2014}
+  \endentry
+
+  \entry{kingma}{article}{}
+    \name{author}{2}{}{%
+      {{hash=KDP}{%
+         family={{Kingma}},
+         familyi={K\bibinitperiod},
+         given={Diederik\bibnamedelima P.},
+         giveni={D\bibinitperiod\bibinitdelim P\bibinitperiod},
+      }}%
+      {{hash=BJ}{%
+         family={{Ba}},
+         familyi={B\bibinitperiod},
+         given={Jimmy},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Machine Learning}
+    \strng{namehash}{KDPBJ1}
+    \strng{fullhash}{KDPBJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2014}
+    \field{labeldatesource}{year}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \field{eid}{arXiv:1412.6980}
+    \verb{eprint}
+    \verb 1412.6980
+    \endverb
+    \field{pages}{arXiv:1412.6980}
+    \field{title}{{Adam: A Method for Stochastic Optimization}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.LG}
+    \field{year}{2014}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{pca-ae-2}{article}{}
+    \name{author}{3}{}{%
+      {{hash=LS}{%
+         family={{Ladjal}},
+         familyi={L\bibinitperiod},
+         given={Sa{\"\i}d},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=NA}{%
+         family={{Newson}},
+         familyi={N\bibinitperiod},
+         given={Alasdair},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=PCH}{%
+         family={{Pham}},
+         familyi={P\bibinitperiod},
+         given={Chi-Hieu},
+         giveni={C\bibinitperiod-H\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Computer Vision and Pattern Recognition, Computer
+  Science - Machine Learning}
+    \strng{namehash}{LSNAPCH1}
+    \strng{fullhash}{LSNAPCH1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2019}
+    \field{labeldatesource}{year}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{eid}{arXiv:1904.01277}
+    \verb{eprint}
+    \verb 1904.01277
+    \endverb
+    \field{pages}{arXiv:1904.01277}
+    \field{title}{{A PCA-like Autoencoder}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.CV}
+    \field{year}{2019}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{lecun-dl}{article}{}
+    \name{author}{3}{}{%
+      {{hash=LY}{%
+         family={LeCun},
+         familyi={L\bibinitperiod},
+         given={Yann},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=BY}{%
+         family={Bengio},
+         familyi={B\bibinitperiod},
+         given={Yoshua},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=HG}{%
+         family={Hinton},
+         familyi={H\bibinitperiod},
+         given={Geoffrey},
+         giveni={G\bibinitperiod},
+      }}%
+    }
+    \list{language}{1}{%
+      {English (US)}%
+    }
+    \list{publisher}{1}{%
+      {Nature Publishing Group}%
+    }
+    \strng{namehash}{LYBYHG1}
+    \strng{fullhash}{LYBYHG1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2015}
+    \field{labeldatesource}{year}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{abstract}{%
+    Deep learning allows computational models that are composed of multiple
+  processing layers to learn representations of data with multiple levels of
+  abstraction. These methods have dramatically improved the state-of-the-art in
+  speech recognition, visual object recognition, object detection and many
+  other domains such as drug discovery and genomics. Deep learning discovers
+  intricate structure in large data sets by using the backpropagation algorithm
+  to indicate how a machine should change its internal parameters that are used
+  to compute the representation in each layer from the representation in the
+  previous layer. Deep convolutional nets have brought about breakthroughs in
+  processing images, video, speech and audio, whereas recurrent nets have shone
+  light on sequential data such as text and speech.%
+    }
+    \verb{doi}
+    \verb 10.1038/nature14539
+    \endverb
+    \field{issn}{0028-0836}
+    \field{number}{7553}
+    \field{pages}{436\bibrangedash 444}
+    \field{title}{Deep learning}
+    \field{volume}{521}
+    \field{journaltitle}{Nature}
+    \field{month}{05}
+    \field{year}{2015}
+  \endentry
+
+  \entry{stacked-attention}{article}{}
+    \name{author}{5}{}{%
+      {{hash=LKH}{%
+         family={{Lee}},
+         familyi={L\bibinitperiod},
+         given={Kuang-Huei},
+         giveni={K\bibinitperiod-H\bibinitperiod},
+      }}%
+      {{hash=CX}{%
+         family={{Chen}},
+         familyi={C\bibinitperiod},
+         given={Xi},
+         giveni={X\bibinitperiod},
+      }}%
+      {{hash=HG}{%
+         family={{Hua}},
+         familyi={H\bibinitperiod},
+         given={Gang},
+         giveni={G\bibinitperiod},
+      }}%
+      {{hash=HH}{%
+         family={{Hu}},
+         familyi={H\bibinitperiod},
+         given={Houdong},
+         giveni={H\bibinitperiod},
+      }}%
+      {{hash=HX}{%
+         family={{He}},
+         familyi={H\bibinitperiod},
+         given={Xiaodong},
+         giveni={X\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Computer Vision and Pattern Recognition, Computer
+  Science - Artificial Intelligence, Computer Science - Machine Learning}
+    \strng{namehash}{LKH+1}
+    \strng{fullhash}{LKHCXHGHHHX1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2018}
+    \field{labeldatesource}{year}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{eid}{arXiv:1803.08024}
+    \verb{eprint}
+    \verb 1803.08024
+    \endverb
+    \field{pages}{arXiv:1803.08024}
+    \field{title}{{Stacked Cross Attention for Image-Text Matching}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.CV}
+    \field{year}{2018}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{crossmodal-object-detection}{article}{}
+    \name{author}{5}{}{%
+      {{hash=LG}{%
+         family={{Li}},
+         familyi={L\bibinitperiod},
+         given={Guanbin},
+         giveni={G\bibinitperiod},
+      }}%
+      {{hash=GY}{%
+         family={{Gan}},
+         familyi={G\bibinitperiod},
+         given={Yukang},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=WH}{%
+         family={{Wu}},
+         familyi={W\bibinitperiod},
+         given={Hejun},
+         giveni={H\bibinitperiod},
+      }}%
+      {{hash=XN}{%
+         family={{Xiao}},
+         familyi={X\bibinitperiod},
+         given={Nong},
+         giveni={N\bibinitperiod},
+      }}%
+      {{hash=LL}{%
+         family={{Lin}},
+         familyi={L\bibinitperiod},
+         given={Liang},
+         giveni={L\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Computer Vision and Pattern Recognition}
+    \strng{namehash}{LG+1}
+    \strng{fullhash}{LGGYWHXNLL1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2019}
+    \field{labeldatesource}{year}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \verb{doi}
+    \verb 10.1109/TIP.2018.2878956
+    \endverb
+    \verb{eprint}
+    \verb 1810.12829
+    \endverb
+    \field{number}{4}
+    \field{pages}{1591\bibrangedash 1601}
+    \field{title}{{Cross-Modal Attentional Context Learning for RGB-D Object
+  Detection}}
+    \field{volume}{28}
+    \field{journaltitle}{IEEE Transactions on Image Processing}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.CV}
+    \field{year}{2019}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{cross-transformer}{article}{}
+    \name{author}{3}{}{%
+      {{hash=LJ}{%
+         family={{Libovick{\'y}}},
+         familyi={L\bibinitperiod},
+         given={Jind{\v{r}}ich},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=HJ}{%
+         family={{Helcl}},
+         familyi={H\bibinitperiod},
+         given={Jind{\v{r}}ich},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=MD}{%
+         family={{Mare{\v{c}}ek}},
+         familyi={M\bibinitperiod},
+         given={David},
+         giveni={D\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Computation and Language}
+    \strng{namehash}{LJHJMD1}
+    \strng{fullhash}{LJHJMD1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2018}
+    \field{labeldatesource}{year}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{eid}{arXiv:1811.04716}
+    \verb{eprint}
+    \verb 1811.04716
+    \endverb
+    \field{pages}{arXiv:1811.04716}
+    \field{title}{{Input Combination Strategies for Multi-Source Transformer
+  Decoder}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.CL}
+    \field{year}{2018}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{combine-multimod}{article}{}
+    \name{author}{4}{}{%
+      {{hash=LK}{%
+         family={{Liu}},
+         familyi={L\bibinitperiod},
+         given={Kuan},
+         giveni={K\bibinitperiod},
+      }}%
+      {{hash=LY}{%
+         family={{Li}},
+         familyi={L\bibinitperiod},
+         given={Yanen},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=XN}{%
+         family={{Xu}},
+         familyi={X\bibinitperiod},
+         given={Ning},
+         giveni={N\bibinitperiod},
+      }}%
+      {{hash=NP}{%
+         family={{Natarajan}},
+         familyi={N\bibinitperiod},
+         given={Prem},
+         giveni={P\bibinitperiod},
+      }}%
+    }
+    \keyw{Statistics - Machine Learning, Computer Science - Artificial
+  Intelligence, Computer Science - Machine Learning}
+    \strng{namehash}{LK+1}
+    \strng{fullhash}{LKLYXNNP1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2018}
+    \field{labeldatesource}{year}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{eid}{arXiv:1805.11730}
+    \verb{eprint}
+    \verb 1805.11730
+    \endverb
+    \field{pages}{arXiv:1805.11730}
+    \field{title}{{Learn to Combine Modalities in Multimodal Deep Learning}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{stat.ML}
+    \field{year}{2018}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{lorimer2008}{article}{}
+    \name{author}{1}{}{%
+      {{hash=LRD}{%
+         family={Lorimer},
+         familyi={L\bibinitperiod},
+         given={R.\bibnamedelima Duncan},
+         giveni={R\bibinitperiod\bibinitdelim D\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{LRD1}
+    \strng{fullhash}{LRD1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2008}
+    \field{labeldatesource}{year}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{abstract}{%
+    We review the main properties, demographics and applications of binary and
+  millisecond radio pulsars. Our knowledge of these exciting objects has
+  greatly increased in recent years, mainly due to successful surveys which
+  have brought the known pulsar population to over 1800. There are now 83
+  binary and millisecond pulsars associated with the disk of our Galaxy, and a
+  further 140 pulsars in 26 of the Galactic globular clusters. Recent
+  highlights include the discovery of the young relativistic binary system PSR
+  J1906+0746, a rejuvination in globular cluster pulsar research including
+  growing numbers of pulsars with masses in excess of 1.5 M⊙, a precise
+  measurement of relativistic spin precession in the double pulsar system and a
+  Galactic millisecond pulsar in an eccentric (e = 0.44) orbit around an
+  unevolved companion.%
+    }
+    \verb{doi}
+    \verb 10.12942/lrr-2008-8
+    \endverb
+    \field{issn}{1433-8351}
+    \field{number}{1}
+    \field{pages}{8}
+    \field{title}{Binary and Millisecond Pulsars}
+    \verb{url}
+    \verb https://doi.org/10.12942/lrr-2008-8
+    \endverb
+    \field{volume}{11}
+    \field{journaltitle}{Living Reviews in Relativity}
+    \field{year}{2008}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{lyon}{thesis}{}
+    \name{author}{1}{}{%
+      {{hash=LRJ}{%
+         family={Lyon},
+         familyi={L\bibinitperiod},
+         given={R.\bibnamedelima J.},
+         giveni={R\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{LRJ1}
+    \strng{fullhash}{LRJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2016}
+    \field{labeldatesource}{year}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{title}{Why are pulsars hard to find}
+    \list{institution}{1}{%
+      {The University of Manchester}%
+    }
+    \field{type}{phdthesis}
+    \field{year}{2016}
+  \endentry
+
+  \entry{EBM}{article}{}
+    \name{author}{1}{}{%
+      {{hash=OT}{%
+         family={{Osogami}},
+         familyi={O\bibinitperiod},
+         given={Takayuki},
+         giveni={T\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Neural and Evolutionary Computing}
+    \strng{namehash}{OT1}
+    \strng{fullhash}{OT1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2017}
+    \field{labeldatesource}{year}
+    \field{sortinit}{O}
+    \field{sortinithash}{O}
+    \field{eid}{arXiv:1708.06008}
+    \verb{eprint}
+    \verb 1708.06008
+    \endverb
+    \field{pages}{arXiv:1708.06008}
+    \field{title}{{Boltzmann machines and energy-based models}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.NE}
+    \field{year}{2017}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{pca-ae-1}{inproceedings}{}
+    \name{author}{3}{}{%
+      {{hash=SM}{%
+         family={Scholz},
+         familyi={S\bibinitperiod},
+         given={Matthias},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=FM}{%
+         family={Fraunholz},
+         familyi={F\bibinitperiod},
+         given={Martin},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=SJ}{%
+         family={Selbig},
+         familyi={S\bibinitperiod},
+         given={Joachim},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \name{editor}{4}{}{%
+      {{hash=GAN}{%
+         family={Gorban},
+         familyi={G\bibinitperiod},
+         given={Alexander\bibnamedelima N.},
+         giveni={A\bibinitperiod\bibinitdelim N\bibinitperiod},
+      }}%
+      {{hash=KB}{%
+         family={K{\'e}gl},
+         familyi={K\bibinitperiod},
+         given={Bal{\'a}zs},
+         giveni={B\bibinitperiod},
+      }}%
+      {{hash=WDC}{%
+         family={Wunsch},
+         familyi={W\bibinitperiod},
+         given={Donald\bibnamedelima C.},
+         giveni={D\bibinitperiod\bibinitdelim C\bibinitperiod},
+      }}%
+      {{hash=ZAY}{%
+         family={Zinovyev},
+         familyi={Z\bibinitperiod},
+         given={Andrei\bibnamedelima Y.},
+         giveni={A\bibinitperiod\bibinitdelim Y\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer Berlin Heidelberg}%
+    }
+    \strng{namehash}{SMFMSJ1}
+    \strng{fullhash}{SMFMSJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2008}
+    \field{labeldatesource}{year}
+    \field{sortinit}{S}
+    \field{sortinithash}{S}
+    \field{abstract}{%
+    Nonlinear principal component analysis (NLPCA) as a nonlinear
+  generalisation of standard principal component analysis (PCA) means to
+  generalise the principal components from straight lines to curves. This
+  chapter aims to provide an extensive description of the autoassociative
+  neural network approach for NLPCA. Several network architectures will be
+  discussed including the hierarchical, the circular, and the inverse model
+  with special emphasis to missing data. Results are shown from applications in
+  the field of molecular biology. This includes metabolite data analysis of a
+  cold stress experiment in the model plant Arabidopsis thaliana and gene
+  expression analysis of the reproductive cycle of the malaria parasite
+  Plasmodium falciparum within infected red blood cells.%
+    }
+    \field{booktitle}{Principal Manifolds for Data Visualization and Dimension
+  Reduction}
+    \field{isbn}{978-3-540-73750-6}
+    \field{pages}{44\bibrangedash 67}
+    \field{title}{Nonlinear Principal Component Analysis: Neural Network Models
+  and Applications}
+    \list{location}{1}{%
+      {Berlin, Heidelberg}%
+    }
+    \field{year}{2008}
+  \endentry
+
+  \entry{audiovisual-attention}{article}{}
+    \name{author}{3}{}{%
+      {{hash=SS}{%
+         family={{Shon}},
+         familyi={S\bibinitperiod},
+         given={Suwon},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=OTH}{%
+         family={{Oh}},
+         familyi={O\bibinitperiod},
+         given={Tae-Hyun},
+         giveni={T\bibinitperiod-H\bibinitperiod},
+      }}%
+      {{hash=GJ}{%
+         family={{Glass}},
+         familyi={G\bibinitperiod},
+         given={James},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Computer Vision and Pattern Recognition,
+  Electrical Engineering and Systems Science - Audio and Speech Processing}
+    \strng{namehash}{SSOTHGJ1}
+    \strng{fullhash}{SSOTHGJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2018}
+    \field{labeldatesource}{year}
+    \field{sortinit}{S}
+    \field{sortinithash}{S}
+    \field{eid}{arXiv:1811.10813}
+    \verb{eprint}
+    \verb 1811.10813
+    \endverb
+    \field{pages}{arXiv:1811.10813}
+    \field{title}{{Noise-tolerant Audio-visual Online Person Verification using
+  an Attention-based Neural Network Fusion}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.CV}
+    \field{year}{2018}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{star-eater}{article}{}
+    \name{author}{2}{}{%
+      {{hash=TJ}{%
+         family={Treat},
+         familyi={T\bibinitperiod},
+         given={J.},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=S}{%
+         family={Stegmaier},
+         familyi={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{TJS1}
+    \strng{fullhash}{TJS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2014}
+    \field{labeldatesource}{year}
+    \field{sortinit}{T}
+    \field{sortinithash}{T}
+    \field{title}{Black Holes: Star Eater.}
+    \field{journaltitle}{National Geographic}
+    \field{year}{2014}
+  \endentry
+
+  \entry{attention-need}{article}{}
+    \name{author}{8}{}{%
+      {{hash=VA}{%
+         family={{Vaswani}},
+         familyi={V\bibinitperiod},
+         given={Ashish},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=SN}{%
+         family={{Shazeer}},
+         familyi={S\bibinitperiod},
+         given={Noam},
+         giveni={N\bibinitperiod},
+      }}%
+      {{hash=PN}{%
+         family={{Parmar}},
+         familyi={P\bibinitperiod},
+         given={Niki},
+         giveni={N\bibinitperiod},
+      }}%
+      {{hash=UJ}{%
+         family={{Uszkoreit}},
+         familyi={U\bibinitperiod},
+         given={Jakob},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=JL}{%
+         family={{Jones}},
+         familyi={J\bibinitperiod},
+         given={Llion},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=GAN}{%
+         family={{Gomez}},
+         familyi={G\bibinitperiod},
+         given={Aidan\bibnamedelima N.},
+         giveni={A\bibinitperiod\bibinitdelim N\bibinitperiod},
+      }}%
+      {{hash=KL}{%
+         family={{Kaiser}},
+         familyi={K\bibinitperiod},
+         given={Lukasz},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=PI}{%
+         family={{Polosukhin}},
+         familyi={P\bibinitperiod},
+         given={Illia},
+         giveni={I\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Computation and Language, Computer Science -
+  Machine Learning}
+    \strng{namehash}{VA+1}
+    \strng{fullhash}{VASNPNUJJLGANKLPI1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2017}
+    \field{labeldatesource}{year}
+    \field{sortinit}{V}
+    \field{sortinithash}{V}
+    \field{eid}{arXiv:1706.03762}
+    \verb{eprint}
+    \verb 1706.03762
+    \endverb
+    \field{pages}{arXiv:1706.03762}
+    \field{title}{{Attention Is All You Need}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.CL}
+    \field{year}{2017}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{crossmodal-video-caption}{article}{}
+    \name{author}{3}{}{%
+      {{hash=WX}{%
+         family={{Wang}},
+         familyi={W\bibinitperiod},
+         given={Xin},
+         giveni={X\bibinitperiod},
+      }}%
+      {{hash=WYF}{%
+         family={{Wang}},
+         familyi={W\bibinitperiod},
+         given={Yuan-Fang},
+         giveni={Y\bibinitperiod-F\bibinitperiod},
+      }}%
+      {{hash=WWY}{%
+         family={{Wang}},
+         familyi={W\bibinitperiod},
+         given={William\bibnamedelima Yang},
+         giveni={W\bibinitperiod\bibinitdelim Y\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Computation and Language, Computer Science -
+  Artificial Intelligence, Computer Science - Computer Vision and Pattern
+  Recognition}
+    \strng{namehash}{WXWYFWWY1}
+    \strng{fullhash}{WXWYFWWY1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2018}
+    \field{labeldatesource}{year}
+    \field{sortinit}{W}
+    \field{sortinithash}{W}
+    \field{eid}{arXiv:1804.05448}
+    \verb{eprint}
+    \verb 1804.05448
+    \endverb
+    \field{pages}{arXiv:1804.05448}
+    \field{title}{{Watch, Listen, and Describe: Globally and Locally Aligned
+  Cross-Modal Attentions for Video Captioning}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.CL}
+    \field{year}{2018}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{machine-translation}{article}{}
+    \name{author}{31}{}{%
+      {{hash=WY}{%
+         family={Wu},
+         familyi={W\bibinitperiod},
+         given={Yonghui},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=SM}{%
+         family={Schuster},
+         familyi={S\bibinitperiod},
+         given={Mike},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=CZ}{%
+         family={Chen},
+         familyi={C\bibinitperiod},
+         given={Zhifeng},
+         giveni={Z\bibinitperiod},
+      }}%
+      {{hash=LQV}{%
+         family={Le},
+         familyi={L\bibinitperiod},
+         given={Quoc\bibnamedelima V.},
+         giveni={Q\bibinitperiod\bibinitdelim V\bibinitperiod},
+      }}%
+      {{hash=NM}{%
+         family={Norouzi},
+         familyi={N\bibinitperiod},
+         given={Mohammad},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=MW}{%
+         family={Macherey},
+         familyi={M\bibinitperiod},
+         given={Wolfgang},
+         giveni={W\bibinitperiod},
+      }}%
+      {{hash=KM}{%
+         family={Krikun},
+         familyi={K\bibinitperiod},
+         given={Maxim},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=CY}{%
+         family={Cao},
+         familyi={C\bibinitperiod},
+         given={Yuan},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=GQ}{%
+         family={Gao},
+         familyi={G\bibinitperiod},
+         given={Qin},
+         giveni={Q\bibinitperiod},
+      }}%
+      {{hash=MK}{%
+         family={Macherey},
+         familyi={M\bibinitperiod},
+         given={Klaus},
+         giveni={K\bibinitperiod},
+      }}%
+      {{hash=KJ}{%
+         family={Klingner},
+         familyi={K\bibinitperiod},
+         given={Jeff},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=SA}{%
+         family={Shah},
+         familyi={S\bibinitperiod},
+         given={Apurva},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=JM}{%
+         family={Johnson},
+         familyi={J\bibinitperiod},
+         given={Melvin},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=LX}{%
+         family={Liu},
+         familyi={L\bibinitperiod},
+         given={Xiaobing},
+         giveni={X\bibinitperiod},
+      }}%
+      {{hash=KL}{%
+         family={Kaiser},
+         familyi={K\bibinitperiod},
+         given={Lukasz},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=GS}{%
+         family={Gouws},
+         familyi={G\bibinitperiod},
+         given={Stephan},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=KY}{%
+         family={Kato},
+         familyi={K\bibinitperiod},
+         given={Yoshikiyo},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=KT}{%
+         family={Kudo},
+         familyi={K\bibinitperiod},
+         given={Taku},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=KH}{%
+         family={Kazawa},
+         familyi={K\bibinitperiod},
+         given={Hideto},
+         giveni={H\bibinitperiod},
+      }}%
+      {{hash=SK}{%
+         family={Stevens},
+         familyi={S\bibinitperiod},
+         given={Keith},
+         giveni={K\bibinitperiod},
+      }}%
+      {{hash=KG}{%
+         family={Kurian},
+         familyi={K\bibinitperiod},
+         given={George},
+         giveni={G\bibinitperiod},
+      }}%
+      {{hash=PN}{%
+         family={Patil},
+         familyi={P\bibinitperiod},
+         given={Nishant},
+         giveni={N\bibinitperiod},
+      }}%
+      {{hash=WW}{%
+         family={Wang},
+         familyi={W\bibinitperiod},
+         given={Wei},
+         giveni={W\bibinitperiod},
+      }}%
+      {{hash=YC}{%
+         family={Young},
+         familyi={Y\bibinitperiod},
+         given={Cliff},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=SJ}{%
+         family={Smith},
+         familyi={S\bibinitperiod},
+         given={Jason},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=RJ}{%
+         family={Riesa},
+         familyi={R\bibinitperiod},
+         given={Jason},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=RA}{%
+         family={Rudnick},
+         familyi={R\bibinitperiod},
+         given={Alex},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=VO}{%
+         family={Vinyals},
+         familyi={V\bibinitperiod},
+         given={Oriol},
+         giveni={O\bibinitperiod},
+      }}%
+      {{hash=CGS}{%
+         family={Corrado},
+         familyi={C\bibinitperiod},
+         given={Gregory\bibnamedelima S.},
+         giveni={G\bibinitperiod\bibinitdelim S\bibinitperiod},
+      }}%
+      {{hash=HM}{%
+         family={Hughes},
+         familyi={H\bibinitperiod},
+         given={Macduff},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=DJ}{%
+         family={Dean},
+         familyi={D\bibinitperiod},
+         given={Jeffrey},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{WY+1}
+  \strng{fullhash}{WYSMCZLQVNMMWKMCYGQMKKJSAJMLXKLGSKYKTKHSKKGPNWWYCSJRJRAVOCGSHMDJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2016}
+    \field{labeldatesource}{year}
+    \field{sortinit}{W}
+    \field{sortinithash}{W}
+    \field{title}{Google's Neural Machine Translation System: Bridging the Gap
+  between Human and Machine Translation}
+    \field{volume}{abs/1609.08144}
+    \field{journaltitle}{ArXiv}
+    \field{year}{2016}
+  \endentry
+
+  \entry{anomaly-detection-energy}{article}{}
+    \name{author}{4}{}{%
+      {{hash=ZS}{%
+         family={{Zhai}},
+         familyi={Z\bibinitperiod},
+         given={Shuangfei},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=CY}{%
+         family={{Cheng}},
+         familyi={C\bibinitperiod},
+         given={Yu},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=LW}{%
+         family={{Lu}},
+         familyi={L\bibinitperiod},
+         given={Weining},
+         giveni={W\bibinitperiod},
+      }}%
+      {{hash=ZZ}{%
+         family={{Zhang}},
+         familyi={Z\bibinitperiod},
+         given={Zhongfei},
+         giveni={Z\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Machine Learning, Statistics - Machine Learning}
+    \strng{namehash}{ZS+1}
+    \strng{fullhash}{ZSCYLWZZ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2016}
+    \field{labeldatesource}{year}
+    \field{sortinit}{Z}
+    \field{sortinithash}{Z}
+    \field{eid}{arXiv:1605.07717}
+    \verb{eprint}
+    \verb 1605.07717
+    \endverb
+    \field{pages}{arXiv:1605.07717}
+    \field{title}{{Deep Structured Energy Based Models for Anomaly Detection}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.LG}
+    \field{year}{2016}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+\enddatalist
+\endinput

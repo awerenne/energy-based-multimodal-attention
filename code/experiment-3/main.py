@@ -191,7 +191,8 @@ def train_clf(models, name, meta, X_train, y_train, indicator_train,
                 curves = np.zeros((2, n_epochs+1))
                 model = copy_emma(models[name][(-1,-1,-1)])
                 model[0].set_coldness(tau)
-                optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
+                optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()), lr=meta['lr'])
+                # optimizer = torch.optim.SGD(nn.ParameterList(model.parameters()), lr=meta['lr'])
                 model.eval()
                 with torch.set_grad_enabled(False):
                     curves[1,0] = train_step(model, name, optimizer, meta['batch_size'], X_train, y_train, indic_train, lambda_regul, lambda_capacity, valid=True)
@@ -223,8 +224,8 @@ def train_clf(models, name, meta, X_train, y_train, indicator_train,
 def train_step(model, name, optimizer, batch_size, X, y, indic=None, lambda_regul=None,
                 lambda_capacity=None, valid=False):
     n_steps, sum_loss = 0, 0
-    # criterion = torch.nn.BCEWithLogitsLoss(pos_weight=torch.tensor([10.]))
-    criterion = torch.nn.BCEWithLogitsLoss()
+    criterion = torch.nn.BCEWithLogitsLoss(pos_weight=torch.tensor([10.]))
+    # criterion = torch.nn.BCEWithLogitsLoss()
     # criterion = torch.nn.BCELoss()
     indices = np.arange(X.size(0))
     np.random.shuffle(indices)
@@ -377,15 +378,15 @@ def unfreeze(model):
 # ---------------
 if __name__ == "__main__":  
     """ Parameters experiment """
-    retrain = True
+    retrain = False
     n_modes = 2
     d_input = [4, 4]
     n_hidden = 12  # Number of hidden units in autoencoders
     noise_std_autoenc = 0.01
-    noise_std_data = 4
-    coldness = [1e-2, 1e-1, 1]
-    lambda_regul = np.linspace(0, 2, 3)
-    lambda_capacity = np.linspace(0, 2, 3)
+    noise_std_data = 0.8
+    coldness = [1e-4, 1e-3, 1e-2, 1e-1, 1]
+    lambda_regul = [0, 1e-4, 1e-3, 1e-2, 1e-1]
+    lambda_capacity = [-1e-1, -1e-2, 0, 1e-2, 1e-1]
 
     meta = {}
     meta['clipper'] = WeightClipper()
@@ -393,41 +394,20 @@ if __name__ == "__main__":
     meta['lambda_regul'] = lambda_regul
     meta['lambda_capacity'] = lambda_capacity
     meta['max_epochs'] = 30
-    meta['batch_size'] = 32
+    meta['batch_size'] = 16
+    meta['lr'] = 1e-3
 
     """ Data """
     train_set, valid_set, test_set = get_pulsar_data("../data/pulsar.csv")
     X_train, y_train = train_set
-    X_train_noisy, y_train_noisy, indic_train = apply_corruption_test(X_train, y_train,
+    X_train_noisy, y_train_noisy, indic_train = apply_corruption(X_train, y_train,
                                                     noise_std_data)
     X_valid, y_valid = valid_set
-    X_valid_noisy, y_valid_noisy, indic_valid = apply_corruption_test(X_valid, y_valid,
+    X_valid_noisy, y_valid_noisy, indic_valid = apply_corruption(X_valid, y_valid,
                                                     noise_std_data)
     X_test, y_test = test_set
-    X_test_noisy, y_test_noisy, indic_test = apply_corruption_test(X_test, y_test,
+    X_test_noisy, y_test_noisy, indic_test = apply_corruption(X_test, y_test,
                                                     noise_std_data)
-
-    """ EDA """
-    table_occur = np.zeros((9,2))
-    table_occur[0,0] = int(((y_train_noisy == 1) * (indic_train[:,0] == 0) * (indic_train[:,1] == 0)).sum().data.numpy())
-    table_occur[0,1] = int(((y_train_noisy == 0) * (indic_train[:,0] == 0) * (indic_train[:,1] == 0)).sum().data.numpy())
-    table_occur[1,0] = int(((y_train_noisy == 1) * (indic_train[:,0] == 1) * (indic_train[:,1] == 0)).sum().data.numpy())
-    table_occur[1,1] = int(((y_train_noisy == 0) * (indic_train[:,0] == 1) * (indic_train[:,1] == 0)).sum().data.numpy())
-    table_occur[2,0] = int(((y_train_noisy == 1) * (indic_train[:,0] == 0) * (indic_train[:,1] == 1)).sum().data.numpy())
-    table_occur[2,1] = int(((y_train_noisy == 0) * (indic_train[:,0] == 0) * (indic_train[:,1] == 1)).sum().data.numpy())
-    table_occur[3,0] = int(((y_valid_noisy == 1) * (indic_valid[:,0] == 0) * (indic_valid[:,1] == 0)).sum().data.numpy())
-    table_occur[3,1] = int(((y_valid_noisy == 0) * (indic_valid[:,0] == 0) * (indic_valid[:,1] == 0)).sum().data.numpy())
-    table_occur[4,0] = int(((y_valid_noisy == 1) * (indic_valid[:,0] == 1) * (indic_valid[:,1] == 0)).sum().data.numpy())
-    table_occur[4,1] = int(((y_valid_noisy == 0) * (indic_valid[:,0] == 1) * (indic_valid[:,1] == 0)).sum().data.numpy())
-    table_occur[5,0] = int(((y_valid_noisy == 1) * (indic_valid[:,0] == 0) * (indic_valid[:,1] == 1)).sum().data.numpy())
-    table_occur[5,1] = int(((y_valid_noisy == 0) * (indic_valid[:,0] == 0) * (indic_valid[:,1] == 1)).sum().data.numpy())
-    table_occur[6,0] = int(((y_test_noisy == 1) * (indic_test[:,0] == 0) * (indic_test[:,1] == 0)).sum().data.numpy())
-    table_occur[6,1] = int(((y_test_noisy == 0) * (indic_test[:,0] == 0) * (indic_test[:,1] == 0)).sum().data.numpy())
-    table_occur[7,0] = int(((y_test_noisy == 1) * (indic_test[:,0] == 1) * (indic_test[:,1] == 0)).sum().data.numpy())
-    table_occur[7,1] = int(((y_test_noisy == 0) * (indic_test[:,0] == 1) * (indic_test[:,1] == 0)).sum().data.numpy())
-    table_occur[8,0] = int(((y_test_noisy == 1) * (indic_test[:,0] == 0) * (indic_test[:,1] == 1)).sum().data.numpy())
-    table_occur[8,1] = int(((y_test_noisy == 0) * (indic_test[:,0] == 0) * (indic_test[:,1] == 1)).sum().data.numpy())
-    print(table_occur)
 
     """ Training """
     autoencoders = {'IP': None, 'DM-SNR': None}
@@ -462,14 +442,14 @@ if __name__ == "__main__":
         models['base-model'] = model
         curves = train_clf(models, 'base-model', meta, X_train, y_train, indic_train, 
             X_valid, y_valid, indic_valid)
-        torch.save((curves), "dumps/curve-base")
+        torch.save((curves), "dumps/curve-base.pt")
 
         """ Train model without EMMA noisy train-set, eval on noisy valid-set """
         mlp = copy_mlp(models['base-model'])
         models['model-without'] = mlp
         curves = train_clf(models, 'model-without', meta, X_train_noisy, y_train_noisy, indic_train, 
             X_valid_noisy, y_valid_noisy, indic_valid)
-        torch.save((curves), "dumps/curve-without")
+        torch.save((curves), "dumps/curve-without.pt")
 
         """ Train model with EMMA noisy train-set, eval on noisy valid-set """
         mlp = copy_mlp(models['base-model'])
@@ -478,11 +458,11 @@ if __name__ == "__main__":
         models['model-with'][(-1,-1,-1)] = model
         curves = train_clf(models, 'model-with', meta, X_train_noisy, y_train_noisy, indic_train, 
             X_valid_noisy, y_valid_noisy, indic_valid)
-        torch.save((curves), "dumps/curve-with")
+        torch.save((curves), "dumps/curve-with.pt")
 
         """ Save """
         torch.save((models), "dumps/models")
-        torch.save((X_test_noisy, y_test_noisy, indic_test), "dumps/test-set.pt")
+        torch.save((X_test, y_test, X_test_noisy, y_test_noisy, indic_test), "dumps/test-set.pt")
 
     else:
         """ Load autoencoders """
@@ -497,117 +477,60 @@ if __name__ == "__main__":
 
         """ Load models """
         models = torch.load("dumps/models")
+        curves = torch.load("dumps/curve-with.pt")
 
         # """ Load noisy test-set (with indicator) """
-        X_test_noisy, y_test_noisy, indic_test = torch.load("dumps/test-set.pt")
+        X_test, y_test, X_test_noisy, y_test_noisy, indic_test = torch.load("dumps/test-set.pt")
     
 
-    """ Evaluation """
-    print("F1-score   Precision   Recall   specificity")
-    for name, model in models.items():
-        print()
-        print(name + ": ")
-        if name == 'model-with':
-            for key, val in model.items():
-                print(key)
-                val.eval()
-                model_evaluation(val, name, X_test_noisy, y_test_noisy, indic_test)
-        else:
+    """ Evaluation (top 10) """
+    def get_ranking(models, n_top, X, y, indic):
+        if models is None: 
+            return None
+        ranking_f1, ranking_params = [], []
+        for params, model in models.items():
+            if model is None: continue
             model.eval()
-            model_evaluation(model, name, X_test_noisy, y_test_noisy, indic_test)
+            F1, _, _, _ = evaluation(model, 'model-with', X, y)
+            ranking_f1.append(-F1)
+            ranking_params.append(params)
+        idx = np.argsort(ranking_f1)
+        n_top = min(n_top, len(idx))
+        ranking = []
+        for i in range(n_top):
+            ranking.append(ranking_params[idx[i]])
+        return ranking
 
-    """ ... """
-    # ranking = [models['model-with'][(0.01,1,0)], models['model-with'][(1,0,0)]]
+    ranking = get_ranking(models['model-with'], 10, X_test_noisy, y_test_noisy, indic_test)
+    print_evaluation(models, ranking, X_test_noisy, y_test_noisy, indic_test)
+
+    """ Confusion matrix of best models """
     # yhat, classes = predictions(models['base-model'], 'base-model', X_test_noisy) 
-    # plot_confusion_matrix(classes.data.numpy(), y_test_noisy.data.numpy())
+    # print_confusion_matrix(classes.data.numpy(), y_test_noisy.data.numpy())
+    # refined_matrix(y_test_noisy, classes, indic_test)
     # yhat, classes = predictions(models['model-without'], 'model-without', X_test_noisy) 
-    # plot_confusion_matrix(classes.data.numpy(), y_test_noisy.data.numpy())
-    # yhat, classes = predictions(ranking[0], 'model-with', X_test_noisy) 
-    # plot_confusion_matrix(classes.data.numpy(), y_test_noisy.data.numpy())
+    # print_confusion_matrix(classes.data.numpy(), y_test_noisy.data.numpy())
+    # refined_matrix(y_test_noisy, classes, indic_test)
+    # yhat, classes = predictions(models['model-with'][ranking[0]], 'model-with', X_test_noisy) 
+    # print_confusion_matrix(classes.data.numpy(), y_test_noisy.data.numpy())
+    # refined_matrix(y_test_noisy, classes, indic_test)
 
-
-    # table_occur = np.zeros((6,2))
-    # table_occur[0,0] = int(((y_test_noisy == 1) * (classes == 1) * (indic_test[:,0] == 0) * (indic_test[:,1] == 0)).sum().data.numpy())
-    # table_occur[0,1] = int(((y_test_noisy == 1) * (classes == 0) * (indic_test[:,0] == 0) * (indic_test[:,1] == 0)).sum().data.numpy())
-    
-    # table_occur[1,0] = int(((y_test_noisy == 1) * (classes == 1) * (indic_test[:,0] == 1) * (indic_test[:,1] == 0)).sum().data.numpy())
-    # table_occur[1,1] = int(((y_test_noisy == 1) * (classes == 0) * (indic_test[:,0] == 1) * (indic_test[:,1] == 0)).sum().data.numpy())
-
-    # table_occur[2,0] = int(((y_test_noisy == 1) * (classes == 1) * (indic_test[:,0] == 0) * (indic_test[:,1] == 1)).sum().data.numpy())
-    # table_occur[2,1] = int(((y_test_noisy == 1) * (classes == 0) * (indic_test[:,0] == 0) * (indic_test[:,1] == 1)).sum().data.numpy())
-
-    # table_occur[3,0] = int(((y_test_noisy == 0) * (classes == 0) * (indic_test[:,0] == 0) * (indic_test[:,1] == 0)).sum().data.numpy())
-    # table_occur[3,1] = int(((y_test_noisy == 0) * (classes == 1) * (indic_test[:,0] == 0) * (indic_test[:,1] == 0)).sum().data.numpy())
-
-    # table_occur[4,0] = int(((y_test_noisy == 0) * (classes == 0) * (indic_test[:,0] == 1) * (indic_test[:,1] == 0)).sum().data.numpy())
-    # table_occur[4,1] = int(((y_test_noisy == 0) * (classes == 1) * (indic_test[:,0] == 1) * (indic_test[:,1] == 0)).sum().data.numpy())
-
-    # table_occur[5,0] = int(((y_test_noisy == 0) * (classes == 0) * (indic_test[:,0] == 0) * (indic_test[:,1] == 1)).sum().data.numpy())
-    # table_occur[5,1] = int(((y_test_noisy == 0) * (classes == 1) * (indic_test[:,0] == 0) * (indic_test[:,1] == 1)).sum().data.numpy())
-
-    # print(table_occur/np.sum(table_occur, axis=1, keepdims=True))
-
-    # for name, param in ranking[0].named_parameters():
-    #     print (name, param.data)
-    
-    # plot_2(ranking[0], X_test_noisy, indic_test)
-
-    # coldness = [1e-2, 1e-1, 1]
-    # f1 = []
-    # rec = []
-    # for tau in coldness:
-    #     model = models['model-with'][(tau,1,0)]
-    #     F1, _, recall, _ = evaluation(model, 'model-with', X_test_noisy, y_test_noisy)
-    #     f1.append(F1)
-    #     rec.append(recall)
-    # plt.plot(coldness, f1)
-    # plt.plot(coldness, rec)
-    # plt.show()
-
-    # coldness = [1e-2, 1e-1, 1]
-    # c = []
-    # for tau in coldness:
-    #     model = models['model-with'][(tau,1,0)]
-    #     c.append(model[0].capacity)
-    # plt.plot(np.log(coldness), c)
-    # plt.show()
-
-    # f1_with = []
-    # f1_without = []
-    # for noise in np.linspace(0,80,50):
-    #     X, y = torch.zeros(X_test.size()).float(), torch.zeros(y_test.size()).float()
-    #     for i in range(4):
-    #         X[:int(X.size(0)/2), i] = torch.tensor(white_noise(X_test[:int(X.size(0)/2), i].data.numpy(), noise)).float()
-    #         X[int(X.size(0)/2):, i+4] = torch.tensor(white_noise(X_test[int(X.size(0)/2):, i+4].data.numpy(), noise)).float()
-    #     # F1, _, _, _ = evaluation(ranking[0], 'model-with', X, y_test)
-    #     # f1_with.append(F1)
-    #     F1, _, _, _ = evaluation(models['model-with'][(0.01,0,2)], 'model-with', X, y_test)
-    #     f1_with.append(F1)
-    #     F1, _, _, _ = evaluation(models['model-without'], 'model-without', X, y_test)
-    #     f1_without.append(F1)
-    # plt.plot(np.linspace(0,80,50), f1_with, label='with')
-    # plt.plot(np.linspace(0,80,50), f1_without, label='without')
-    # plt.legend()
-    # plt.show()
-
-    # X, y = torch.zeros(X_test.size()).float(), torch.zeros(y_test.size()).float()
-    # for i in range(4):
-    #     X[:int(X.size(0)/2), i] = torch.tensor(white_noise(X_test[:int(X.size(0)/2), i].data.numpy(), 5)).float()
-    #     X[int(X.size(0)/2):, i+4] = torch.tensor(white_noise(X_test[int(X.size(0)/2):, i+4].data.numpy(), 5)).float()
-    # res = np.zeros((3,3))
-    # coldness = [1e-2, 1e-1, 1]
-    # lambda_regul = np.linspace(0, 2, 3)
-    # lambda_capacity = np.linspace(0, 2, 3)
-    # for i, l_reg in enumerate(lambda_regul):
-    #     for j, l_cap in enumerate(lambda_capacity):
-    #         best_F1 = -float("Inf")
-    #         for tau in coldness:
-    #             F1, _, _, _ = evaluation(models['model-with'][(tau,l_reg,l_cap)], 'model-with', X, y_test)
-    #             if F1 > best_F1:
-    #                 best_F1 = F1
-    #         res[i,j] = best_F1
-    # sns.heatmap(res, annot=True, cmap="YlGnBu")
-    # plt.show()
+    # plot_curves(curves, ranking[0], save=True)    
+    # plot_distribution(models['model-with'][ranking[1]], X_test_noisy, indic_test, save=True)
+    # plot_yerkes_dodson(meta['coldness'], models, ranking[0], X_test_noisy,
+    #         y_test_noisy, save=True)
+    # plot_capacity_vs_coldness(coldness, models, ranking[0], X_test_noisy,
+    #         y_test_noisy, save=True)
+    # for i in range(10):
+    #     plot_noise_generalisation(models, ranking[i], X_test, y_test, save=False)
+    # plot_noise_generalisation(models, ranking[0], X_test, y_test, save=True)
+    # test(meta, models, X_test, y_test, save=False)
+    # base_F1 = 0.8
+    # cut_noise = 3
+    # plot_heatmap(models, meta, base_F1, cut_noise, X_test, y_test, save=True)
+    # for i in range(10):
+    #     plot_total_energy(models, ranking[i], X_test, y_test, save=False)
+    # plot_total_energy(models, ranking[1], X_test, y_test, save=True)
 
     # def mixup(X, y, indic, mixing):
     #     if mixing == 0:
@@ -633,22 +556,31 @@ if __name__ == "__main__":
 
 
     # mlp = copy_mlp(models['base-model'])
-    # autoencoders = models['model-with'][(0.01,1,0)][0].autoencoders
-    # min_potentials =  models['model-with'][(0.01,1,0)][0].min_potentials
+    # autoencoders = models['model-with'][ranking[1]][0].autoencoders
+    # min_potentials =  models['model-with'][ranking[1]][0].min_potentials
     # emma = EMMA(n_modes, autoencoders, min_potentials).float()
     # model = nn.ModuleList([emma, mlp])
     # models['model-with'][(-1,-1,-1)] = model
-    # meta['coldness'] = [0.01]
-    # meta['lambda_regul'] = [1]
-    # meta['lambda_capacity'] = [0]
+    # meta['coldness'] = [ranking[1][0]]
+    # meta['lambda_regul'] = [ranking[1][1]]
+    # meta['lambda_capacity'] = [ranking[1][2]]
     # meta['max_epochs'] = 20
+    # gammas = []
     # for mixing in np.linspace(0,1,5):
-    #     X, y = torch.zeros(X_train.size()).float(), torch.zeros(y_train.size()).float()
-    #     X, y = mixup(X_train.clone(), y_train.clone(), indic_train, mixing)
-    #     train_clf(models, 'model-with', meta, X, y, indic_train, X, y, indic_train)
-    #     print(models['model-with'][(0.01,1,0)][0].get_gammas())
-    #     models['model-with'][(-1,-1,-1)] = copy_emma(models['model-with'][(0.01,1,0)])
-
+    #     # X, y = torch.zeros(X_train.size()).float(), torch.zeros(y_train.size()).float()
+    #     X, y = mixup(X_train_noisy.clone(), y_train_noisy.clone(), indic_train, mixing)
+    #     train_clf(models, 'model-with', meta, X, y, indic_train, X_valid_noisy, y_valid_noisy, indic_valid)
+    #     print(models['model-with'][ranking[1]][0].get_gammas())
+    #     gammas.append(models['model-with'][ranking[1]][0].get_gammas())
+    #     models['model-with'][(-1,-1,-1)] = copy_emma(model)
+    # plt.bar(gammas, align='center', tick_label=['0%', '25%', '50%', '75%', '100%'])
+    # plt.xlabel('mixup', fontsize=17)
+    # plt.ylabel('gamma', fontsize=17)
+    # plt.ylim([0, 1])
+    # plt.tick_params(axis='both', which='major', labelsize=11)
+    # plt.legend(loc='best')
+    # plt.savefig('results/mixup')
+    # plt.show()
 
 
 

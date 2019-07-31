@@ -1,7 +1,22 @@
+\chapter{Miscellaneous}\label{chapter-misc} 
 
-\chapter{Miscellaneous}
+\section{Integrability criterion}
 
-\label{AppendixC} 
+\section{Gradient with respect to gamma}
+The gradient of the loss with respect to $\gamma_{ij}$ is computed with the chain rule:
+\begin{equation}
+\frac{\partial \mathcal{L}}{\partial \gamma_{ij}} = \frac{\partial \mathcal{L}}{\partial E_i} \cdot \frac{\partial E_i}{\partial \gamma_{ij}} + \frac{\partial \mathcal{L}}{\partial E_j} \cdot \frac{\partial E_j}{\partial \gamma_{ij}} 
+\end{equation}
+Furthermore,
+\begin{equation}
+\begin{split}
+\frac{\partial E_i}{\partial \gamma_{ij}} &= \frac{\partial}{\partial \gamma_{ij}} \sum_{k=1}^M E_{ik} \\
+&= \frac{\partial E_{ij}}{\partial \gamma_{ij}} \\
+&= \frac{\partial}{\partial \gamma_{ij}}(w_{ij}e_i^{\gamma_{ij}} e_j^{1-\gamma_{ij}})\\
+&= w_{ij}e_i^{\gamma_{ij}}\frac{\partial}{\partial \gamma_{ij}}e_j^{1-\gamma_{ij}} + e_j^{1-\gamma_{ij}}\frac{\partial}{\partial \gamma_{ij}}e_i^{\gamma_{ij}}\\
+&= w_{ij}e_i^{\gamma_{ij}}e_j^{1-\gamma_{ij}}(\log e_i + \log e_j)\\
+\end{split}
+\end{equation}
 
 
 

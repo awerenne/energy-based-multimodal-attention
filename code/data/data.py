@@ -54,72 +54,8 @@ def white_noise(x, noise_std):
     return torch.from_numpy(out).float()
 
 
-# TODO check apply correction + rewrite and comment
-
 # ---------------
-# def apply_corruption(X, y, noise_std):
-#     indicator = torch.zeros(X.size(0), 2)
-#     if noise_std <= 0: return X, y, indicator
-#     X_, y_ = X.data.numpy(), y.data.numpy()
-#     X_ = X_[np.argsort(y_),:]
-#     y_ = np.sort(y_)
-#     a, start_idx = np.unique(y_, return_index=True)
-#     index_first_signal = start_idx[1]
-#     fraction_bckg = float(index_first_signal)/float(X_.shape[0])
-#     fraction_signal = 1 - fraction_bckg
-#     index_last_signal = X_.shape[0]-1
-
-#     size_set = int(np.floor(X_.shape[0]/2))
-#     set_indices_bckg = set(range(0, index_first_signal-1))
-#     set_indices_signal = set(range(index_first_signal, X_.shape[0]))
-#     idx_noisy_bckg = random.sample(set_indices_bckg, int(np.floor(size_set*fraction_bckg)))
-#     idx_noisy_signal = random.sample(set_indices_signal, int(np.floor(size_set*fraction_signal)))
-#     mid = int(len(idx_noisy_bckg)/2)
-#     indicator[idx_noisy_bckg[:mid],0] = 1
-#     indicator[idx_noisy_bckg[mid:],1] = 1
-#     mid = int(len(idx_noisy_signal)/2)
-#     indicator[idx_noisy_signal[:mid],0] = 1
-#     indicator[idx_noisy_signal[mid:],1] = 1
-
-#     for i in range(4):
-#         X_[indicator[:,0] == 1, i] = white_noise(X_[indicator[:,0] == 1, i], noise_std)
-#         X_[indicator[:,1] == 1, 4+i] = white_noise(X_[indicator[:,1] == 1, 4+i], noise_std)
-
-#     p = np.random.permutation(X_.shape[0])
-#     return torch.tensor(X_[p,:]).float(), torch.tensor(y_[p]).float(), indicator
-
 def apply_corruption(X, y, noise_std):
-    indicator = torch.zeros(X.size(0), 2)
-    if noise_std <= 0: return X, y, indicator
-    X_, y_ = X.data.numpy(), y.data.numpy()
-    X_ = X_[np.argsort(y_),:]
-    y_ = np.sort(y_)
-    a, start_idx = np.unique(y_, return_index=True)
-    index_first_signal = start_idx[1]
-    fraction_bckg = float(index_first_signal)/float(X_.shape[0])
-    fraction_signal = 1 - fraction_bckg
-    index_last_signal = X_.shape[0]-1
-
-    size_set = int(np.floor((index_last_signal-index_first_signal)/2))
-    set_indices_bckg = set(range(0, index_first_signal-1))
-    set_indices_signal = set(range(index_first_signal, X_.shape[0]))
-    idx_noisy_bckg = random.sample(set_indices_bckg, size_set)
-    idx_noisy_signal = random.sample(set_indices_signal, size_set)
-    mid = int(len(idx_noisy_bckg)/2)
-    indicator[idx_noisy_bckg[:mid],0] = 1
-    indicator[idx_noisy_bckg[mid:],1] = 1
-    mid = int(len(idx_noisy_signal)/2)
-    indicator[idx_noisy_signal[:mid],0] = 1
-    indicator[idx_noisy_signal[mid:],1] = 1
-
-    for i in range(4):
-        X_[indicator[:,0] == 1, i] = white_noise(X_[indicator[:,0] == 1, i], noise_std)
-        X_[indicator[:,1] == 1, 4+i] = white_noise(X_[indicator[:,1] == 1, 4+i], noise_std)
-
-    p = np.random.permutation(X_.shape[0])
-    return torch.tensor(X_[p,:]).float(), torch.tensor(y_[p]).float(), indicator[p,:]
-
-def apply_corruption_test(X, y, noise_std):
     indicator = torch.zeros(X.size(0), 2)
     if noise_std <= 0: return X, y, indicator
     X_, y_ = X.data.numpy(), y.data.numpy()
@@ -128,10 +64,11 @@ def apply_corruption_test(X, y, noise_std):
     small_mid = int(float(big_mid/2))
     indicator[:small_mid,0] = 1
     indicator[small_mid:big_mid,1] = 1
-    for i in range(4):
-        X_[:small_mid, i] = white_noise(X_[:small_mid, i], noise_std)
-        X_[small_mid:big_mid, 4+i] = white_noise(X_[small_mid:big_mid, 4+i], noise_std)
-
+    # for i in range(4):
+    #     X_[:small_mid, i] = white_noise(X_[:small_mid, i], noise_std)
+    #     X_[small_mid:big_mid, 4+i] = white_noise(X_[small_mid:big_mid, 4+i], noise_std)
+    X_[:small_mid, :4] = white_noise(X_[:small_mid, :4], noise_std)
+    X_[small_mid:big_mid, 4:] = white_noise(X_[small_mid:big_mid, 4:], noise_std)
     p = np.random.permutation(X_.shape[0])
     return torch.tensor(X_[p,:]).float(), torch.tensor(y_[p]).float(), indicator[p,:]
 

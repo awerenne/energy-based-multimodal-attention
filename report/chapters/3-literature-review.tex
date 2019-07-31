@@ -1,12 +1,60 @@
-\chapter{Literature Review} 
-\label{chapter-3} 
+\chapter{Literature Review}\label{chapter-literature-review} 
+
+Arguments: crossmodal most of them, specific (not easily inserted to any model without architecural modifications) and implicit (not interpretable and does not burden the model) and nothing against unseen/missing. Multimodal, single mode, weakness, strength, citations. And how they differ from this work. Build up. others attend only a part of the mode. Show the gap, no current attention is specifally designed to in general add real robustness against very outlying data. https://www.scribbr.com/dissertation/literature-review/
+
+In this chapter we review the recent works in attention and more specifically multi-modal attention...
+
+%-----------------------------------
+%	SUBSECTION 
+%-----------------------------------
+\section{Multi-Modality}
+More general than sensorial, tasks, general representations, gates of informations, robot sensors. Give examples. 
+\begin{itemize}
+\item \href{https://ieeexplore.ieee.org/document/8269806}{Multimodal Machine Learning: A Survey and Taxonomy} \citep{taxomany-multimodal}: ....
+\item \href{https://arxiv.org/abs/1805.11730}{Learn to Combine Modalities in Multimodal Deep Learning} \citep{combine-multimod}: ....
+\end{itemize}
 
 
-two three pages review current crossmodal attention, multimodal, single mode, weakness, strength, citations. And how they differ from this work. Build up.
-speak about showing uncertainty in predictions. about attention between modes and its interpretation.
-\href{https://openreview.net/pdf?id=BJ5UeU9xx}{interpreta}
-\href{https://arxiv.org/abs/1806.06053}{deep lip reading comparisons}
-\href{https://arxiv.org/pdf/1804.03619.pdf}{other cocktail-party solution}
-\href{https://arxiv.org/pdf/1811.04716v1.pdf}{multi input cross attention transformer}
-\href{https://www.aclweb.org/anthology/N18-2125}{example cross attention1}
-\href{https://arxiv.org/pdf/1810.12829.pdf}{example cross attention2}
+%----------------------------------------------------------------------------------------
+%	SECTION 
+%----------------------------------------------------------------------------------------
+\section{Attention mechanisms}\label{sec:background-attention}
+
+\subsection*{Psychological perspective}
+selection stimuli multi-modal endo,exo,cross then viewed selection, capacity, different models are not exclusive as we will see. in chapter 7 we show one model combining them all. 
+
+Attention Is Amplification, Not Selection Peter Fazekas and Bence Nanay 
+
+\href{https://scholar.princeton.edu/sites/default/files/kahneman/files/attention_hi_quality.pdf}{Kahnemann book}
+
+Attention refers to those processes that allow for the selective processing of incoming sensory stimuli. Mechanisms of attention help us to prioritize those stimuli that are most relevant to achieving our current goals and/or to performing the task at hand. The term ‘attention’ is used to describe those processes that give rise to a temporary change (often enhancement) in signal processing. This change will often be manifest in only a subset of the stimuli presented at any time. Researchers have attempted to distinguish attentional effects from other temporary changes in the efficiency of information processing, such as those induced by changes in arousal and/or alerting. These latter processes can be contrasted with attention both on the grounds of their non-selectivity (i.e., increased arousal or alertness tends to influence the processing of all incoming stimuli; that is, its effects are stimulus non-specific), and behaviourally, by the fact that while alerting, for example, can speed up a person’s response it also tends to result in increased errors (i.e., perceptual sensitivity is not enhanced). (More recently, however, it has become somewhat more difficult to distinguish between attention, alerting, and arousal. This is both because researchers have started to argue that certain kinds of attention effect may only lead to a speeding of participants’ responses (i.e., without any concomitant change in perceptual sensitivity; see Prinzmetal et al., 2005a, b, 2009) and also because there is some evidence of the selectivity of alerting effects (e.g., in terms of the modality affected; e.g., Posner, 1978).) Attention can either be oriented endogenously or exogenously: People orient their attention endogenously whenever they voluntarily choose to attend to something, such as when listening to a particular individual at a noisy cocktail party, say, or when concentrating on the texture of the object that they happen to be holding in their hands. By contrast, exogenous orienting occurs when a person’s attention is captured reflexively (i.e., involuntary) by the sudden onset of an unexpected event, such as when someone calls our name at a noisy cocktail party, or when a mosquito suddenly lands on our arm. However, our attention can also be captured by intrinsically salient or biological significant stimuli. Attended stimuli tend to be processed more thoroughly and more rapidly than other potentially distracting (‘unattended’) stimuli (Posner, 1978; Spence \& Parise, 2010). Although attention research has traditionally considered selection among the competing inputs within just a single sensory modality at a time (most often vision; see Driver, 2001, for a review), the last couple of decades have seen a burgeoning of interest in the existence and nature of any crossmodal constraints on our ability to selectively attend to a particular sensory modality, spatial location, event, or object (Spence \& Driver, 2004). In fact, crossmodal interactions in attention have now been demonstrated between most combinations of visual, auditory, tactile, olfactory, gustatory, and even painful stimuli (Calvert et al., 2004).
+
+
+\subsection*{Deep Learning perspective}
+subsec dl, intra-modal speech recog, different types
+Normal attention
+Multi-Modal attention
+
+Tutorial: \href{https://krntneja.github.io/blog/2018/06/02/attention-based-models-1}{tutorial on attention} \href{https://jhui.github.io/2017/03/15/Soft-and-hard-attention/}{soft vs hard attention} \href{https://lilianweng.github.io/lil-log/2018/06/24/attention-attention.html}{other tutorial attention}
+\begin{itemize}
+\item \href{https://arxiv.org/abs/1706.03762}{Attention Is All You Need} \citep{attention-need}: ...
+\item \href{https://arxiv.org/pdf/1902.02181.pdf}{Attention, please! A Critical Review of Neural Attention Models in
+Natural Language Processing} \citep{attention-review}: ....
+\item \href{https://arxiv.org/pdf/1804.03619.pdf}{Looking to Listen at the Cocktail Party: A Speaker-Independent Audio-Visual Model for Speech Separation} \citep{looking-to-listen}: ....
+\item \href{https://arxiv.org/pdf/1811.04716v1.pdf}{Input Combination Strategies for Multi-Source Transformer Decoder} \citep{cross-transformer}: ....
+\item \href{https://www.aclweb.org/anthology/N18-2125}{Watch, Listen, and Describe: Globally and Locally Aligned Cross-Modal Attentions for Video Captioning} \citep{crossmodal-video-caption}: ....
+\item \href{https://arxiv.org/pdf/1810.12829.pdf}{Cross-Modal Attentional Context Learning for RGB-D Object Detection
+} \citep{crossmodal-object-detection}: ....
+\item \href{https://arxiv.org/abs/1803.08024}{Stacked Cross Attention for Image-Text Matching} \citep{stacked-attention}: ....
+\item \href{https://arxiv.org/abs/1706.00536}{Modeling Latent Attention Within Neural Networks} \citep{latent-attention}: ....
+\item \href{https://arxiv.org/abs/1811.10813}{Noise-tolerant Audio-visual Online Person Verification using an Attention-based Neural Network Fusion} \citep{audiovisual-attention}: ....
+\item \href{https://arxiv.org/abs/1809.02108}{deep audio-visual speech recognition} \citep{afouras}: ....
+\end{itemize}
+
+\section{Conclusion}
+
+
+
+
+
+
