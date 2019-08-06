@@ -1,60 +1,48 @@
 \chapter{Literature Review}\label{chapter-literature-review} 
 
-Arguments: crossmodal most of them, specific (not easily inserted to any model without architecural modifications) and implicit (not interpretable and does not burden the model) and nothing against unseen/missing. Multimodal, single mode, weakness, strength, citations. And how they differ from this work. Build up. others attend only a part of the mode. Show the gap, no current attention is specifally designed to in general add real robustness against very outlying data. https://www.scribbr.com/dissertation/literature-review/
+The purpose of this chapter is to review the state-of-the-art literature of multi-modal attention. The first section describes attention in humans from both a psychological and a neurological point of view. We argue this will give the reader more intuition about attention in deep learning. The second part moves on to the different attention mechanisms in deep learning, in particular self-attention and crossmodal attention. 
 
-In this chapter we review the recent works in attention and more specifically multi-modal attention...
 
 %-----------------------------------
-%	SUBSECTION 
-%-----------------------------------
-\section{Multi-Modality}
-More general than sensorial, tasks, general representations, gates of informations, robot sensors. Give examples. 
-\begin{itemize}
-\item \href{https://ieeexplore.ieee.org/document/8269806}{Multimodal Machine Learning: A Survey and Taxonomy} \citep{taxomany-multimodal}: ....
-\item \href{https://arxiv.org/abs/1805.11730}{Learn to Combine Modalities in Multimodal Deep Learning} \citep{combine-multimod}: ....
-\end{itemize}
-
-
-%----------------------------------------------------------------------------------------
 %	SECTION 
-%----------------------------------------------------------------------------------------
-\section{Attention mechanisms}\label{sec:background-attention}
+%-----------------------------------
+\section{Attention in Humans}
+The most profound effect of attention is its capacity to bring the attended stimuli into the forefront of our conscious experience while unattended stimuli fades into the background, increasing the processing efficiency at every stage of perception \citep{watzl}. A widely held assumption in the psychology literature is that the most fundamental function of attention is selection. But also at the level of single neurons, neuroscientist typically thought of attention in terms of selection between stimuli competing for the same neural receptive field \citep{neuro-level}. Daniel Kahneman, an authorithy in psychology and economy, investigated the way in which humans perform multi-tasking (i.e., solve a multi-modal problem). Kahneman claimed that attention was more than selection, that it could be viewed as a limited resource being shared among the different modes, but he could not generalize his findings to the intra-modal level\footnote{Intra-modal attention manifests itself only in a subset of the mode, whereas inter-modal attention is between modes.}. Moreover, the selection theory has been vigorously challenged in recent years by the amplification theory, where attention is an additional activity that interacts with built-in perceptual mechanisms by amplifying some of the input signals \citep{amplification}. Furthermore, the absolute intensity of amplification is not important, in contrary it is the relative intensity between the inputs that matters (\textit{the contrast effect}). Notice that the amplification theory generalizes the concept of capacity to the intra-modal level and neural level. Interestingly, we will see that the basic principles of attention mechanisms in deep learning has significant similarities with amplification.
 
-\subsection*{Psychological perspective}
-selection stimuli multi-modal endo,exo,cross then viewed selection, capacity, different models are not exclusive as we will see. in chapter 7 we show one model combining them all. 
-
-Attention Is Amplification, Not Selection Peter Fazekas and Bence Nanay 
-
-\href{https://scholar.princeton.edu/sites/default/files/kahneman/files/attention_hi_quality.pdf}{Kahnemann book}
-
-Attention refers to those processes that allow for the selective processing of incoming sensory stimuli. Mechanisms of attention help us to prioritize those stimuli that are most relevant to achieving our current goals and/or to performing the task at hand. The term ‘attention’ is used to describe those processes that give rise to a temporary change (often enhancement) in signal processing. This change will often be manifest in only a subset of the stimuli presented at any time. Researchers have attempted to distinguish attentional effects from other temporary changes in the efficiency of information processing, such as those induced by changes in arousal and/or alerting. These latter processes can be contrasted with attention both on the grounds of their non-selectivity (i.e., increased arousal or alertness tends to influence the processing of all incoming stimuli; that is, its effects are stimulus non-specific), and behaviourally, by the fact that while alerting, for example, can speed up a person’s response it also tends to result in increased errors (i.e., perceptual sensitivity is not enhanced). (More recently, however, it has become somewhat more difficult to distinguish between attention, alerting, and arousal. This is both because researchers have started to argue that certain kinds of attention effect may only lead to a speeding of participants’ responses (i.e., without any concomitant change in perceptual sensitivity; see Prinzmetal et al., 2005a, b, 2009) and also because there is some evidence of the selectivity of alerting effects (e.g., in terms of the modality affected; e.g., Posner, 1978).) Attention can either be oriented endogenously or exogenously: People orient their attention endogenously whenever they voluntarily choose to attend to something, such as when listening to a particular individual at a noisy cocktail party, say, or when concentrating on the texture of the object that they happen to be holding in their hands. By contrast, exogenous orienting occurs when a person’s attention is captured reflexively (i.e., involuntary) by the sudden onset of an unexpected event, such as when someone calls our name at a noisy cocktail party, or when a mosquito suddenly lands on our arm. However, our attention can also be captured by intrinsically salient or biological significant stimuli. Attended stimuli tend to be processed more thoroughly and more rapidly than other potentially distracting (‘unattended’) stimuli (Posner, 1978; Spence \& Parise, 2010). Although attention research has traditionally considered selection among the competing inputs within just a single sensory modality at a time (most often vision; see Driver, 2001, for a review), the last couple of decades have seen a burgeoning of interest in the existence and nature of any crossmodal constraints on our ability to selectively attend to a particular sensory modality, spatial location, event, or object (Spence \& Driver, 2004). In fact, crossmodal interactions in attention have now been demonstrated between most combinations of visual, auditory, tactile, olfactory, gustatory, and even painful stimuli (Calvert et al., 2004).
+Regarding multi-modal attention, three types can be distinguished: endogenous, exogenous and crossmodal attention \citep{crossmodal}. People orient their attention endogenously whenever they voluntarily choose to attend to something, such as when listening to a particular individual at a noisy cocktail party, or when concentrating on the texture of the object that they happen to be holding in their hands. By contrast, exogenous orienting occurs when a person’s attention is captured reflexively by the sudden onset of an unexpected event, such as when a mosquito suddenly lands on our arm. Lastly, crossmodal attention refers to the interaction of attention between two or more modes such as using visual clues (e.g. lip movements) to focus on the voice of a particular individual at a noisy cocktail party.
 
 
-\subsection*{Deep Learning perspective}
-subsec dl, intra-modal speech recog, different types
-Normal attention
-Multi-Modal attention
+%-----------------------------------
+%	SECTION 
+%-----------------------------------
+\section{Attention in Deep Learning}
+Attention-based approaches in deep learning focus on network architectures that specifically attend to regions of their input space. The most common way to do this, is by multiplying the input by an attention mask, where the attention mask consist of normalized continous values between zero and one. Observe the similarity with the amplication theory described in the previous section. In self-attention \citep{bahdanau}, the attention mask is computed from the same mode on which it is applied. Conversely, for crossmodal attention mechanisms \citep{crossmodal-object-detection}, the attention mask is computed from multiple modes. 
 
-Tutorial: \href{https://krntneja.github.io/blog/2018/06/02/attention-based-models-1}{tutorial on attention} \href{https://jhui.github.io/2017/03/15/Soft-and-hard-attention/}{soft vs hard attention} \href{https://lilianweng.github.io/lil-log/2018/06/24/attention-attention.html}{other tutorial attention}
-\begin{itemize}
-\item \href{https://arxiv.org/abs/1706.03762}{Attention Is All You Need} \citep{attention-need}: ...
-\item \href{https://arxiv.org/pdf/1902.02181.pdf}{Attention, please! A Critical Review of Neural Attention Models in
-Natural Language Processing} \citep{attention-review}: ....
-\item \href{https://arxiv.org/pdf/1804.03619.pdf}{Looking to Listen at the Cocktail Party: A Speaker-Independent Audio-Visual Model for Speech Separation} \citep{looking-to-listen}: ....
-\item \href{https://arxiv.org/pdf/1811.04716v1.pdf}{Input Combination Strategies for Multi-Source Transformer Decoder} \citep{cross-transformer}: ....
-\item \href{https://www.aclweb.org/anthology/N18-2125}{Watch, Listen, and Describe: Globally and Locally Aligned Cross-Modal Attentions for Video Captioning} \citep{crossmodal-video-caption}: ....
-\item \href{https://arxiv.org/pdf/1810.12829.pdf}{Cross-Modal Attentional Context Learning for RGB-D Object Detection
-} \citep{crossmodal-object-detection}: ....
-\item \href{https://arxiv.org/abs/1803.08024}{Stacked Cross Attention for Image-Text Matching} \citep{stacked-attention}: ....
-\item \href{https://arxiv.org/abs/1706.00536}{Modeling Latent Attention Within Neural Networks} \citep{latent-attention}: ....
-\item \href{https://arxiv.org/abs/1811.10813}{Noise-tolerant Audio-visual Online Person Verification using an Attention-based Neural Network Fusion} \citep{audiovisual-attention}: ....
-\item \href{https://arxiv.org/abs/1809.02108}{deep audio-visual speech recognition} \citep{afouras}: ....
-\end{itemize}
+Self-attention was first introduced in natural language processing (NLP) for machine translation tasks by \citep{bahdanau}. It helped the translation task by enabling the model to automatically search for parts of a source sentence that are relevant to predicting the next target work. With this approach, Bahdanau et al. achieved a translation performance comparable to the existing state-of-the-art phrase-based system on the task of English-French translation. Since then it has become a prominent tool in NLP but has also been used in a variety of other tasks such as image classification. \citep{self-capsule} uses self-attention to learn to suppress irrelevant regions in images and highlight salient features useful for the specific classification task. The authors in \citep{self-capsule} reduced the computation load and were able to compensate the absence of a deeper network by using the self-attention, without having a decreased classification performance. For a detailed review on this self-attention mechanisms, see \citep{attention-review}.
 
-\section{Conclusion}
+In \citep{looking-to-listen}, an audio-visual model is presented for isolating a single speech signal form a mixture of sounds such as other speakers and background noise (see Figure \ref{fig:looking-to-listen}). Crossmodal attention is used to focus on certain parts of the audio with respect to an image of the desired speaker. The authors showed superior results compared to state-of-the-art audio-only methods. Similar works \citep{cross-transformer, crossmodal-object-detection, crossmodal-video-caption} are using crossmodal attention and have attained impressive results. However, most research using crossmodal attention has tended to focus on obtaining better predictions rather than improving the robustness. A few exceptions are discussed below.
+\begin{figure}[!ht]
+\centering
+\includegraphics[scale=0.85]{figures/look-to-listen}
+\caption[Looking to Listen framework]{The authors of \citep{looking-to-listen} present a model for isolating and enhancing the speech of desired speakers in a video. (a) The input is a video (frames + audio track) with one or more people speaking, where the speech of interest is interfered by other speakers and/or background noise. (b) Both audio and visual features are extracted and fed into a joint audio-visual speech separation model. The output is a decomposition of the input audio track into clean speech tracks, one for each person detected in the video (c). This allows them to then compose videos where speech of specific people is enhanced while all other sound is suppressed. Their model was trained using thousands of hours of video segments from our new dataset, AVSpeech. The “Stand-Up” video (a) is courtesy of Team Coco. \textit{Image and caption from} \citep{looking-to-listen}}
+\label{fig:looking-to-listen}
+\end{figure}
 
+A work investigating how multimodal fusion can help against failing modes is \citep{afouras}. Their model fuses audio and video to obtain better speech-to-text. Interestingly, Afouras et al. use a combination of self-attention mechanisms followed by a crossmodal attention layer. The model was tested on thousands of natural sentences of British television. Furthermore, they added babble noise with 0dB signal-to-noise ratio to the audio streams, where the babble noise samples are synthesized by mixing the signals of 20 different audio samples from the dataset. The audio-visual model achieved a 13.7\% word error rate (WER) on the dataset without noise, and a 33.5\% WER on the dataset with noise whereas the audio-only model only achieved 64.7\% WER. Despite obtaining great results, a major weakness with this experiment, however, is that their test set is corrupted in the exact same manner as their training set; there are also no varying levels of noise between the two modes. Additionally, the attention module is not constructed to detect unseen samples. To sum it up, the model was not tested against realistic failing modes situations.
 
+The work that is most relevant to our proposed method is the attentive context proposed in \citep{audiovisual-attention}, which also incorporates attention on the inter-modal level to filter the perturbations (see Figure \ref{fig:noise-tolerant}). The model is evaluated on a face-verification task, receiving a voice and a face. The attention mask $[\alpha_v,\alpha_f]$ is computed via a linear function, $f_{\text{att}} = \mathbf{W}^T[\mathbf{e}_v, \mathbf{e}_f] + \mathbf{b}$, on the embeddings $\mathbf{e}_v$ and $\mathbf{e}_f$. Several defects of the attention function $f_{\text{att}}$ can be observed: 
+\begin{enumerate}
+\item The function is likely to be to simple to neither capture complicated dependencies between the modes, nor to recognize unseen data.
+\item The way in which the function is designed forces the model to extract embeddings of the same size, which may be a significant constraint when combining modes from low and high-dimensional data.
+\item TODO: explain no control (capacity, temperature)
+\end{enumerate}
 
+\begin{figure}[!ht]
+\centering
+\includegraphics[scale=0.85]{figures/noise-tolerant}
+\caption[Noise-tolerant fusion model]{Neural network based fusion approaches. $\mathbf{e}_v$ : speaker embedding, $\mathbf{e}_f$ : face embedding. FC denotes a fully connected layer. \textit{Image from} \citep{audiovisual-attention}}
+\label{fig:noise-tolerant}
+\end{figure}
 
 
 

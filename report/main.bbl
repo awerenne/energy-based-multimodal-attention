@@ -110,6 +110,52 @@
     \warn{\item Invalid format of field 'month'}
   \endentry
 
+  \entry{bahdanau}{article}{}
+    \name{author}{3}{}{%
+      {{hash=BD}{%
+         family={{Bahdanau}},
+         familyi={B\bibinitperiod},
+         given={Dzmitry},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=CK}{%
+         family={{Cho}},
+         familyi={C\bibinitperiod},
+         given={Kyunghyun},
+         giveni={K\bibinitperiod},
+      }}%
+      {{hash=BY}{%
+         family={{Bengio}},
+         familyi={B\bibinitperiod},
+         given={Yoshua},
+         giveni={Y\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Computation and Language, Computer Science -
+  Machine Learning, Computer Science - Neural and Evolutionary Computing,
+  Statistics - Machine Learning}
+    \strng{namehash}{BDCKBY1}
+    \strng{fullhash}{BDCKBY1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2014}
+    \field{labeldatesource}{year}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \field{eid}{arXiv:1409.0473}
+    \verb{eprint}
+    \verb 1409.0473
+    \endverb
+    \field{pages}{arXiv:1409.0473}
+    \field{title}{{Neural Machine Translation by Jointly Learning to Align and
+  Translate}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.CL}
+    \field{year}{2014}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
   \entry{taxomany-multimodal}{article}{}
     \name{author}{3}{}{%
       {{hash=BT}{%
@@ -209,6 +255,61 @@
     \warn{\item Invalid format of field 'month'}
   \endentry
 
+  \entry{manifold-1}{inproceedings}{}
+    \name{author}{1}{}{%
+      {{hash=CL}{%
+         family={Cayton},
+         familyi={C\bibinitperiod},
+         given={Lawrence},
+         giveni={L\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{CL1}
+    \strng{fullhash}{CL1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2005}
+    \field{labeldatesource}{year}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{title}{Algorithms for manifold learning}
+    \field{year}{2005}
+  \endentry
+
+  \entry{backprop}{book}{}
+    \name{editor}{2}{}{%
+      {{hash=CY}{%
+         family={Chauvin},
+         familyi={C\bibinitperiod},
+         given={Yves},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=RDE}{%
+         family={Rumelhart},
+         familyi={R\bibinitperiod},
+         given={David\bibnamedelima E.},
+         giveni={D\bibinitperiod\bibinitdelim E\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {L. Erlbaum Associates Inc.}%
+    }
+    \strng{namehash}{CYRDE1}
+    \strng{fullhash}{CYRDE1}
+    \field{labelnamesource}{editor}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1995}
+    \field{labeldatesource}{year}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{isbn}{0-8058-1259-8}
+    \field{title}{Backpropagation: Theory, Architectures, and Applications}
+    \list{location}{1}{%
+      {Hillsdale, NJ, USA}%
+    }
+    \field{year}{1995}
+  \endentry
+
   \entry{cocktail-party}{misc}{}
     \name{author}{1}{}{%
       {{hash=C}{%
@@ -231,6 +332,47 @@
     \verb https://en.wikipedia.org/wiki/Cocktail_party_effect
     \endverb
     \field{year}{2010}
+  \endentry
+
+  \entry{neuro-level}{article}{}
+    \name{author}{2}{}{%
+      {{hash=DR}{%
+         family={Desimone},
+         familyi={D\bibinitperiod},
+         given={Robert},
+         giveni={R\bibinitperiod},
+      }}%
+      {{hash=DJ}{%
+         family={Duncan},
+         familyi={D\bibinitperiod},
+         given={John},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{DRDJ1}
+    \strng{fullhash}{DRDJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1995}
+    \field{labeldatesource}{year}
+    \field{sortinit}{D}
+    \field{sortinithash}{D}
+    \verb{doi}
+    \verb 10.1146/annurev.ne.18.030195.001205
+    \endverb
+    \verb{eprint}
+    \verb https://doi.org/10.1146/annurev.ne.18.030195.001205
+    \endverb
+    \field{note}{PMID: 7605061}
+    \field{number}{1}
+    \field{pages}{193\bibrangedash 222}
+    \field{title}{Neural Mechanisms of Selective Visual Attention}
+    \verb{url}
+    \verb https://doi.org/10.1146/annurev.ne.18.030195.001205
+    \endverb
+    \field{volume}{18}
+    \field{journaltitle}{Annual Review of Neuroscience}
+    \field{year}{1995}
   \endentry
 
   \entry{lorimer}{book}{}
@@ -435,6 +577,57 @@
     \warn{\item Invalid format of field 'month'}
   \endentry
 
+  \entry{amplification}{article}{}
+    \name{author}{2}{}{%
+      {{hash=FP}{%
+         family={Fazekas},
+         familyi={F\bibinitperiod},
+         given={Peter},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=NB}{%
+         family={Nanay},
+         familyi={N\bibinitperiod},
+         given={Bence},
+         giveni={B\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FPNB1}
+    \strng{fullhash}{FPNB1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2018}
+    \field{labeldatesource}{year}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \field{abstract}{%
+    {We argue that recent empirical findings and theoretical models shed new
+  light on the nature of attention. According to the resulting amplification
+  view, attentional phenomena can be unified at the neural level as the
+  consequence of the amplification of certain input signals of
+  attention-independent perceptual computations. This way of identifying the
+  core realizer of attention evades standard criticisms often raised against
+  sub-personal accounts of attention. Moreover, this approach also reframes our
+  thinking about the function of attention by shifting the focus from the
+  function of selection to the function of amplification.}%
+    }
+    \verb{doi}
+    \verb 10.1093/bjps/axy065
+    \endverb
+    \verb{eprint}
+    \verb http://oup.prod.sis.lan/bjps/advance-article-pdf/doi/10.1093/bjps/axy
+    \verb 065/25875820/axy065.pdf
+    \endverb
+    \field{issn}{0007-0882}
+    \field{title}{{Attention Is Amplification, Not Selection}}
+    \verb{url}
+    \verb https://doi.org/10.1093/bjps/axy065
+    \endverb
+    \field{journaltitle}{The British Journal for the Philosophy of Science}
+    \field{month}{10}
+    \field{year}{2018}
+  \endentry
+
   \entry{attention-review}{article}{}
     \name{author}{3}{}{%
       {{hash=GA}{%
@@ -481,6 +674,28 @@
     \warn{\item Invalid format of field 'month'}
   \endentry
 
+  \entry{unsupervised}{article}{}
+    \name{author}{1}{}{%
+      {{hash=GZ}{%
+         family={Ghahramani},
+         familyi={G\bibinitperiod},
+         given={Z.},
+         giveni={Z\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{GZ1}
+    \strng{fullhash}{GZ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2004}
+    \field{labeldatesource}{year}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{title}{Unsupervised Learning}
+    \field{journaltitle}{Springer}
+    \field{year}{2004}
+  \endentry
+
   \entry{ghosh}{article}{}
     \name{author}{1}{}{%
       {{hash=GP}{%
@@ -503,66 +718,144 @@
     \field{year}{2007}
   \endentry
 
-  \entry{latent-attention}{article}{}
-    \name{author}{6}{}{%
-      {{hash=GC}{%
-         family={{Grimm}},
+  \entry{goodfellow-book}{book}{}
+    \name{author}{3}{}{%
+      {{hash=GI}{%
+         family={Goodfellow},
          familyi={G\bibinitperiod},
-         given={Christopher},
-         giveni={C\bibinitperiod},
+         given={Ian},
+         giveni={I\bibinitperiod},
       }}%
-      {{hash=AD}{%
-         family={{Arumugam}},
-         familyi={A\bibinitperiod},
-         given={Dilip},
-         giveni={D\bibinitperiod},
+      {{hash=BY}{%
+         family={Bengio},
+         familyi={B\bibinitperiod},
+         given={Yoshua},
+         giveni={Y\bibinitperiod},
       }}%
-      {{hash=KS}{%
-         family={{Karamcheti}},
-         familyi={K\bibinitperiod},
-         given={Siddharth},
-         giveni={S\bibinitperiod},
-      }}%
-      {{hash=AD}{%
-         family={{Abel}},
-         familyi={A\bibinitperiod},
-         given={David},
-         giveni={D\bibinitperiod},
-      }}%
-      {{hash=WLLS}{%
-         family={{Wong}},
-         familyi={W\bibinitperiod},
-         given={Lawson L.\bibnamedelima S.},
-         giveni={L\bibinitperiod\bibinitdelim L\bibinitperiod\bibinitdelim
-  S\bibinitperiod},
-      }}%
-      {{hash=LML}{%
-         family={{Littman}},
-         familyi={L\bibinitperiod},
-         given={Michael\bibnamedelima L.},
-         giveni={M\bibinitperiod\bibinitdelim L\bibinitperiod},
+      {{hash=CA}{%
+         family={Courville},
+         familyi={C\bibinitperiod},
+         given={Aaron},
+         giveni={A\bibinitperiod},
       }}%
     }
-    \keyw{Computer Science - Artificial Intelligence}
-    \strng{namehash}{GC+1}
-    \strng{fullhash}{GCADKSADWLLSLML1}
+    \list{publisher}{1}{%
+      {MIT Press}%
+    }
+    \strng{namehash}{GIBYCA1}
+    \strng{fullhash}{GIBYCA1}
     \field{labelnamesource}{author}
     \field{labeltitlesource}{title}
-    \field{labelyear}{2017}
+    \field{labelyear}{2016}
     \field{labeldatesource}{year}
     \field{sortinit}{G}
     \field{sortinithash}{G}
-    \field{eid}{arXiv:1706.00536}
-    \verb{eprint}
-    \verb 1706.00536
+    \field{note}{\url{http://www.deeplearningbook.org}}
+    \field{title}{Deep Learning}
+    \field{year}{2016}
+  \endentry
+
+  \entry{gan}{incollection}{}
+    \name{author}{8}{}{%
+      {{hash=GI}{%
+         family={Goodfellow},
+         familyi={G\bibinitperiod},
+         given={Ian},
+         giveni={I\bibinitperiod},
+      }}%
+      {{hash=PAJ}{%
+         family={Pouget-Abadie},
+         familyi={P\bibinitperiod-A\bibinitperiod},
+         given={Jean},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=MM}{%
+         family={Mirza},
+         familyi={M\bibinitperiod},
+         given={Mehdi},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=XB}{%
+         family={Xu},
+         familyi={X\bibinitperiod},
+         given={Bing},
+         giveni={B\bibinitperiod},
+      }}%
+      {{hash=WFD}{%
+         family={Warde-Farley},
+         familyi={W\bibinitperiod-F\bibinitperiod},
+         given={David},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=OS}{%
+         family={Ozair},
+         familyi={O\bibinitperiod},
+         given={Sherjil},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=CA}{%
+         family={Courville},
+         familyi={C\bibinitperiod},
+         given={Aaron},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=BY}{%
+         family={Bengio},
+         familyi={B\bibinitperiod},
+         given={Yoshua},
+         giveni={Y\bibinitperiod},
+      }}%
+    }
+    \name{editor}{5}{}{%
+      {{hash=GZ}{%
+         family={Ghahramani},
+         familyi={G\bibinitperiod},
+         given={Z.},
+         giveni={Z\bibinitperiod},
+      }}%
+      {{hash=WM}{%
+         family={Welling},
+         familyi={W\bibinitperiod},
+         given={M.},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=CC}{%
+         family={Cortes},
+         familyi={C\bibinitperiod},
+         given={C.},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=LND}{%
+         family={Lawrence},
+         familyi={L\bibinitperiod},
+         given={N.\bibnamedelima D.},
+         giveni={N\bibinitperiod\bibinitdelim D\bibinitperiod},
+      }}%
+      {{hash=WKQ}{%
+         family={Weinberger},
+         familyi={W\bibinitperiod},
+         given={K.\bibnamedelima Q.},
+         giveni={K\bibinitperiod\bibinitdelim Q\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Curran Associates, Inc.}%
+    }
+    \strng{namehash}{GI+1}
+    \strng{fullhash}{GIPAJMMXBWFDOSCABY1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2014}
+    \field{labeldatesource}{year}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{booktitle}{Advances in Neural Information Processing Systems 27}
+    \field{pages}{2672\bibrangedash 2680}
+    \field{title}{Generative Adversarial Nets}
+    \verb{url}
+    \verb http://papers.nips.cc/paper/5423-generative-adversarial-nets.pdf
     \endverb
-    \field{pages}{arXiv:1706.00536}
-    \field{title}{{Modeling Latent Attention Within Neural Networks}}
-    \field{journaltitle}{arXiv e-prints}
-    \field{eprinttype}{arXiv}
-    \field{eprintclass}{cs.AI}
-    \field{year}{2017}
-    \warn{\item Invalid format of field 'month'}
+    \field{year}{2014}
   \endentry
 
   \entry{image-recognition}{inproceedings}{}
@@ -620,6 +913,55 @@
     \warn{\item Invalid format of field 'month'}
   \endentry
 
+  \entry{self-capsule}{article}{}
+    \name{author}{4}{}{%
+      {{hash=HA}{%
+         family={{Hoogi}},
+         familyi={H\bibinitperiod},
+         given={Assaf},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=WB}{%
+         family={{Wilcox}},
+         familyi={W\bibinitperiod},
+         given={Brian},
+         giveni={B\bibinitperiod},
+      }}%
+      {{hash=GY}{%
+         family={{Gupta}},
+         familyi={G\bibinitperiod},
+         given={Yachee},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=RDL}{%
+         family={{Rubin}},
+         familyi={R\bibinitperiod},
+         given={Daniel\bibnamedelima L.},
+         giveni={D\bibinitperiod\bibinitdelim L\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Computer Vision and Pattern Recognition}
+    \strng{namehash}{HA+1}
+    \strng{fullhash}{HAWBGYRDL1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2019}
+    \field{labeldatesource}{year}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \field{eid}{arXiv:1904.12483}
+    \verb{eprint}
+    \verb 1904.12483
+    \endverb
+    \field{pages}{arXiv:1904.12483}
+    \field{title}{{Self-Attention Capsule Networks for Image Classification}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.CV}
+    \field{year}{2019}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
   \entry{attention-is-effort}{inproceedings}{}
     \name{author}{1}{}{%
       {{hash=KD}{%
@@ -671,6 +1013,44 @@
     \field{year}{2014}
   \endentry
 
+  \entry{energy-estimation}{article}{}
+    \name{author}{2}{}{%
+      {{hash=KT}{%
+         family={{Kim}},
+         familyi={K\bibinitperiod},
+         given={Taesup},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=BY}{%
+         family={{Bengio}},
+         familyi={B\bibinitperiod},
+         given={Yoshua},
+         giveni={Y\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Machine Learning, Statistics - Machine Learning}
+    \strng{namehash}{KTBY1}
+    \strng{fullhash}{KTBY1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2016}
+    \field{labeldatesource}{year}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \field{eid}{arXiv:1606.03439}
+    \verb{eprint}
+    \verb 1606.03439
+    \endverb
+    \field{pages}{arXiv:1606.03439}
+    \field{title}{{Deep Directed Generative Models with Energy-Based
+  Probability Estimation}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.LG}
+    \field{year}{2016}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
   \entry{kingma}{article}{}
     \name{author}{2}{}{%
       {{hash=KDP}{%
@@ -705,6 +1085,43 @@
     \field{eprinttype}{arXiv}
     \field{eprintclass}{cs.LG}
     \field{year}{2014}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{kingma-vae}{article}{}
+    \name{author}{2}{}{%
+      {{hash=KDP}{%
+         family={{Kingma}},
+         familyi={K\bibinitperiod},
+         given={Diederik\bibnamedelima P},
+         giveni={D\bibinitperiod\bibinitdelim P\bibinitperiod},
+      }}%
+      {{hash=WM}{%
+         family={{Welling}},
+         familyi={W\bibinitperiod},
+         given={Max},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \keyw{Statistics - Machine Learning, Computer Science - Machine Learning}
+    \strng{namehash}{KDPWM1}
+    \strng{fullhash}{KDPWM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2013}
+    \field{labeldatesource}{year}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \field{eid}{arXiv:1312.6114}
+    \verb{eprint}
+    \verb 1312.6114
+    \endverb
+    \field{pages}{arXiv:1312.6114}
+    \field{title}{{Auto-Encoding Variational Bayes}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{stat.ML}
+    \field{year}{2013}
     \warn{\item Invalid format of field 'month'}
   \endentry
 
@@ -813,60 +1230,53 @@
     \field{year}{2015}
   \endentry
 
-  \entry{stacked-attention}{article}{}
+  \entry{ebm-tutorial}{inproceedings}{}
     \name{author}{5}{}{%
-      {{hash=LKH}{%
-         family={{Lee}},
+      {{hash=LY}{%
+         family={LeCun},
          familyi={L\bibinitperiod},
-         given={Kuang-Huei},
-         giveni={K\bibinitperiod-H\bibinitperiod},
+         given={Yann},
+         giveni={Y\bibinitperiod},
       }}%
-      {{hash=CX}{%
-         family={{Chen}},
+      {{hash=CS}{%
+         family={Chopra},
          familyi={C\bibinitperiod},
-         given={Xi},
-         giveni={X\bibinitperiod},
+         given={Sumit},
+         giveni={S\bibinitperiod},
       }}%
-      {{hash=HG}{%
-         family={{Hua}},
+      {{hash=HR}{%
+         family={Hadsell},
          familyi={H\bibinitperiod},
-         given={Gang},
-         giveni={G\bibinitperiod},
+         given={Raia},
+         giveni={R\bibinitperiod},
       }}%
-      {{hash=HH}{%
-         family={{Hu}},
+      {{hash=HFJ}{%
+         family={Huang},
          familyi={H\bibinitperiod},
-         given={Houdong},
-         giveni={H\bibinitperiod},
+         given={Fu\bibnamedelima Jie},
+         giveni={F\bibinitperiod\bibinitdelim J\bibinitperiod},
       }}%
-      {{hash=HX}{%
-         family={{He}},
-         familyi={H\bibinitperiod},
-         given={Xiaodong},
-         giveni={X\bibinitperiod},
+      {{hash=ea}{%
+         prefix={et},
+         prefixi={e\bibinitperiod},
+         family={al.},
+         familyi={a\bibinitperiod},
       }}%
     }
-    \keyw{Computer Science - Computer Vision and Pattern Recognition, Computer
-  Science - Artificial Intelligence, Computer Science - Machine Learning}
-    \strng{namehash}{LKH+1}
-    \strng{fullhash}{LKHCXHGHHHX1}
+    \list{publisher}{1}{%
+      {MIT Press}%
+    }
+    \strng{namehash}{LY+1}
+    \strng{fullhash}{LYCSHRHFJae1}
     \field{labelnamesource}{author}
     \field{labeltitlesource}{title}
-    \field{labelyear}{2018}
+    \field{labelyear}{2006}
     \field{labeldatesource}{year}
     \field{sortinit}{L}
     \field{sortinithash}{L}
-    \field{eid}{arXiv:1803.08024}
-    \verb{eprint}
-    \verb 1803.08024
-    \endverb
-    \field{pages}{arXiv:1803.08024}
-    \field{title}{{Stacked Cross Attention for Image-Text Matching}}
-    \field{journaltitle}{arXiv e-prints}
-    \field{eprinttype}{arXiv}
-    \field{eprintclass}{cs.CV}
-    \field{year}{2018}
-    \warn{\item Invalid format of field 'month'}
+    \field{booktitle}{PREDICTING STRUCTURED DATA}
+    \field{title}{A tutorial on energy-based learning}
+    \field{year}{2006}
   \endentry
 
   \entry{crossmodal-object-detection}{article}{}
@@ -929,6 +1339,37 @@
     \warn{\item Invalid format of field 'month'}
   \endentry
 
+  \entry{reinforcement}{article}{}
+    \name{author}{1}{}{%
+      {{hash=LY}{%
+         family={{Li}},
+         familyi={L\bibinitperiod},
+         given={Yuxi},
+         giveni={Y\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Machine Learning}
+    \strng{namehash}{LY1}
+    \strng{fullhash}{LY1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2017}
+    \field{labeldatesource}{year}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{eid}{arXiv:1701.07274}
+    \verb{eprint}
+    \verb 1701.07274
+    \endverb
+    \field{pages}{arXiv:1701.07274}
+    \field{title}{{Deep Reinforcement Learning: An Overview}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.LG}
+    \field{year}{2017}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
   \entry{cross-transformer}{article}{}
     \name{author}{3}{}{%
       {{hash=LJ}{%
@@ -973,53 +1414,35 @@
     \warn{\item Invalid format of field 'month'}
   \endentry
 
-  \entry{combine-multimod}{article}{}
-    \name{author}{4}{}{%
-      {{hash=LK}{%
-         family={{Liu}},
+  \entry{supervised}{article}{}
+    \name{author}{1}{}{%
+      {{hash=LM}{%
+         family={{Loog}},
          familyi={L\bibinitperiod},
-         given={Kuan},
-         giveni={K\bibinitperiod},
-      }}%
-      {{hash=LY}{%
-         family={{Li}},
-         familyi={L\bibinitperiod},
-         given={Yanen},
-         giveni={Y\bibinitperiod},
-      }}%
-      {{hash=XN}{%
-         family={{Xu}},
-         familyi={X\bibinitperiod},
-         given={Ning},
-         giveni={N\bibinitperiod},
-      }}%
-      {{hash=NP}{%
-         family={{Natarajan}},
-         familyi={N\bibinitperiod},
-         given={Prem},
-         giveni={P\bibinitperiod},
+         given={Marco},
+         giveni={M\bibinitperiod},
       }}%
     }
-    \keyw{Statistics - Machine Learning, Computer Science - Artificial
-  Intelligence, Computer Science - Machine Learning}
-    \strng{namehash}{LK+1}
-    \strng{fullhash}{LKLYXNNP1}
+    \keyw{Computer Science - Machine Learning, Computer Science - Computer
+  Vision and Pattern Recognition, Statistics - Machine Learning}
+    \strng{namehash}{LM1}
+    \strng{fullhash}{LM1}
     \field{labelnamesource}{author}
     \field{labeltitlesource}{title}
-    \field{labelyear}{2018}
+    \field{labelyear}{2017}
     \field{labeldatesource}{year}
     \field{sortinit}{L}
     \field{sortinithash}{L}
-    \field{eid}{arXiv:1805.11730}
+    \field{eid}{arXiv:1710.09230}
     \verb{eprint}
-    \verb 1805.11730
+    \verb 1710.09230
     \endverb
-    \field{pages}{arXiv:1805.11730}
-    \field{title}{{Learn to Combine Modalities in Multimodal Deep Learning}}
+    \field{pages}{arXiv:1710.09230}
+    \field{title}{{Supervised Classification: Quite a Brief Overview}}
     \field{journaltitle}{arXiv e-prints}
     \field{eprinttype}{arXiv}
-    \field{eprintclass}{stat.ML}
-    \field{year}{2018}
+    \field{eprintclass}{cs.LG}
+    \field{year}{2017}
     \warn{\item Invalid format of field 'month'}
   \endentry
 
@@ -1095,35 +1518,126 @@
     \field{year}{2016}
   \endentry
 
-  \entry{EBM}{article}{}
-    \name{author}{1}{}{%
-      {{hash=OT}{%
-         family={{Osogami}},
-         familyi={O\bibinitperiod},
-         given={Takayuki},
-         giveni={T\bibinitperiod},
+  \entry{manifold-2}{incollection}{}
+    \name{author}{2}{}{%
+      {{hash=NH}{%
+         family={Narayanan},
+         familyi={N\bibinitperiod},
+         given={Hariharan},
+         giveni={H\bibinitperiod},
+      }}%
+      {{hash=MS}{%
+         family={Mitter},
+         familyi={M\bibinitperiod},
+         given={Sanjoy},
+         giveni={S\bibinitperiod},
       }}%
     }
-    \keyw{Computer Science - Neural and Evolutionary Computing}
-    \strng{namehash}{OT1}
-    \strng{fullhash}{OT1}
+    \name{editor}{5}{}{%
+      {{hash=LJD}{%
+         family={Lafferty},
+         familyi={L\bibinitperiod},
+         given={J.\bibnamedelima D.},
+         giveni={J\bibinitperiod\bibinitdelim D\bibinitperiod},
+      }}%
+      {{hash=WCKI}{%
+         family={Williams},
+         familyi={W\bibinitperiod},
+         given={C.\bibnamedelima K.\bibnamedelima I.},
+         giveni={C\bibinitperiod\bibinitdelim K\bibinitperiod\bibinitdelim
+  I\bibinitperiod},
+      }}%
+      {{hash=STJ}{%
+         family={Shawe-Taylor},
+         familyi={S\bibinitperiod-T\bibinitperiod},
+         given={J.},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=ZRS}{%
+         family={Zemel},
+         familyi={Z\bibinitperiod},
+         given={R.\bibnamedelima S.},
+         giveni={R\bibinitperiod\bibinitdelim S\bibinitperiod},
+      }}%
+      {{hash=CA}{%
+         family={Culotta},
+         familyi={C\bibinitperiod},
+         given={A.},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Curran Associates, Inc.}%
+    }
+    \strng{namehash}{NHMS1}
+    \strng{fullhash}{NHMS1}
     \field{labelnamesource}{author}
     \field{labeltitlesource}{title}
-    \field{labelyear}{2017}
+    \field{labelyear}{2010}
     \field{labeldatesource}{year}
-    \field{sortinit}{O}
-    \field{sortinithash}{O}
-    \field{eid}{arXiv:1708.06008}
-    \verb{eprint}
-    \verb 1708.06008
+    \field{sortinit}{N}
+    \field{sortinithash}{N}
+    \field{booktitle}{Advances in Neural Information Processing Systems 23}
+    \field{pages}{1786\bibrangedash 1794}
+    \field{title}{Sample Complexity of Testing the Manifold Hypothesis}
+    \verb{url}
+    \verb http://papers.nips.cc/paper/3958-sample-complexity-of-testing-the-man
+    \verb ifold-hypothesis.pdf
     \endverb
-    \field{pages}{arXiv:1708.06008}
-    \field{title}{{Boltzmann machines and energy-based models}}
+    \field{year}{2010}
+  \endentry
+
+  \entry{optim-algos}{article}{}
+    \name{author}{1}{}{%
+      {{hash=RS}{%
+         family={{Ruder}},
+         familyi={R\bibinitperiod},
+         given={Sebastian},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Machine Learning}
+    \strng{namehash}{RS1}
+    \strng{fullhash}{RS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2016}
+    \field{labeldatesource}{year}
+    \field{sortinit}{R}
+    \field{sortinithash}{R}
+    \field{eid}{arXiv:1609.04747}
+    \verb{eprint}
+    \verb 1609.04747
+    \endverb
+    \field{pages}{arXiv:1609.04747}
+    \field{title}{{An overview of gradient descent optimization algorithms}}
     \field{journaltitle}{arXiv e-prints}
     \field{eprinttype}{arXiv}
-    \field{eprintclass}{cs.NE}
-    \field{year}{2017}
+    \field{eprintclass}{cs.LG}
+    \field{year}{2016}
     \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{integrability-criterion}{article}{}
+    \name{author}{1}{}{%
+      {{hash=SR}{%
+         family={Santilli},
+         familyi={S\bibinitperiod},
+         given={RM},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{SR1}
+    \strng{fullhash}{SR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1982}
+    \field{labeldatesource}{year}
+    \field{sortinit}{S}
+    \field{sortinithash}{S}
+    \field{title}{Birkhofian generalization of Hamiltionian Mechanics}
+    \field{journaltitle}{Foundations of theoretical mechanics II}
+    \field{year}{1982}
   \endentry
 
   \entry{pca-ae-1}{inproceedings}{}
@@ -1354,6 +1868,48 @@
     \warn{\item Invalid format of field 'month'}
   \endentry
 
+  \entry{dae-vincent}{article}{}
+    \name{author}{4}{}{%
+      {{hash=VP}{%
+         family={{Vincent}},
+         familyi={V\bibinitperiod},
+         given={Pascal},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=LBYH}{%
+         family={{Larochelle}},
+         familyi={L\bibinitperiod},
+         suffix={Hugo},
+         suffixi={H\bibinitperiod},
+         given={{Bengio}\bibnamedelima Yoshua},
+         giveni={B\bibinitperiod\bibinitdelim Y\bibinitperiod},
+      }}%
+      {{hash=}{%
+      }}%
+      {{hash=MPA}{%
+         family={{Manzagol}},
+         familyi={M\bibinitperiod},
+         given={Pierre-Antoine},
+         giveni={P\bibinitperiod-A\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Multimedia, Computer Science - Artificial
+  Intelligence, Computer Science - Computer Vision and Pattern Recognition,
+  Computer Science - Machine Learning}
+    \strng{namehash}{VP+1}
+    \strng{fullhash}{VPLHBYMPA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2008}
+    \field{labeldatesource}{year}
+    \field{sortinit}{V}
+    \field{sortinithash}{V}
+    \field{title}{{Extracting and Composing Robust Features with Denoising
+  Autoencoders}}
+    \field{journaltitle}{ICML 2008}
+    \field{year}{2008}
+  \endentry
+
   \entry{crossmodal-video-caption}{article}{}
     \name{author}{3}{}{%
       {{hash=WX}{%
@@ -1398,6 +1954,60 @@
     \field{eprintclass}{cs.CL}
     \field{year}{2018}
     \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{watzl}{book}{}
+    \name{author}{1}{}{%
+      {{hash=WS}{%
+         family={Watzl},
+         familyi={W\bibinitperiod},
+         given={Sebastian},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Oxford, UK: Oxford University Press}%
+    }
+    \strng{namehash}{WS1}
+    \strng{fullhash}{WS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2017}
+    \field{labeldatesource}{year}
+    \field{sortinit}{W}
+    \field{sortinithash}{W}
+    \field{title}{Structuring Mind. The Nature of Attention and How It Shapes
+  Consciousness}
+    \field{year}{2017}
+  \endentry
+
+  \entry{manifold-3}{article}{}
+    \name{author}{2}{}{%
+      {{hash=WK}{%
+         family={Weinberger},
+         familyi={W\bibinitperiod},
+         given={K.Q.},
+         giveni={K\bibinitperiod},
+      }}%
+      {{hash=SL}{%
+         family={Saul},
+         familyi={S\bibinitperiod},
+         given={L.K.},
+         giveni={L\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{WKSL1}
+    \strng{fullhash}{WKSL1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2006}
+    \field{labeldatesource}{year}
+    \field{sortinit}{W}
+    \field{sortinithash}{W}
+    \field{title}{Unsupervised Learning of Image Manifolds by Semidefinite
+  Programming}
+    \field{journaltitle}{Int J Comput Vision}
+    \field{year}{2006}
   \endentry
 
   \entry{machine-translation}{article}{}

@@ -1,23 +1,27 @@
 \chapter{Miscellaneous}\label{chapter-misc} 
 
-\section{Integrability criterion}
-
-\section{Gradient with respect to gamma}
-The gradient of the loss with respect to $\gamma_{ij}$ is computed with the chain rule:
+\section{Integrability criterion}\label{sec:criterion}
+The integrability criterion \citep{integrability-criterion} is a sufficient condition for a vector field to be a gradient field as well. It states that for some open, simple connected set $U$, a continuously differentiable function $F\,:\,U\rightarrow R^L$ defines a gradient field if and only if
 \begin{equation}
-\frac{\partial \mathcal{L}}{\partial \gamma_{ij}} = \frac{\partial \mathcal{L}}{\partial E_i} \cdot \frac{\partial E_i}{\partial \gamma_{ij}} + \frac{\partial \mathcal{L}}{\partial E_j} \cdot \frac{\partial E_j}{\partial \gamma_{ij}} 
+\frac{\partial F_j(\textbf{x})}{\partial x_i} = \frac{\partial F_i(\textbf{x})}{\partial x_j}, \quad \forall i,j = 1...L
 \end{equation}
-Furthermore,
+In other words, integrability follows from the symmetry of the partial derivatives.
+
+\section{Gradient with respect to gamma}\label{sec:log-gradient}
+The gradient of the loss with respect to the coupling parameter $\gamma_{ij}$ is computed with the chain rule:
+\begin{equation}
+\frac{\partial \tilde{\mathcal{L}}}{\partial \gamma_{ij}} = \frac{\partial \tilde{\mathcal{L}}}{\partial E_i} \cdot \frac{\partial E_i}{\partial \gamma_{ij}} + \frac{\partial \tilde{\mathcal{L}}}{\partial E_j} \cdot \frac{\partial E_j}{\partial \gamma_{ij}} 
+\end{equation}
+In particular,
 \begin{equation}
 \begin{split}
 \frac{\partial E_i}{\partial \gamma_{ij}} &= \frac{\partial}{\partial \gamma_{ij}} \sum_{k=1}^M E_{ik} \\
-&= \frac{\partial E_{ij}}{\partial \gamma_{ij}} \\
-&= \frac{\partial}{\partial \gamma_{ij}}(w_{ij}e_i^{\gamma_{ij}} e_j^{1-\gamma_{ij}})\\
-&= w_{ij}e_i^{\gamma_{ij}}\frac{\partial}{\partial \gamma_{ij}}e_j^{1-\gamma_{ij}} + e_j^{1-\gamma_{ij}}\frac{\partial}{\partial \gamma_{ij}}e_i^{\gamma_{ij}}\\
-&= w_{ij}e_i^{\gamma_{ij}}e_j^{1-\gamma_{ij}}(\log e_i + \log e_j)\\
+&= \frac{\partial E_{ij}}{\partial \gamma_{ij}} + \frac{\partial E_{ji}}{\partial \gamma_{ij}} \\
+&= \frac{\partial}{\partial \gamma_{ij}}(w_{ij}e_i^{\gamma_{ij}} e_j^{1-\gamma_{ij}}) + \frac{\partial}{\partial \gamma_{ij}}(w_{ji}e_j^{\gamma_{ij}} e_i^{1-\gamma_{ij}})\\
+&= w_{ij}e_i^{\gamma_{ij}}\frac{\partial}{\partial \gamma_{ij}}e_j^{1-\gamma_{ij}} + e_j^{1-\gamma_{ij}}\frac{\partial}{\partial \gamma_{ij}}e_i^{\gamma_{ij}} + ...\\
+&= (\log e_i + \log e_j)(w_{ij}e_i^{\gamma_{ij}}e_j^{1-\gamma_{ij}} + w_{ji}e_j^{\gamma_{ij}}e_i^{1-\gamma_{ij}})\\
 \end{split}
 \end{equation}
-
-
+As we can see, the gradient with respect to $\gamma_{ij}$ does indeed involve a natural logarithm of self-energies $e_i$ and $e_j$. Thus, self-energies must be constrained to positive values.
 
 

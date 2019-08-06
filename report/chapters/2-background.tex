@@ -1,47 +1,83 @@
 \chapter{Background} 
 \label{chapter-background} 
 
-Explain goal of chapter: introduce necessary background and concepts used in rest of work. Notation: vectors in bold.
-
 %----------------------------------------------------------------------------------------
 %	SECTION 
 %----------------------------------------------------------------------------------------
 
 \section{Machine Learning}
-\begin{itemize}
-\item supervised, unsupervised, RL
-\item supervised
-\begin{itemize}
-	\item task T, performance P, data D -- D high, P high on T
-	\item types: generative , discriminative (classification, regression) are most common tasks T
-\end{itemize}
-\end{itemize}
+Machine Learning is a subfield of Artificial Intelligence (see Figure \ref{fig:venn-diagram}) concerned with the design of algorithms that allow machines (e.g. computers, robots, embedded systems) to learn. For a task \textbf{T}, a performance measure \textbf{P} and an amount of data \textbf{D}, the system is said to be learning if it improves its performance \textbf{P} at the task \textbf{T} by increasing \textbf{D} (gain experience). Moreover, there are three main types of learning paradigms, namely supervised, unsupervised and reinforcement learning. In supervised learning \citep{supervised}, the model learns on a labeled dataset, providing an answer that the algorithm can use to evaluate its accuracy on training data. An unsupervised model \citep{unsupervised}, on the contrary, extracts features and patterns from unlabelled data. Lastly, reinforcement learning \citep{reinforcement} is typically used to train agents in dynamic environments, where the agent is able to act upon the environment. Reinforcement learning is best explained by an analogy, the learning algorithm is like a dog trainer, which teaches the dog (agent) how to respond to specific signs, like a whistle for example. Whenever the dog responds correctly, the trainer gives a reward to the dog, reinforcing the correct behaviour of the dog. Based on these three paradigms, several families of algorithms were invented. Deep learning \citep{deeplearning-overview} is one of those families and is particularly powerful on perception tasks.
+\begin{figure}[!ht]
+\centering
+\includegraphics[scale=0.45]{figures/venn}
+\caption{Venn diagram of the Artificial Intelligence field}	
+\label{fig:venn-diagram}
+\end{figure}
+
 
 %-----------------------------------
 %	SUBSECTION 
 %-----------------------------------
 \section{Deep Learning}
+Deep learning models, also called Deep Neural Networks, offer the significant advantage of being able to learn their own feature representation for the completion of a given task. Neural Networks were loosely inspired from our own brains, but nowadays can best be seen as gigantic composed non-linear parametric functions. The parameters are tuned by optimizing a loss function with Stochastic Gradient Descent (SGD) or one of its many enhancements \citep{optim-algos}. Let $\bm{\theta}$ be the set of parameters, $\mathcal{L}$ the loss function, $y$ the groundtruth (labels) and $\hat{y}$ the predictions. First, the SGD algorithm estimates the gradient of the cost function on a randomly sampled batch of size $N$ as
+\begin{equation}
+\mathbf{g} = \frac{1}{N}\nabla_{\bm{\theta}}\sum_{i=1}^N\mathcal{L}(\hat{y}^{(i)},y^{(i)})
+\end{equation}
+where the computation of the gradient itself is done using back-propagation (BP) \citep{backprop}. The SGD algorithm then follows the estimated gradient downhill, $\bm{\theta} \leftarrow \bm{\theta} - \epsilon\mathbf{g}$ where $\epsilon$ is the learning rate, in the hope of minimizing the loss.
+
+Optimizing the parameters to represent all valid inputs of a task, where the data is often very high-dimensional (e.g., images, sounds, text), may seem hopeless. However, neural networks surmount this obstacle by assuming that these high-dimensional data are lying along low-dimensional manifolds\footnote{A manifold designates a connected set of points that can be approximated well by considering only a small numbers of degrees of freedom} \citep{goodfellow-book}. An intuitive observation in favor of this claim is that uniform noise essentialy never resembles structured inputs from these tasks. More rigorous experiments supporting the manifold hypothesis are \citep{manifold-1, manifold-2, manifold-3}.
+
+
+\subsection*{Multi-Modal Deep Learning}\label{sec:mmdl}
+Remember, a modality refers to "the way in which something happened or is experience" \citep{taxomany-multimodal}. Multi-Modal Deep Learning (MMDL) is simply the research area of neural networks using input samples consisting of multiple modes. Baltrušaitis et al. identified five non-exclusive use-cases of MMDL,
 \begin{itemize}
-\item subcategory of ML (difference with others, it extracts its own features)
-\item Data distribution, manifold (explain why DL works, intuition of manifold, definition mathematics)
-\item Cost, (surrogate) loss (crossentropy), metric, gradient, forward/backward (backprop, update optimization)
-\item Gigantic non-linear composed parametric functions
-\item MLP, CNN, LSTM
+\item \textit{Representation}: learning how to represent and summarize multimodal data in a way that exploits the complementarity and redundancy
+\item \textit{Translation}: learning how to map data from one modality to another (e.g., image captioning)
+\item \textit{Alignment}: learning to identify the direct relationships between elements from two or more different modalities (e.g. alignment of sound and video)
+\item \textit{Fusion}: learning to join information from two or more modalities to perform predictions 
+\item \textit{Co-learning}: learning to transfer knowledge between modalities and their respective predictive models (e.g., zero shot learning)
 \end{itemize}
+The EMMA module is applied to multi-modal networks performing fusion. Furthermore, networks doing fusion can combine their modalities in three different ways: by early-fusion, late-fusion and an hybrid of the first two. Early-fusion architectures have uni-modal encoders extracting the features of each mode, the obtained features are then concatenated altogether and fed into a common decoder making the predictions (see Figure \ref{fig:early-fusion}). In contrast, late-fusion has uni-modal predictors for each mode, followed by a decoder weighting the uni-modal predictions to compute the final prediction. 
+\begin{figure}[!h]
+\centering
+\begin{subfigure}{.45\textwidth}
+\vspace*{15.5mm}
+  \centering
+  \includegraphics[width=.55\linewidth]{figures/early-fusion}
+  \vspace*{3mm}
+  \caption{Early-fusion}
+  \label{fig:early-fusion}
+\end{subfigure}%
+\begin{subfigure}{.45\textwidth}
+  \centering
+  \includegraphics[width=.55\linewidth]{figures/late-fusion}
+  \vspace*{2mm}
+  \caption{Late-fusion}
+  \label{fig:late-fusion}
+\end{subfigure}
+\caption[Early and late fusion]{Fusion of images and sounds for a classification task with a Convolutional Neural Network (CNN) \citep{image-recognition}, Recurrent Neural Network (RNN) \citep{machine-translation}}
+\label{fig:fusion}
+\end{figure}
 
 
 %----------------------------------------------------------------------------------------
 %	SECTION 
 %----------------------------------------------------------------------------------------
-\section{Deep Learning meets Physics}\label{sec:ebm}
-\begin{itemize}
-\item Negative log likelihood. Ising model (thermodynamics, stat mechanics). Gibbs distribution. Explain how relate to outlying (high E, low p). EBM = high everywhere except on data manifold.
-\item Boltzmann. MC training. Contrastive divergence. Explain why difficult (see paper of potential energy, good explanation!!). Thus we will explore approximators.
-\end{itemize}
+\section{Physics meets Deep Learning}\label{sec:ebm}
+Modelling complex probability distributions by parametric functions such as deep learning models is a difficult task, because the probabilities must be positive and sum up to one. Back in time, many researchers in deep learning had an academic background in physics, from which they naturally found inspiration. The distribution of kinetic energies among molecules of gaz, called Boltzmann distribution, is given by
+\begin{equation}
+p(E_i) = \frac{1}{Z}e^{-E_i/k_B T} \quad \text{with the partition function} \quad Z = \int e^{-E_j/k_B T}
+\label{eq:boltzmann-distrib}
+\end{equation}
+where $E_i$ is the kinetic energy, $k_B$ the Boltzmann constant and $T$ the temperature of the environment. TODO: interpretation. Deep learning researchers used the Boltzmann distribution to construct energy-based models \citep{ebm-tutorial}, which are more convenient to learn probability distributions. Neural networks of this type learn to model an energy function which can then mapped to the target distribution using Equation (\ref{eq:boltzmann-distrib}). The learned energy functions are low on the data manifold and high everywhere else (see Figure \ref{fig:ebm-intervals}), since $E_i \propto -\log p_i$. A few examples of efficient energy-based models are Generative Adversarial Networks (GAN) \citep{gan}, Variational Autoencoders (VAE) \citep{kingma-vae} and Denoising Autoencoders (DAE) \citep{dae-vincent}. A simple energy-based model will be used in this work as a measure of the outlyingness of the data (more in Chapter \ref{chapter-energy-estimation}).
+\begin{figure}[!ht]
+\centering
+\includegraphics[scale=1.15]{figures/ebm-intervals}
+\caption[Energy surface evolution]{The shape of the energy surface at four intervals. Along the x-axis is the variable X and along the y-axis is the variable Y . The shape of the surface at (a) the start of the training, (b) after 15 epochs over the training set, (c) after 25 epochs, and (d) after 34 epochs. The energy surface has attained the desired shape: the energies around the training samples are low and energies at all other points are high. \textit{Image and caption from} \,\citep{ebm-tutorial}}
+\label{fig:ebm-intervals}
+\end{figure}
 
-The potential energy article has some paragraphs. Also explain what the score is. 
 
-\href{https://www.lapasserelle.com/statistical_mechanics/lesson_4.pdf}{Boltzmann distrib}
-\href{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.441.2811&rep=rep1&type=pdf}{Energy-based models}
-\href{https://www.aliannajmaren.com/category/machine-learning/energy-based-models/}{Alleen Mara!!!}
-\href{https://arxiv.org/abs/1605.07717}{Deep Structured Energy Based Models for Anomaly Detection} \citep{anomaly-detection-energy}: ....
+
+
+

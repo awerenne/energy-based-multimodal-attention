@@ -31,13 +31,13 @@ singlespacing, % Single line spacing, alternatives: onehalfspacing or doublespac
 %nolistspacing, % If the document is onehalfspacing or doublespacing, uncomment this to set spacing in lists to single
 %liststotoc, % Uncomment to add the list of figures/tables/etc to the table of contents
 %toctotoc, % Uncomment to add the main table of contents to the table of contents
-%parskip, % Uncomment to add space between paragraphs
+parskip, % Uncomment to add space between paragraphs
 %nohyperref, % Uncomment to not load the hyperref package
 headsepline, % Uncomment to get a line under the header
 %chapterinoneline, % Uncomment to place the chapter title next to the number on one line
 %consistentlayout, % Uncomment to change the layout of the declaration, abstract and acknowledgements pages to match the default layout
 ]{master-thesis} % The class file specifying the document structure
-
+\restoreparindent
 \usepackage[utf8]{inputenc} % Required for inputting international characters
 \usepackage[T1]{fontenc} % Output font encoding for international characters
 \usepackage{amsmath}
@@ -51,7 +51,7 @@ headsepline, % Uncomment to get a line under the header
 \usepackage{booktabs, lscape}
 
 \usepackage[backend=bibtex,style=authoryear,natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
-
+%\setlength{\intextsep}{10pt plus 1.0pt minus 2.0pt}
 \addbibresource{biblio.bib} % The filename of the bibliography
 
 \usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
@@ -187,7 +187,7 @@ Aliquam vulputate magna lectus, at consequat ante congue et. Sed congue ullamcor
 \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec ultrices felis, eu suscipit orci. Nunc laoreet odio velit. Mauris tincidunt quam at purus vulputate vehicula. Etiam eu purus lorem. Sed hendrerit condimentum tellus, ut posuere libero laoreet nec. 
 
-Thank contributions opens
+Thank contributions opens, one day I hope I can do the same...
 \end{acknowledgements}
 
 %----------------------------------------------------------------------------------------
@@ -207,24 +207,31 @@ Thank contributions opens
 $\triangleq$ & Is defined as \\
 $N$ & Number of samples \\
 $M$ & Number of modes\\
+$k_B$ & Boltzmann constant \\
+$M_{\bigodot}$ & Solar mass \\
+$\mathrm{e}$ & Euler's number, base of the natural logarithm ($2.71828$) \\
 $\mathcal{L}$ & Loss function \\
+$\bm{\theta}$ & Set of parameters of the specified model \\
+$\nabla_{\bm{\theta}}$ & Gradient with respect to $\bm{\theta}$ \\
 $\lambda_c$ & Weight of capacity penalty \\
 $\lambda_e$ & Weight of energy penalty \\
 $\Omega$ & Energy regularizer \\
-$\mathrm{e}$ & Euler's number, base of the natural logarithm ($2.71828$) \\
 $\Psi_i$ & Potential energy of mode $i$ \\
 $E_{\text{total}}$ & Total energy \\
 $E_i$ & Modal energy of mode $i$ \\
 $e_i$ & Self-energy of mode $i$ \\
 $e_{ij}$ & Shared energy of mode $j$ on mode $i$ \\
-$\rho$ & Coldness parameter in Gibbs distribution \\
+$\alpha_i$ & Importance score of mode $i$ \\
+$\beta_i$ & Attention score of mode $i$ \\
+$\rho$ & Coldness in Boltzmann distribution \\
+$T$ & Temperature in Boltzmann distribution\\
 
-\addlinespace 
-\addlinespace 
+
 \addlinespace 
 \addlinespace 
 
 AE & \textbf{A}uto\textbf{e}conder\\
+BP & \textbf{B}ack-\textbf{p}ropagation\\
 CNN & \textbf{C}onvolutional \textbf{N}eural \textbf{N}etwork\\
 DAE & \textbf{D}enoising \textbf{A}uto\textbf{e}conder\\
 DL & \textbf{D}eep \textbf{L}earning\\
@@ -233,11 +240,13 @@ EMMA & \textbf{E}nergy-based \textbf{M}ulti-\textbf{M}odal \textbf{A}ttention\\
 ISM & \textbf{I}nter\textbf{s}tellar \textbf{M}edium\\
 IP & \textbf{I}ntegrated \textbf{P}rofile\\
 LSTM & \textbf{L}ong \textbf{S}hort \textbf{T}erm \textbf{M}emory\\
-ML & \textbf{M}achine \textbf{L}earning\\
-MLP & \textbf{M}ulti \textbf{L}ayer \textbf{P}erceptron\\
 MMDL & \textbf{M}ulti \textbf{M}odal \textbf{D}eep \textbf{L}earning\\
 MMN & \textbf{M}ulti \textbf{M}odal \textbf{N}etwork\\
+NLP & \textbf{N}atural \textbf{L}anguage \textbf{P}rocessing\\
 RNN & \textbf{R}ecurrent \textbf{N}eural \textbf{N}etwork\\
+SGD & \textbf{S}tochastic \textbf{G}radient \textbf{D}escent\\
+SNR & \textbf{S}ignal-to-\textbf{n}oise \textbf{R}atio\\
+WER & \textbf{W}ord \textbf{E}rror \textbf{R}ate\\
 
 \end{symbols}
 

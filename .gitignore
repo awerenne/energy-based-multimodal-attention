@@ -20,3 +20,5 @@ report/figs/
 report/main\.run\.xml
 
 code/experiment-3/dumps/
+
+*.bbl

@@ -130,7 +130,7 @@
 %----------------------------------------------------------------------------------------
 %	CLASS OPTIONS
 %----------------------------------------------------------------------------------------
-
+\edef\restoreparindent{\parindent=\the\parindent\relax}
 \ifbool{parskip}{\RequirePackage{parskip}} % If the parskip option is passed to the class, require the parskip package 
 
 
@@ -490,7 +490,7 @@ KOMA-script documentation for details.}]{fancyhdr}
 %----------------------------------------------------------------------------------------
 
 \newcommand{\symbolsname}{symbols}
-\providecaptionname{english,british,american}{\symbolsname}{Notation and Abbreviations}
+\providecaptionname{english,british,american}{\symbolsname}{Notation and Acronyms}
 \providecaptionname{ngerman,german,austrian,naustrian}{\symbolsname}{Symbolverzeichnis}
 
 \NewDocumentEnvironment{symbols}{ m }{%
