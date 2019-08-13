@@ -35,7 +35,7 @@ class EMMA(nn.Module):
         
         self.w = torch.nn.Parameter(torch.ones(n_modes).float())
         self.W_coupling = torch.nn.Parameter(torch.ones(n_modes, n_modes).float())
-        self.W_coupling.data.uniform_(-1.0/n_modes, 1.0/n_modes)
+        self.W_coupling.data.uniform_(-1.0/(n_modes-1), 1.0/(n_modes-1))
         self.bias_correction = torch.nn.Parameter(torch.zeros(n_modes).float())
         self.gammas = torch.nn.Parameter(torch.ones(n_modes, n_modes)) 
         self.gammas.data *= 0.5 
@@ -55,6 +55,10 @@ class EMMA(nn.Module):
         return self.gain
 
     # -------
+    def get_bias_attention(self):
+        return self.bias_attention
+
+    # -------
     def get_alpha_beta(self, x):
         N = x[0].size(0)
         potentials = torch.zeros(N, self._n_modes)
@@ -67,11 +71,11 @@ class EMMA(nn.Module):
     # -------
     @property
     def capacity(self):
-        return 1/self.gain * torch.log(torch.cosh(self.gain + self.bias_attention)/torch.cosh(self.bias_attention))
+        return 1/self.gain * torch.log(torch.cosh(self.gain - self.bias_attention)/torch.cosh(-self.bias_attention))
 
     # -------
-    def get_gammas(self):
-        return self.gammas
+    def get_coupling(self):
+        return (self.gammas, self.W_coupling)
 
     # -------
     def total_energy(self, x):
@@ -106,8 +110,9 @@ class EMMA(nn.Module):
     # -------
     def gamma(self, i=None, j=None):
         if i == None or j == None: return torch.triu(self.gammas, diagonal=1)
-        if i < j: return self.gammas[i,j]
-        return self.gammas[j,i]
+        return self.gammas[i,j]
+        # if i < j: return self.gammas[i,j]
+        # return self.gammas[j,i]
 
     # -------
     def compute_partial(self, v):
@@ -172,7 +177,7 @@ class WeightClipper(object):
             emma.gammas.data = emma.gammas.data.clamp(min=0, max=1)
 
         if hasattr(emma, 'W_coupling'): 
-            emma.W_coupling.data = emma.W_coupling.data.clamp(min=-0.5, max=0.5)
+            emma.W_coupling.data = emma.W_coupling.data.clamp(min=-1, max=1)
 
     
 

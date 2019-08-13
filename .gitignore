@@ -22,3 +22,13 @@ report/main\.run\.xml
 code/experiment-3/dumps/
 
 *.bbl
+
+code/experiment-3/results/
+
+report/figures/noise-0-1/
+
+report/figures/noise-0-5/
+
+report/figures/noise-2/
+
+report/figures/

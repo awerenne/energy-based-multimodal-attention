@@ -47,7 +47,7 @@ An autoencoder is said to be undercomplete, when the size of the hidden layer $\
 %-----------------------------------
 %	SUBSECTION 
 %-----------------------------------
-\subsection*{Overcomplete}
+\subsection*{Overcomplete}\label{sec:overcomplete}
 Conversely, an overcomplete AE has more hidden units than its input/output layer (see Figure \ref{fig:overcomplete-ae}). Straightforwardly, the model can thus learn to perfectly copy its input to the output through the $L$ hidden units. To spice things up, the input is corrupted before being passed through the encoder. If we force the AE to reconstruct the original input, we now have a model learning to denoise signals. This type of AE is called a denoising autoencoder (DAE). More formally, the input is corrupted with some small isotropic noise $\tilde{\mathbf{x}} = \mathbf{x} + \mathbf{\epsilon}$ where $\epsilon \sim \mathcal{N}(0,\,\sigma^{2})$, with the training loss 
 \begin{equation}
 \mathcal{L}_{\text{MSE}} = \lVert r(\tilde{\mathbf{x}}) - \mathbf{x} \rVert_2^2
@@ -98,7 +98,7 @@ The potential energy being the gradient of the reconstruction error, we can comp
 \end{equation}
 Substituting $f = h(W\mathbf{x} + \mathbf{b}_f)$ and $g = W^T\mathbf{x} + \mathbf{b}_g$
 \begin{equation}
-\Psi(\tilde{\mathbf{x}})= -\int f(\tilde{\mathbf{x}})d\tilde{\mathbf{x}} + \frac{1}{2} \lVert \tilde{\mathbf{x}} + \textbf{b}_r \rVert_2^2 + \text{const}
+\Psi(\tilde{\mathbf{x}})= -\int f(\tilde{\mathbf{x}})d\tilde{\mathbf{x}} + \frac{1}{2} \lVert \tilde{\mathbf{x}} + \textbf{b}_g \rVert_2^2 + \text{const}
 \end{equation} 
 In this work only the sigmoid activation function will be used, thus solving $f$
 \newcommand\boxedB[1]{{\setlength\fboxsep{8pt}\boxed{#1}}}

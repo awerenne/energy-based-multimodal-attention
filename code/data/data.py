@@ -50,6 +50,7 @@ def standardize(X_train, X_test):
 # ---------------    
 def white_noise(x, noise_std):
     noise = np.random.normal(loc=0, scale=noise_std, size=np.shape(x))
+    # noise = np.random.uniform(low=-noise_std, high=noise_std, size=np.shape(x))
     out = np.add(x, noise)
     return torch.from_numpy(out).float()
 

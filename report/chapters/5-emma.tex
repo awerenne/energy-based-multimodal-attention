@@ -1,7 +1,7 @@
 \chapter{Energy-based Multi-Modal Attention} 
 \label{chapter-emma} 
 
-The literature review (Chapter \ref{chapter-literature-review}) showed that previous research in MMDL has been mostly focused on leveraging the multi-modality to improve the accuracy of the predictions. In this chapter, a new attention module is presented to increase the robustness against failing modes: as long as at least one modality provides enough information for the task, the prediction network will be able to perform well. First, we start by providing a conceptual general framework. Following this, the design of each step of the framework is described. Finally, the training of EMMA is discussed, along with two novel regularizers.
+The literature review (Chapter \ref{chapter-literature-review}) showed that previous research in MMDL has been mostly focused on leveraging the multi-modality to improve the accuracy of the predictions. In this chapter, a new attention module is presented to increase the robustness against failing modes: as long as at least one modality provides enough information for the task, the prediction network will be able to perform well. First, we start by providing a conceptual general framework. Then, the design of each step of the framework is described. Finally, the training of EMMA is discussed, along with two novel regularizers. 
 
 %----------------------------------------------------------------------------------------
 %	SECTION 
@@ -10,6 +10,8 @@ The literature review (Chapter \ref{chapter-literature-review}) showed that prev
 \section{General Framework}\label{sec:general-framework}
 
 We define the i.i.d. dataset $\mathcal{D}^{(N)}$ with $N$ samples  $(\mathbf{X},y)$. The input $\textbf{X}$ is composed of $M$ modes $\{\mathbf{x}_1, \ldots, \mathbf{x}_M\}$ of possibly different dimensions, such as images and sounds. The multi-modal network will be abbreviated as MMN. This model tries to make predictions $\hat{y}$ as close as possible to the groundtruth $y$. The internal architecture of the MMN is often structured as a many-to-one encoder-decoder as discussed in Section \ref{sec:mmdl}. Nonetheless, the EMMA module is not constrained to any specific internal MMN architecture.
+
+Our attention module is placed in front of the MMN to highlight the most valuable modes, on a per-sample basis. This is done by computing an \textit{importance score} $\alpha_i$ for each mode: a scalar value between zero and one, more important modes corresponding to higher values. The method used by the model to compute the importance is further detailed in the next paragraph. From each importance score, the model determines an \textit{attention score} $\beta_i$ (more details in Section \ref{sec:capacity}), which is representative for the amount of information of the mode that can pass through. Each mode is thus multiplied by its respective attention score (see Figure \ref{fig:mnn-with-emma}). Section \ref{sec:capacity} will clarify why the modes are not multiplied by the importance scores instead. 
 \begin{figure}[!h]
 \centering
 \includegraphics[scale=0.5]{figures/mlp-with-emma}
@@ -17,12 +19,12 @@ We define the i.i.d. dataset $\mathcal{D}^{(N)}$ with $N$ samples  $(\mathbf{X},
 \label{fig:mnn-with-emma}
 \end{figure}
 
-The aim of the attention module is to spontaneously learn to asses how valuable each mode is, on a per-sample basis. The three properties influencing the importance are: relevance, failure intensity and coupling (described in Section \ref{sec:proposed-solution}). To learn this, modal energies are introduced, which are parametric functions embedding the three properties. The modal energy $E_i$ of mode $i$ is of the following form
+In the introduction of this work, we identified three properties influencing the importance: relevance, failure intensity and coupling. The failure intensity of mode $i$ can be measured by a potential energy function $\Psi_i$ (see Chapter \ref{chapter-energy-estimation}) obtained by training an autoencoder on mode $i$. To encompass the two other properties (relevance and coupling) as well, we introduce the \textit{modal energy} $E_i$ as
 \begin{equation}
-E_i = f(\Psi_i)  + \sum_{k\neq i}^M g[f(\Psi_i), f(\Psi_k)]
+E_i = e_i(\Psi_i)  + \sum_{k\neq i}^M e_{ik}\big(e_i(\Psi_i), e_k(\Psi_k)\big)
 \label{eq:general-framework}
 \end{equation}
-and will have low values if the mode of the sample is important and high values otherwise. The function $f$ is able to capture the relationship between the relevance and the outlyingness (i.e. failure intensity), since $f$ is optimized with respect to the loss on the predictions and is a function of the potential energy. Whereas, the role of the function $g$ is to learn the optimal coupling between modes. Modal energies are then normalized to the importance scores via the Boltzmann distribution, thus going from a measure of absolute importance to one of relative importance. From these importance score, we can determine the attention scores $\beta_i$, representing the quantity of information that can pass through the attention module. Each mode is then multiplied by its respective attention score (see Figure \ref{fig:mnn-with-emma}). It will be made clear later on why the modes are not multiplied by the importance scores instead. Notice that the case of a missing sample in a mode is implicitly solved by definition, if we consider that missing modes are inputs with zeros.
+which is constructed such that it takes, low values if the mode of the sample is important, and high values otherwise. Each modal energy is composed of its self-energy ($e_i$) and the shared energies ($e_{ik}$) with all the other modes. We expect the self-energy function to spontaneously learn the relationship between the relevance and the outlyingness (i.e. failure intensity), since the self-energy is optimized with respect to the loss on the predictions and is a function of the potential energy (more details in Section \ref{sec:step2}). Whereas, shared-energies are designed to capture the optimal coupling between the modes (more details in Section \ref{sec:step2}). Finally, the modal energies are normalized via the Boltzmann distribution\footnote{See Section \ref{sec:ebm}} to the importance scores (more details in Section \ref{sec:step3}).
 
 There are two ways of interpreting the proposed solution in this chapter. First, EMMA can be seen as a sort of gate filtering perturbations out. Indeed, failing modes can provoke high activations in the MMN, disturbing the predictions. But by masking the outlying modes we diminish those activations, making it easier for the MMN to make good preditions. Another way to view it, is to understand that the MMN model easily extracts $\beta_i$ and $\mathbf{x}_i$ from the multiplication $\beta_i\mathbf{x}_i$. The model can then learn to make more robust predictions based on the extra inputs $\beta_i$.
 \begin{figure}[!ht]
@@ -35,37 +37,32 @@ There are two ways of interpreting the proposed solution in this chapter. First,
 %	SECTION 
 %----------------------------------------------------------------------------------------
 
-\section{From Potential to Modal energies (step 2)}
-The \textit{modal energy} of a mode is the sum of its self-energy ($e_i$) and the shared energies ($e_{ij}$) with all the other modes:
+\section{From Potential to Modal energies (step 2)}\label{sec:step2}
+We compute the \textit{self-energy} as an affine function of the potential energy,
 \begin{equation}
-E_i = e_i + \sum_{k\neq i}^M e_{ij}
-\end{equation}
-
-We compute the \textit{self-energy} as a function of the potential energy,
-\begin{equation}
-e_i = w_i\Psi_i + b_i\,\,\, (=f(\Psi_i)), \qquad w_i, b_i \in \mathbb{R}^+
+e_i = w_i\Psi_i + b_i \qquad \text{with} \qquad w_i, b_i \in \mathbb{R}^+
 \label{eq:self-energy}
 \end{equation}
-where the parameters $w_i$ and $b_i$ are trained via a loss function on the predictions, in consequence the model is able via the self-energy to capture both the relevance and failure. The second advantage of this transformation is that it helps the module to face potentials on different scales, since Equation (\ref{eq:potential-prop}) only guarantees being proportional to the NLL, consequently potentials of different modes may not be on commensurate scales. The reason the parameters are constraint to be positive will be justified below.
+where the parameters $w_i$ and $b_i$ are trained via a loss function on the predictions, in consequence the model is able via the self-energy to capture both the relevance and failure. The second advantage of this transformation is that it helps the module to face potentials on different scales, since Equation (\ref{eq:potential-prop}) only guarantees being proportional to the NLL, consequently potentials of different modes may not be on commensurate scales. The reason the parameters are constraint to be positive will be justified below. Additionally, it will be shown below that self-energies are guaranteed to be positive at the end of this section.
 
 Once the self-energies obtained, we can now compute the \textit{shared energies}. The expression $e_{ij}$ denotes the shared energy of mode $j$ on $i$ and is constructed from the self-energies as follows
 \begin{equation}
-e_{ij} = w_{ij}e_i^{\gamma_{ij}}e_j^{1-\gamma_{ij}}\,\,\, (=g[f(\Psi_i), f(\Psi_j)]), \qquad w_{ij} \in \bigg[-\frac{1}{M-1}, +\frac{1}{M-1}\bigg],\,\, \gamma_{ij} \in [0,1]
+e_{ij} = w_{ij}e_i^{\gamma_{ij}}e_j^{1-\gamma_{ij}} \qquad \text{with} \qquad w_{ij} \in [-1,+1],\,\, \gamma_{ij} \in [0,1]
 \label{eq:shared-energy}
 \end{equation}
-In an attempt to keep the model interpretable, we add the constraint that $\gamma_{ij} = \gamma_{ji}$. Through the use of shared energies, the model can discover the optimal coupling between the modes. If the model learns a $\gamma_{ij}$ close to zero, mode $i$ and $j$ will influence each other much more than a $\gamma_{ij}$ near to one. In other words, the parameter $\gamma_{ij}$ learns the degree of coupling in the spectrum from strongly coupled ($\gamma_{ij}=0$) to independent ($\gamma_{ij} = 1$). The direction of coupling between mode $i$ and $j$ are learned by the weights $w_{ij}$ and $w_{ji}$. For a positive $w_{ij}$, an increase in self-energy $e_j$ causes an increase in $e_{ij}$, and thus an increase in $e_i$. Whereas if $w_{ij}$ is negative, an increase in $e_j$ leads to a decrease in $e_{ij}$. The weights $w_{ij}$ are not imposed to be equal to $w_{ji}$, such that modes can influence each other asymmetrically. This assymetry is justified by the following example: take a multi-modal problem with three modes A, B and C. We want the model to learn that if mode A is failing, it is optimal that mode B "takes over". And if mode B is failing, it is optimal for C to "take over". This example can only be modelled with asymmetry.
+where the parameter $\gamma_{ij}$ learns the degree of coupling in the spectrum from strongly coupled ($\gamma_{ij}=0$) to independent ($\gamma_{ij} = 1$). Indeed, if the model learns a value of $\gamma_{ij}$ close to zero, mode $j$ will influence mode $i$ much more than for a $\gamma_{ij}$ close to unity. Equally important is the direction of coupling between mode $i$ and $j$, determined by the weights $w_{ij}$ and $w_{ji}$. We verify that an increase/decrease of the self-energy $e_j$ leads to an increase/decrease of the modal energy $E_i$ for a positive weight $w_{ij}$, and a decrease/increase of $E_i$ for a negative weight $w_{ij}$. The direction of coupling is useful to distinguish modes with redundant or conflicting information from those with complementary information. The latter is true since self-energies are guaranteed to be positive (see next paragraph). Notice that the degree and direction of coupling are asymmetric ($\gamma_{ij} \neq \gamma_{ji},\, w_{ij} \neq w_{ji}$). This asymmetry is justified by the following example: take a multi-modal problem with three modes A, B and C. We want the model to learn that if mode A is failing, it is optimal that mode B "takes over". And if mode B is failing, it is optimal for C to "take over". This example can only be modelled with asymmetry. In conclusion, the model has the ability, through the use of shared energies, to discover the different interdependencies between the modes.
 
 A consequence of the design of Equation (\ref{eq:shared-energy}) is that the evaluation of the gradient during the backpropagation step now involves taking the logarithm of $e_i$\footnote{See Appendix \ref{sec:log-gradient}}, which is undefined for negative values. As the weights in Equation (\ref{eq:self-energy}) are positive, we only have to make sure the values of the potential energy are positive. The latter is done by lowering the potential $\Psi_i$ to Euler's number $\mathrm{e}$ as
 \begin{equation}
 \Psi_i \leftarrow \max(\mathrm{e}, \Psi_i - \Psi_i^{(\text{min})} + \mathrm{e})
 \end{equation}
-where $\Psi_i^{(\text{min})}$ denotes the lowest value of $\Psi_i$ in the training set. This correction avoids undefined values ($\Psi_i \geq 0$) but also exploding gradient ($\Psi_i \geq e$). The reason a max-operator is used is because lower energy values than $\Psi_i^{(\text{min})}$  can occur during inference. Of course this correction must be performed prior to the computation of self-energies.
+where $\Psi_i^{(\text{min})}$ denotes the lowest value of $\Psi_i$ in the training set. This correction avoids undefined values ($\Psi_i \geq 0$), exploding gradient\footnote{Exploding gradients are very large gradients, which in turn results in large updates of the network weights, resulting in an unstable network. A good overview on this subject can be found in \citep{exploding}} ($\Psi_i \geq \mathrm{e}$) and guarantees self-energies to be positive. The reason a max-operator is used is because lower energy values than $\Psi_i^{(\text{min})}$  can occur during inference. Clearly, this correction must be performed prior to the computation of self-energies i.e., prior to Equation (\ref{eq:self-energy}).
 
 %----------------------------------------------------------------------------------------
 %	SECTION 
 %----------------------------------------------------------------------------------------
 
-\section{From Modal energies to Importance scores (step 3)}
+\section{From Modal energies to Importance scores (step 3)}\label{sec:step3}
 The importance scores are computed from the modal energies via the Boltzmann distribution:
 \begin{equation}
 \alpha_i = \frac{1}{Z}e^{-\rho E_i} \quad \text{with the partition function} \quad Z = \sum_{k=1}^M e^{-\rho E_k} 
@@ -129,8 +126,8 @@ Define the auxiliary variable $u = g_a\alpha - b_a$. Now using
 we can write 
 \begin{equation}
 \begin{split}
-\text{capacity} &= \frac{1}{g_a} \int_0^1 \tanh(u)du  \\
-&= \frac{1}{g_a}\log[\cosh(g_a\alpha - b_a)]\bigg\rvert_{\alpha = 0}^1 + \cancel{\text{constant}} \\
+\text{capacity} &= \frac{1}{g_a} \int_{-b_a}^{g_a-b_a} \tanh(u)du  \\
+&= \frac{1}{g_a}\log[\cosh(u)]\bigg\rvert_{-b_a}^{g_a-b_a} + \cancel{\text{constant}} \\
 &= \frac{1}{g_a}\log\bigg[\frac{\cosh(g_a - b_a)}{\cosh(-b_a)}\bigg]
 \end{split}
 \end{equation}
@@ -142,25 +139,25 @@ When the capacity is too low, no sufficient amount of information is passed to t
 %----------------------------------------------------------------------------------------
 
 \section{Training \& Regularization}\label{sec:regul}
-The training of the attention module and the prediction model is performed in two stages (see Figure \ref{fig:training}). First, each mode is assigned a separate autoencoder, which is trained on the mode to learn the potential energy function. Once trained, the weights of the autoencoders are freezed. In the second phase, EMMA is inserted in front of the MMN and is trained end-to-end on both normal and corrupted data. By corrupted data, we mean samples on which a corruption process is applied in order to simulate one or more failing modes.
+The training of the attention module and the prediction model is performed in two stages (see Figure \ref{fig:training}). First, each mode is assigned a separate autoencoder, which is trained on the mode to learn the potential energy function. Once trained, the weights of the autoencoders are freezed. In the second phase, EMMA is inserted in front of the MMN and is trained end-to-end on both normal and corrupted data. By corrupted data, we mean samples on which a corruption process is applied in order to simulate one or more failing modes. Notably, in most cases the computational overload induced by the training of EMMA in the second stage will be negligible with respect to the MMN, since the number of parameters of EMMA will be far less than the number of parameters of the MMN. Moreover, the parameters of EMMA have a more contrained domain.
 
-Additionaly, two regularizers are introduced. The first one controls the capacity, where $\lambda_c$ can be positive/negative depending on if we want to maximize/minimize the capacity.
+Additionally, two regularizers are introduced in the loss function, written as
 \begin{equation}
-\tilde{\mathcal{L}} = \mathcal{L}(y,\hat{y}) + \lambda_c g_a - \lambda_e \Omega \quad \text{with} \quad \Omega = \sum_{k=1}^M \xi_k \log(\alpha_k) \quad \text{and} \quad \xi_k = \begin{cases}
+\tilde{\mathcal{L}} = \mathcal{L}(y,\hat{y}) + \lambda_c(g_a-b_a) - \lambda_e \Omega \quad \text{with} \quad \Omega = \sum_{k=1}^M \xi_k \log(\alpha_k) \quad \text{and} \quad \xi_k = \begin{cases}
       \xi_- = -1 & \text{if}\ \mathbf{x}_k\, \text{is corrupted} \\
       \xi_+ = +1 & \text{otherwise}
     \end{cases}
 \label{eq:regularization}
 \end{equation}
-Secondly, the purpose of regularizing the energy ($\lambda_e \Omega$) is to control the trade-off between, on one side the relevance and coupling, and on the other side the failure intensity. Without a regularizer, the parameters of the modal energy functions are optimized only regarding the predictions ($\mathcal{L}$), which could lead to a large discrepancy between modal energies $E_i$ and their original potential energies $\Psi_i$. Although the energy regularizer is relatively straightforward, we will show below that some care needs to be taken regarding the corruption process.
+with $\lambda_c$ and $\lambda_e$ being positive real numbers used to set the relative importance of each regularizer. The first regularizer minimizes the capacity, where a higher $\lambda_c$ pushes the module to let less information pass through (i.e., to be more "cautious"), which we suggest could hep generalize against more intensive failing modes. Another reason to mask out more information is to avoid extreme cases where the module lets all inputs unchanged and instead it is the MMN who learns to suppress perturbations. Secondly, the purpose of regularizing the energy ($\lambda_e \Omega$) is to control the trade-off between, on one side the relevance and coupling, and on the other side the failure intensity. Without a regularizer, the parameters of the modal energy functions are optimized only regarding the predictions ($\mathcal{L}$), possibly leading to a large discrepancy between modal energies $E_i$ and their original potential energies $\Psi_i$. Although the energy regularizer is relatively straightforward, we will show below that some care needs to be taken regarding the corruption process.
 
 \subsection*{Energy regularization}
-Let $\bm{\theta}$ be the set of all the parameters in step 2 of the attention module. The effect of the energy regularizer in the SGD algorithm is isolated and written
+Let $\bm{\theta} = \{\bm{\theta}_1\ldots\bm{\theta}_M\}$ be the set of all the parameters of the second step\footnote{See Section \ref{sec:step2}} of the attention module, where $\bm{\theta}_i = \{[\gamma_{ij}, w_{ij}]_{j=1}^M, w_i, b_i\}$ are the parameters composing the modal energy $E_i$. The effect of the energy regularizer in the SGD algorithm is isolated and written
 \begin{equation}
 \bm{\theta} \leftarrow \bm{\theta} + \epsilon\lambda_e\nabla_{\bm{\theta}}\Omega
 \label{eq:update}
 \end{equation}
-Remember the objective, we want this update to minimize the discrepancy, thus decrease/increase modal energies $E_i$ for low/high potential energies $\Psi_i$. To verify this let us compute\footnote{the batch is assumed to only contain one sample for the sake of simplicity. However, the demonstration can be generalized to any batch size.} $\nabla_{\bm{\theta}}\Omega$,
+Remember the objective, we want this update to minimize the discrepancy, thus decrease/increase modal energies $E_i$ for low/high potential energies $\Psi_i$. To verify this let us compute\footnote{The batch is assumed to only contain one sample for the sake of simplicity. However, the demonstration can be generalized to any batch size.} $\nabla_{\bm{\theta}}\Omega$,
 \begin{equation}
 \nabla_{\bm{\theta}} \Omega =\sum_{k=1}^M \xi_k \nabla_{\bm{\theta}} \log(\alpha_k) 
 \label{eq:dev}
@@ -177,7 +174,7 @@ The gradient of the logarithm can be developed as
 \end{split}
 \label{eq:grad-log}
 \end{equation}
-We go further by expressing the equation above with respect to the subset of parameters $\bm{\theta}_i = \{[\gamma_{ik}, w_{ik}]_{k=1}^M, w_i, b_i\}$:
+We go further by expressing the equation above with respect to the subset of parameters $\bm{\theta}_i$:
 \begin{equation}
 \nabla_{\bm{\theta}_i}  \log(\alpha_k) = \begin{cases}
       -\rho(1-\alpha_i)\nabla_{\bm{\theta}_i}E_i, & \text{if}\, i = k \\
@@ -208,7 +205,7 @@ Adding the constraint that $M' = \lfloor \frac{M+1}{2} \rfloor$, two cases can b
 \end{equation}
 Ignoring the second-order effects of the Taylor expansion of the modal energy function, it can be concluded from the equation above that the regularizer will update the parameters such that the values of the modal energy $E_i$ increases/decreases if mode $i$ is corrupted/uncorrupted.
 
-In analogy, if M is uneven we have
+In analogy, if M is odd we have
 \begin{equation}
 \bm{\theta}_i \leftarrow \begin{cases}
        \bm{\theta}_i - \epsilon\lambda_e\rho(1-\alpha_i)\nabla_{\bm{\theta}_i}E_i, & \text{if $i$ is uncorrupted} \\
@@ -232,7 +229,7 @@ The key advantages of using EMMA are:
 \begin{itemize}
 \item The generic design of EMMA permits it to be easily added to any type of architecture of a multi-modal model, without modifying nor EMMA nor the MMN.
 \item The burden on the MMN is reduced, it only has to learn to make good predictions from the received information. The MMN does not need anymore to learn to distinguish failing modes.
-\item The interpretability is increased; It can be verified on a per-sample basis which modes are used to make predictions using the attention scores. As we will see in Chapter 6, EMMA gives us a measure ($\sum_i E_i$) of how uncertain the MMN is about is predictions using the total energy.
+\item Our attention module improves the interpretability of the overall model in two ways. First, it can be verified on a per-sample basis which modes are failing and important. Secondly, the \textit{total energy}, $\sum_i E_i$, provides us with an approximate measure of the uncertainty on the predictions (see Section \ref{sec:total-energy}). A useful concrete application, would be to use these interpretable clues to trigger specific hardware/software recovery systems (e.g., luminosity calibration of camera in self-driving cars).
 \end{itemize}
 
 \newpage

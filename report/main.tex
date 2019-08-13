@@ -53,11 +53,12 @@ headsepline, % Uncomment to get a line under the header
 \usepackage[backend=bibtex,style=authoryear,natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
 %\setlength{\intextsep}{10pt plus 1.0pt minus 2.0pt}
 \addbibresource{biblio.bib} % The filename of the bibliography
-
+\usepackage{float}
 \usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
 \usepackage{subcaption}
 \newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
 %\setmathfont{Latin Modern Math}[version=lm]
+\newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
 
 %----------------------------------------------------------------------------------------
 %	MARGIN SETTINGS
@@ -172,11 +173,11 @@ Liège, Belgium\\[4cm]
 
 \begin{abstract}
 \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec ultrices felis, eu suscipit orci. Nunc laoreet odio velit. Mauris tincidunt quam at purus vulputate vehicula. Etiam eu purus lorem. Sed hendrerit condimentum tellus, ut posuere libero laoreet nec. Sed maximus, tortor aliquam mollis blandit, lectus urna efficitur eros, at laoreet ante turpis suscipit quam. Phasellus eget sollicitudin felis. Sed enim nunc, rutrum vel velit ut, elementum tempor magna. Nullam ut tincidunt orci, et interdum lectus. Proin sed imperdiet tellus. Donec pharetra feugiat leo at fringilla.
+TODO
 
-Suspendisse consectetur maximus augue. Etiam eu tempor ipsum. Phasellus tempor at purus non cursus. Sed non quam vitae mi rutrum sodales vel posuere odio. Nunc elit arcu, finibus sit amet euismod et, aliquet vel mauris. Mauris eget enim lacus. Donec feugiat eget neque vitae dictum. Nullam turpis neque, mollis at dui quis, lobortis molestie quam. Sed faucibus arcu in odio venenatis, et eleifend lacus lobortis. Pellentesque tincidunt ante non mauris molestie efficitur. Nullam porta massa nulla, at lobortis ex pulvinar sed. Donec auctor consectetur ante, vitae vehicula odio gravida nec. Fusce arcu leo, imperdiet vel magna eu, ullamcorper lacinia orci.
+Multi-modal deep learning, especially in safety-critical areas offers the advantage of having more information to extract permitting models to make better predictions. Attention mechanisms are commonly used to combine multiple modalities. However, only a few researchers considered cases where modes could be noisy or missing. Lot of constraints, explicit, not generalize with out-of-distribution.
 
-Aliquam vulputate magna lectus, at consequat ante congue et. Sed congue ullamcorper erat, ut volutpat libero consectetur sit amet. Nulla gravida ullamcorper odio, in convallis quam congue sit amet. Nullam tempor ullamcorper pulvinar. Pellentesque rutrum massa eu massa mattis iaculis. Fusce rhoncus tortor id est cursus interdum. Morbi urna elit, commodo sed nisl eget, scelerisque porta dui. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed nec egestas ligula.
+This thesis presents a novel attention mechanism able to adapts its focus on the most useful modes for the prediction on a per-sample basis. Present results outperform standard data augmentation techniques by up to 10\% confident it could generalize to more complex datasets and architectures. Further using our definition of capacity in attention, we introduce a simple regularizer inducing the model to let less information pass enabling it to reduce the perturbations on more intensive situations.
 \end{abstract}
 
 %----------------------------------------------------------------------------------------
@@ -187,7 +188,6 @@ Aliquam vulputate magna lectus, at consequat ante congue et. Sed congue ullamcor
 \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec ultrices felis, eu suscipit orci. Nunc laoreet odio velit. Mauris tincidunt quam at purus vulputate vehicula. Etiam eu purus lorem. Sed hendrerit condimentum tellus, ut posuere libero laoreet nec. 
 
-Thank contributions opens, one day I hope I can do the same...
 \end{acknowledgements}
 
 %----------------------------------------------------------------------------------------

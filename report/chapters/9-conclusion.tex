@@ -1,37 +1,19 @@
 \chapter{Conclusion} 
 \label{chapter-conclusion} 
 
-Summary of what was seen/done during the master thesis from start to end. Scales up quadratically with number of modes, explain.
+Throughout this thesis, a new attention module was described and analysed. The module was designed to help multi-modal networks handle situations with failing modes. Our definition of failing modes included modes with out-of-distribution values, which to the best of our knowledge was never considered in previous research. Experiments showed that the shift of attention produced by our module was indeed beneficial for the prediction model in failing modes situations. Especially in cases where a mode contains more perturbations than in the training set (up to 20\% improvement compared to standard data augmentation, on noise levels it was not trained on).
 
-%----------------------------------------------------------------------------------------
-%	SECTION 
-%----------------------------------------------------------------------------------------
+Our second contribution was to translate the concept of capacity from psychology to deep learning. This new insight led to the idea of constructing a simple regularizer which forces the module to limit the amount of information that can pass through it. This could potentially be generalized to any attention-based model, in order to control the degree of selectiveness of the information to put to the forefront.
 
-\section{Contributions}
-Summarize contributions
-
-
-%----------------------------------------------------------------------------------------
-%	SECTION 
-%----------------------------------------------------------------------------------------
-
-\section{Research questions}
-Each research question + answer
-
+The last contribution proposed an architecture for a unified multi-modal attention, combining the two main types of attention mechanisms found in deep learning (i.e., self and crossmodal) with our attention module.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 
 %----------------------------------------------------------------------------------------
 
 \section{Future work}
-\begin{itemize}
-\item Annealing + init, end temperature + explain init of next layer \href{http://what-when-how.com/artificial-intelligence/a-comparison-of-cooling-schedules-for-simulated-annealing-artificial-intelligence/}{Linke annealing}. Multiple modes then blows up. Image 100 modes (altough not realistic in real-world problems) then tend to zero. Solution add a common gain? Analyze influence of multiple modes etc..
 
-\item Explore different shared energies design
+Our results are encouraging but should be validated on more complex datasets containing images, text, sounds, etc. Several points would need to be adressed such as finding efficient methods to approximate the log-likelihood of those data structures\footnote{Several alternatives were proposed in Chapter \ref{chapter-emma}}. Another point is on which level to apply the attention masks, on the raw input data or on the features extracted by the encoders?
 
-\item Images/sound sequences. early, late fusion, manifold with respect to unified model? it could be very easy to test on images/sounds (give even during test-time a true outlyingness measure, not specifically the NLL) and at the same time investigate general ways of getting such a measure.
-
-\item Unseen values
-\end{itemize}
-
+An idea that came up during this thesis but was not tested, is based on the following observation: the transition between the first and second stage of the training is quiet "brutal" for the MMN. Indeed, weights of the MMN at the start of the second stage are optimal for uncorrupted modes, however, these weights will have to adapt immediately to dynamical rescaled and masked inputs (as an effect of EMMA). A smoother approach to consider is inspired from the process of \textit{annealing} in metallurgy; "Annealing is a process in which a solid is first heated until all particles are randomly arranged in a liquid state, followed by a slow cooling process. At each cooling temperature enough time is spend for the solid to reach thermal equilibrium."\footnote{Explanation from \href{http://www.iue.tuwien.ac.at/phd/binder/node87.html}{here}} Applying this idea to our case, we could divide the weights of the first layer of the MMN by $\tanh(1/M)$ at the start of the second stage, and set the temperature high enough to obtain a uniform distribution of importance scores ($\alpha_i \approx 1/M,\, \forall i$). As a consequence, the effect of EMMA on the inputs of the MMN would be non-existent\footnote{This assumption is only guaranteed if the parameters $g_a$ and $b_a$ are intialized as $g_a=1$ and $b_a=0$.}, keeping the latter in its local minima. Subsequently, a cooldown schedule would be applied to the temperature leading smoothly to more pronounced attention shifts on the input data. This guided approach has no guarantee to improve the results but in our opinion can be worth trying. Moreover, instead of fixing a final temperature\footnote{Temperature at which the cooling schedule is stopped} by tuning, a similar approach to Early Stopping could be used: the cooldown would be stopped when the validation error stops decreasing significantly.
 

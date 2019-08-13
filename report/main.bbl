@@ -457,6 +457,67 @@
     \field{year}{1998}
   \endentry
 
+  \entry{softmax}{inproceedings}{}
+    \name{author}{5}{}{%
+      {{hash=DK}{%
+         family={Duan},
+         familyi={D\bibinitperiod},
+         given={Kaibo},
+         giveni={K\bibinitperiod},
+      }}%
+      {{hash=KSS}{%
+         family={Keerthi},
+         familyi={K\bibinitperiod},
+         given={S.\bibnamedelima Sathiya},
+         giveni={S\bibinitperiod\bibinitdelim S\bibinitperiod},
+      }}%
+      {{hash=CW}{%
+         family={Chu},
+         familyi={C\bibinitperiod},
+         given={Wei},
+         giveni={W\bibinitperiod},
+      }}%
+      {{hash=SSK}{%
+         family={Shevade},
+         familyi={S\bibinitperiod},
+         given={Shirish\bibnamedelima Krishnaj},
+         giveni={S\bibinitperiod\bibinitdelim K\bibinitperiod},
+      }}%
+      {{hash=PAN}{%
+         family={Poo},
+         familyi={P\bibinitperiod},
+         given={Aun\bibnamedelima Neow},
+         giveni={A\bibinitperiod\bibinitdelim N\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer-Verlag}%
+    }
+    \strng{namehash}{DK+1}
+    \strng{fullhash}{DKKSSCWSSKPAN1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2003}
+    \field{labeldatesource}{year}
+    \field{sortinit}{D}
+    \field{sortinithash}{D}
+    \field{booktitle}{Proceedings of the 4th International Conference on
+  Multiple Classifier Systems}
+    \field{isbn}{3-540-40369-8}
+    \field{pages}{125\bibrangedash 134}
+    \field{series}{MCS'03}
+    \field{title}{Multi-category Classification by Soft-max Combination of
+  Binary Classifiers}
+    \verb{url}
+    \verb http://dl.acm.org/citation.cfm?id=1764295.1764312
+    \endverb
+    \list{location}{1}{%
+      {Guildford, UK}%
+    }
+    \field{year}{2003}
+    \warn{\item Can't use 'location' + 'address'}
+  \endentry
+
   \entry{looking-to-listen}{article}{}
     \name{author}{8}{}{%
       {{hash=EA}{%
@@ -1011,6 +1072,156 @@
     \field{journaltitle}{IEEE TRANSACTIONS ON PATTERN ANALYSIS AND MACHINE
   INTELLIGENCE (TPAMI)}
     \field{year}{2014}
+  \endentry
+
+  \entry{HTRU}{article}{}
+    \name{author}{16}{}{%
+      {{hash=KMJ}{%
+         family={Keith},
+         familyi={K\bibinitperiod},
+         given={M.\bibnamedelima J.},
+         giveni={M\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+      {{hash=JA}{%
+         family={Jameson},
+         familyi={J\bibinitperiod},
+         given={A.},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=vSW}{%
+         prefix={van},
+         prefixi={v\bibinitperiod},
+         family={Straten},
+         familyi={S\bibinitperiod},
+         given={W.},
+         giveni={W\bibinitperiod},
+      }}%
+      {{hash=BM}{%
+         family={Bailes},
+         familyi={B\bibinitperiod},
+         given={M.},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=JS}{%
+         family={Johnston},
+         familyi={J\bibinitperiod},
+         given={S.},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=KM}{%
+         family={Kramer},
+         familyi={K\bibinitperiod},
+         given={M.},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=PA}{%
+         family={Possenti},
+         familyi={P\bibinitperiod},
+         given={A.},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=BSD}{%
+         family={Bates},
+         familyi={B\bibinitperiod},
+         given={S.\bibnamedelima D.},
+         giveni={S\bibinitperiod\bibinitdelim D\bibinitperiod},
+      }}%
+      {{hash=BNDR}{%
+         family={Bhat},
+         familyi={B\bibinitperiod},
+         given={N.\bibnamedelima D.\bibnamedelima R.},
+         giveni={N\bibinitperiod\bibinitdelim D\bibinitperiod\bibinitdelim
+  R\bibinitperiod},
+      }}%
+      {{hash=BM}{%
+         family={Burgay},
+         familyi={B\bibinitperiod},
+         given={M.},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=BSS}{%
+         family={Burke-Spolaor},
+         familyi={B\bibinitperiod-S\bibinitperiod},
+         given={S.},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=DN}{%
+         family={D'Amico},
+         familyi={D\bibinitperiod},
+         given={N.},
+         giveni={N\bibinitperiod},
+      }}%
+      {{hash=LL}{%
+         family={Levin},
+         familyi={L\bibinitperiod},
+         given={L.},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=MPL}{%
+         family={McMahon},
+         familyi={M\bibinitperiod},
+         given={Peter\bibnamedelima L.},
+         giveni={P\bibinitperiod\bibinitdelim L\bibinitperiod},
+      }}%
+      {{hash=MS}{%
+         family={Milia},
+         familyi={M\bibinitperiod},
+         given={S.},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=SBW}{%
+         family={Stappers},
+         familyi={S\bibinitperiod},
+         given={B.\bibnamedelima W.},
+         giveni={B\bibinitperiod\bibinitdelim W\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{KMJ+1}
+    \strng{fullhash}{KMJJASWvBMJSKMPABSDBNDRBMBSSDNLLMPLMSSBW1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2010}
+    \field{labeldatesource}{year}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \field{abstract}{%
+    {We have embarked on a survey for pulsars and fast transients using the
+  13-beam multibeam receiver on the Parkes Radio Telescope. Installation of a
+  digital backend allows us to record 400 MHz of bandwidth for each beam, split
+  into 1024 channels and sampled every 64 μs. Limits of the receiver package
+  restrict us to a 340 MHz observing band centred at 1352 MHz. The factor of 8
+  improvement in frequency resolution over previous multibeam surveys allows us
+  to probe deeper into the Galactic plane for short-duration signals such as
+  the pulses from millisecond pulsars. We plan to survey the entire southern
+  sky in 42 641 pointings, split into low, mid and high Galactic latitude
+  regions, with integration times of 4200, 540 and 270 s, respectively.
+  Simulations suggest that we will discover 400 pulsars, of which 75 will be
+  millisecond pulsars. With ∼30 per cent of the mid-latitude survey complete,
+  we have redetected 223 previously known pulsars and discovered 27 pulsars,
+  five of which are millisecond pulsars. The newly discovered millisecond
+  pulsars tend to have larger dispersion measures than those discovered in
+  previous surveys, as expected from the improved time and frequency resolution
+  of our instrument.}%
+    }
+    \verb{doi}
+    \verb 10.1111/j.1365-2966.2010.17325.x
+    \endverb
+    \verb{eprint}
+    \verb http://oup.prod.sis.lan/mnras/article-pdf/409/2/619/18579028/mnras040
+    \verb 9-0619.pdf
+    \endverb
+    \field{issn}{0035-8711}
+    \field{number}{2}
+    \field{pages}{619\bibrangedash 627}
+    \field{title}{{The High Time Resolution Universe Pulsar Survey – I.
+  System configuration and initial discoveries}}
+    \verb{url}
+    \verb https://doi.org/10.1111/j.1365-2966.2010.17325.x
+    \endverb
+    \field{volume}{409}
+    \field{journaltitle}{Monthly Notices of the Royal Astronomical Society}
+    \field{month}{11}
+    \field{year}{2010}
   \endentry
 
   \entry{energy-estimation}{article}{}
@@ -1585,6 +1796,86 @@
     \verb ifold-hypothesis.pdf
     \endverb
     \field{year}{2010}
+  \endentry
+
+  \entry{exploding}{article}{}
+    \name{author}{3}{}{%
+      {{hash=PG}{%
+         family={{Philipp}},
+         familyi={P\bibinitperiod},
+         given={George},
+         giveni={G\bibinitperiod},
+      }}%
+      {{hash=SD}{%
+         family={{Song}},
+         familyi={S\bibinitperiod},
+         given={Dawn},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=CJG}{%
+         family={{Carbonell}},
+         familyi={C\bibinitperiod},
+         given={Jaime\bibnamedelima G.},
+         giveni={J\bibinitperiod\bibinitdelim G\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Machine Learning, Computer Science - Computer
+  Vision and Pattern Recognition}
+    \strng{namehash}{PGSDCJG1}
+    \strng{fullhash}{PGSDCJG1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2017}
+    \field{labeldatesource}{year}
+    \field{sortinit}{P}
+    \field{sortinithash}{P}
+    \field{eid}{arXiv:1712.05577}
+    \verb{eprint}
+    \verb 1712.05577
+    \endverb
+    \field{pages}{arXiv:1712.05577}
+    \field{title}{{The exploding gradient problem demystified - definition,
+  prevalence, impact, origin, tradeoffs, and solutions}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.LG}
+    \field{year}{2017}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{early-stopping}{article}{}
+    \name{author}{1}{}{%
+      {{hash=PL}{%
+         family={Prechelt},
+         familyi={P\bibinitperiod},
+         given={Lutz},
+         giveni={L\bibinitperiod},
+      }}%
+    }
+    \keyw{Early stopping, Overfitting, Cross validation, Generalization,
+  Empirical study, Supervised learning}
+    \strng{namehash}{PL1}
+    \strng{fullhash}{PL1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1998}
+    \field{labeldatesource}{year}
+    \field{sortinit}{P}
+    \field{sortinithash}{P}
+    \verb{doi}
+    \verb https://doi.org/10.1016/S0893-6080(98)00010-0
+    \endverb
+    \field{issn}{0893-6080}
+    \field{number}{4}
+    \field{pages}{761 \bibrangedash  767}
+    \field{title}{Automatic early stopping using cross validation: quantifying
+  the criteria}
+    \verb{url}
+    \verb http://www.sciencedirect.com/science/article/pii/S0893608098000100
+    \endverb
+    \field{volume}{11}
+    \field{journaltitle}{Neural Networks}
+    \field{year}{1998}
   \endentry
 
   \entry{optim-algos}{article}{}
