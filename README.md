@@ -2,7 +2,7 @@
 
 This repository contains the implementation for my thesis 'Energy-based Multi-Modal Attention' at the Montefiore (Computer & Electrical Engineering) Institute of the University of Liège (2018-2019).  
 
-Author: Aurélien Werenne 
+Author: Aurélien Werenne
 Supervisor: Raphaël Marée  
  
 ___
@@ -12,17 +12,16 @@ A multi-modal neural network exploits information from different channels and in
 
 ___
 
-The neural networks are implemented using [Pytorch](https://pytorch.org/).  
-There is still room for improvement of the code; I will try to improve it if I can find the time.
+The neural networks are implemented using [Pytorch](https://pytorch.org/). There is still room for improvement of the code; I will try to improve it if I can find the time.
 
 If you find this thesis or code useful, please cite according to the following bib entry,
 ```
 @MastersThesis{Werenne:Thesis:2019,
-    author     =     {Aurélien Werenne},
-    title     =     {Energy-based Multi-Modal Attention},
-    school     =     {University of Liège},
-    address     =     {Belgium},
-    year     =     {2019},
+    author  =  {Aurélien Werenne},
+    title  =  {Energy-based Multi-Modal Attention},
+    school  =  {University of Liège},
+    address  =  {Belgium},
+    year  =  {2019}
     }
 ```
 
