@@ -1,7 +1,3 @@
-"""
-    ...
-"""
-
 import numpy as np
 import torch
 import torch.nn as nn
@@ -16,7 +12,6 @@ from plotting import *
 # ---------------
 def train(X_train, X_valid, model, optimizer, batch_size, max_epochs):
     train_curve, valid_curve = [], []
-    
     for epoch in range(max_epochs):
         print("Epoch: " + str(epoch+1))
         """ Train """
@@ -43,7 +38,7 @@ def train_step(X, model, optimizer, batch_size, train=True):
             optimizer.zero_grad()
             idx = indices[i:i+batch_size]
             batch = X[idx].view(batch_size, -1)
-            Xhat = model(batch, add_noise=True)  # N x D
+            Xhat = model(batch, add_noise=True)  
             loss = criterion(Xhat, batch)
             sum_loss += loss.item()
             n_steps += 1
@@ -75,6 +70,7 @@ def signal_vs_bckg(X_signal, X_background, model):
         x = x.unsqueeze(0)
         q_unseen.append(model.potential(x).data)
     return [np.asarray(q_seen), np.asarray(q_unseen)]
+
 
 # ---------------
 def new_signal_vs_bckg(X_signal, X_background, model):
@@ -158,9 +154,7 @@ if __name__ == "__main__":
     """ Load and train model """ 
     if retrain:
         X_train, y_train = train_set
-        # X_train = signal_only(X_train, y_train)
         X_valid, y_valid = valid_set
-        # X_valid = signal_only(X_valid, y_valid)
 
         X_train_ip, X_valid_ip = X_train[:,:4], X_valid[:,:4] 
         model_ip = DenoisingAutoEncoder(d_input, n_hidden, noise_std).float()
@@ -181,8 +175,6 @@ if __name__ == "__main__":
 
         X_train = signal_only(X_train, y_train)
         X_valid = signal_only(X_valid, y_valid)
-        # X_train = background_only(X_train, y_train)
-        # X_valid = background_only(X_valid, y_valid)
 
         X_train_ip, X_valid_ip = X_train[:,:4], X_valid[:,:4] 
         model_ip = DenoisingAutoEncoder(d_input, n_hidden, noise_std).float()
@@ -205,6 +197,7 @@ if __name__ == "__main__":
         model_ip.load_state_dict(torch.load("dumps/autoencoder-ip-signal.pt"))
         model_dm_snr = DenoisingAutoEncoder(d_input, n_hidden, noise_std).float()
         model_dm_snr.load_state_dict(torch.load("dumps/autoencoder-dm-snr-signal.pt"))
+    
     model_ip.eval()
     model_dm_snr.eval()
 
@@ -217,24 +210,16 @@ if __name__ == "__main__":
     X_signal_dm_snr, X_bckg_dm_snr = X_signal[:,4:], X_bckg[:,4:] 
 
     """ Experiment 2.1 """
-    # measures_ip = missing(X_test_ip, model_ip)
-    # measures_dm_snr = missing(X_test_dm_snr, model_dm_snr)
-    # plot_signal_bckg(measures_ip, save=True, fname="results/missing-ip")
-    # plot_signal_bckg(measures_dm_snr, save=True, fname="results/missing-dm-snr")
-
-    """ Experiment 2.2 """
     measures_ip = signal_vs_bckg(X_signal_ip, X_bckg_ip, model_ip)
     measures_dm_snr = signal_vs_bckg(X_signal_dm_snr, X_bckg_dm_snr, model_dm_snr)
-    # plot_signal_bckg(measures_ip, save=True, fname="results/signal-vs-background-ip")
-    # plot_signal_bckg(measures_dm_snr, save=True, fname="results/signal-vs-background-dm-snr")
-    # plot_signal_bckg(measures_ip, save=True, fname="results/signal-vs-background-ip-inverse")
-    # plot_signal_bckg(measures_dm_snr, save=True, fname="results/signal-vs-background-dm-snr-inverse")
+    plot_signal_bckg(measures_ip, save=True, fname="results/signal-vs-background-ip")
+    plot_signal_bckg(measures_dm_snr, save=True, fname="results/signal-vs-background-dm-snr")
 
-    """ Experiment 2.3 """
-    # measures_ip = noisy_signal(X_test_ip, model_ip)
-    # measures_dm_snr = noisy_signal(X_test_dm_snr, model_dm_snr)
-    # plot_noisy_signal(measures_ip, save=True, fname="results/noisy-signal-ip")
-    # plot_noisy_signal(measures_dm_snr, save=True, fname="results/noisy-signal-dm-snr")
+    """ Experiment 2.2 """
+    measures_ip = noisy_signal(X_test_ip, model_ip)
+    measures_dm_snr = noisy_signal(X_test_dm_snr, model_dm_snr)
+    plot_noisy_signal(measures_ip, save=True, fname="results/noisy-signal-ip")
+    plot_noisy_signal(measures_dm_snr, save=True, fname="results/noisy-signal-dm-snr")
 
     
     

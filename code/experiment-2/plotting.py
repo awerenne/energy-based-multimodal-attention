@@ -45,12 +45,8 @@ def plot_signal_bckg(measures, save=False, fname=None):
     plt.show()
     
 
-
 # ---------------
 def plot_noisy_signal(measures, save=False, fname=None):
-    # noise_db = noise_power(measures[:,0])
-    # snr = 10 * np.log(1/(measures[:,0] ** 2))
-    # snr = 10 * np.log(measures[:,0] ** 2)
     snr = measures[:,0]
     potential_mean = measures[:,1]
     potential_std = measures[:,2]
