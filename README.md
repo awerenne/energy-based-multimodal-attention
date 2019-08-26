@@ -1,8 +1,8 @@
 # Energy-based Multi-Modal Attention (EMMA)
 
-This repository contains the implementation for my thesis 'Energy-based Multi-Modal Attention' at the Montefiore (Computer & Electrical Engineering) Institute of the University of Liège (2018-2019).  
+This repository contains the implementation for my thesis 'Energy-based Multi-Modal Attention' at the Montefiore (Computer & Electrical Engineering) Institute of the University of Liège (2018-2019). The report can be found [here](https://github.com/Werenne/energy-based-multimodal-attention/blob/master/report/main.pdf).
 
-Author: Aurélien Werenne
+Author: Aurélien Werenne<br />
 Supervisor: Raphaël Marée  
  
 ___
