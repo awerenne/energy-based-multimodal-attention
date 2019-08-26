@@ -12,7 +12,7 @@ A multi-modal neural network exploits information from different channels and in
 
 ___
 
-The neural networks are implemented using [Pytorch](https://pytorch.org/). There is still room for improvement of the code; I will try to improve it if I can find the time.
+The neural networks are implemented using [Pytorch](https://pytorch.org/). Notice that there is still room for improvement of the code; I will try to improve it if I can find the time.
 
 If you find this thesis or code useful, please cite according to the following bib entry,
 ```
