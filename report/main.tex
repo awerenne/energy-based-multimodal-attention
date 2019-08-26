@@ -86,7 +86,7 @@ headsepline, % Uncomment to get a line under the header
 \addresses{} % Your address, this is not currently used anywhere in the template, print it elsewhere with \addressname
 
 \subject{Artificial Intelligence} % Your subject area, this is not currently used anywhere in the template, print it elsewhere with \subjectname
-\keywords{Multimodal, Deep Learning, Attention, Robustness, Crossmodal} % Keywords for your thesis, this is not currently used anywhere in the template, print it elsewhere with \keywordnames
+\keywords{Multimodal, Deep Learning, Attention, Robustness} % Keywords for your thesis, this is not currently used anywhere in the template, print it elsewhere with \keywordnames
 \university{University of Liège} % Your university's name and URL, this is used in the title page and abstract, print it elsewhere with \univname
 \faculty{Faculty of Applied Sciences} % Your faculty's name and URL, this is used in the title page and abstract, print it elsewhere with \facname
 \department{Montefiore Institute} % Your department's name and URL, this is used in the title page and abstract, print it elsewhere with \deptname
@@ -173,11 +173,14 @@ Liège, Belgium\\[4cm]
 
 \begin{abstract}
 \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
-TODO
+A multi-modal neural network exploits information from different channels and in different terms (e.g., images, text, sounds, sensor measures) in the hope that the information carried by each mode is complementary, in order to improve the predictions the neural network. Nevertheless, in realistic situations, varying levels of perturbations can occur on the data of the modes, which may decrease the quality of the inference process. An additional difficulty is that these perturbations vary between the modes and on a per-sample basis. This work presents a solution to this problem. The three main contributions are described below.
 
-Multi-modal deep learning, especially in safety-critical areas offers the advantage of having more information to extract permitting models to make better predictions. Attention mechanisms are commonly used to combine multiple modalities. However, only a few researchers considered cases where modes could be noisy or missing. Lot of constraints, explicit, not generalize with out-of-distribution.
+First, a novel attention module is designed, analysed and implemented. This attention module is constructed to help multi-modal networks handle modes with perturbations.
 
-This thesis presents a novel attention mechanism able to adapts its focus on the most useful modes for the prediction on a per-sample basis. Present results outperform standard data augmentation techniques by up to 10\% confident it could generalize to more complex datasets and architectures. Further using our definition of capacity in attention, we introduce a simple regularizer inducing the model to let less information pass enabling it to reduce the perturbations on more intensive situations.
+Secondly, two new regularizers are developed to generalize the robustness to more intensive failing modes (relative to the training set).
+
+Lastly, a unified multi-modal attention module is presented, combining the main types of attention mechanisms in the deep learning literature with our module. We suggest that the unified module could be coupled with a prediction model to enable the latter face unexpected situations, and extract the most relevant information in the data.
+
 \end{abstract}
 
 %----------------------------------------------------------------------------------------
@@ -186,7 +189,19 @@ This thesis presents a novel attention mechanism able to adapts its focus on the
 
 \begin{acknowledgements}
 \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec ultrices felis, eu suscipit orci. Nunc laoreet odio velit. Mauris tincidunt quam at purus vulputate vehicula. Etiam eu purus lorem. Sed hendrerit condimentum tellus, ut posuere libero laoreet nec. 
+\vspace*{5mm}
+I would like to thank everybody who kept me busy this year. In particular, my thesis advisor Dr. Raphaël Marée for always encouraging my research, and Romain Mormont who gave me valuable feedback on the writing of this Master thesis. I would also like to thank the jury for reading the text.
+
+Moreover, I would like to acknowledge the work of all the Professors at the University of Liège who helped me become an engineer.
+
+I am also very grateful to my good friends Mathias Berger and Lucas Fuentes. They took time of their busy schedules to provide me with very valuable comments and suggestions, which have drastically improved the quality of this thesis. Thank you. 
+
+Finally, I must express my profound gratitude to my family, especially my grand-parents for providing me with unfailing support and continuous encouragement throughout the process of researching and writing this thesis. This accomplishment would not have been possible without them.\\[1cm]
+
+\begin{flushright}
+\textit{Aurélien Werenne}\\
+Liège, Belgium 2018-2019
+\end{flushright}
 
 \end{acknowledgements}
 
@@ -242,7 +257,7 @@ IP & \textbf{I}ntegrated \textbf{P}rofile\\
 LSTM & \textbf{L}ong \textbf{S}hort \textbf{T}erm \textbf{M}emory\\
 MMDL & \textbf{M}ulti \textbf{M}odal \textbf{D}eep \textbf{L}earning\\
 MMN & \textbf{M}ulti \textbf{M}odal \textbf{N}etwork\\
-NLP & \textbf{N}atural \textbf{L}anguage \textbf{P}rocessing\\
+NLL & \textbf{N}egative \textbf{L}og-\textbf{L}ikelihood\\
 RNN & \textbf{R}ecurrent \textbf{N}eural \textbf{N}etwork\\
 SGD & \textbf{S}tochastic \textbf{G}radient \textbf{D}escent\\
 SNR & \textbf{S}ignal-to-\textbf{n}oise \textbf{R}atio\\

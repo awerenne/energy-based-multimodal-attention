@@ -133,8 +133,8 @@ def plot_distribution(model, X, indic, save=False, idx=None):
     plt.legend(fontsize=19)
     plt.tick_params(axis='both', which='major', labelsize=25)
     plt.ylim([0, 1])
-    if save: plt.savefig('results/noise-0-5/alpha-distrib' + suffix)
-    plt.show()
+    if save: plt.savefig('results/noise-2/alpha-distrib' + suffix)
+    # plt.show()
 
     kde = False
     idx = (indic[:,0] == 0) * (indic[:,1] == 0)
@@ -167,9 +167,10 @@ def plot_distribution(model, X, indic, save=False, idx=None):
     for i, v in enumerate([torch.mean(a[:,1]).data.numpy(), torch.mean(b[:,1]).data.numpy(), torch.mean(c[:,1]).data.numpy()]):
         plt.text(i+0.17, v + .01, "%0.2f"%v, color='blue', fontweight='bold', fontsize=21)
     plt.legend(fontsize=19)
+    plt.tick_params(axis='both', which='major', labelsize=25)
     plt.ylim([0, 1])
-    if save: plt.savefig('results/noise-0-5/beta-distrib' + suffix)
-    plt.show()
+    if save: plt.savefig('results/noise-2/beta-distrib' + suffix)
+    # plt.show()
 
 
 # ---------------
@@ -273,155 +274,124 @@ def plot_noise_generalisation(models, best_combo, X_test, y_test, save=False, id
     # if save: plt.savefig('results/noise-generalisation-average' + suffix)
     # plt.show()
 
-    # f1_with = []
-    # f1_without = []
-    # f1_base = []
-    # noises = np.linspace(0,2,50)
-    # beta_ip, beta_dm = [], []
-    # for noise in noises:
-    #     X = torch.zeros(X_test.size()).float()
+    f1_with = []
+    f1_without = []
+    f1_base = []
+    noises = np.linspace(0,2,50)
+    beta_ip, beta_dm = [], []
+    for noise in noises:
+        X = torch.zeros(X_test.size()).float()
+        X = X_test.clone()
+        X[:,:4] = white_noise(X[:,:4].data.numpy(), noise)
+        F1, _, recall, _ = evaluation(models['model-with'][best_combo], 'model-with', X, y_test)
+        f1_with.append(F1)
+        F1, _, recall, _ = evaluation(models['model-without'], 'model-without', X, y_test)
+        f1_without.append(F1)
+        F1, _, recall, _ = evaluation(models['base-model'], 'base-model', X, y_test)
+        f1_base.append(F1)
+        modes = [X[:,:4], X[:,4:]]
+        _, betas = models['model-with'][best_combo][0].get_alpha_beta(modes)
+        beta_ip.append(torch.mean(betas[:,0]).data.numpy())
+        beta_dm.append(torch.mean(betas[:,1]).data.numpy())
+    plt.plot(noises, f1_with, label='with')
+    plt.plot(noises, f1_without, label='without')
+    plt.plot(noises, f1_base, label='base')
+    plt.axvline(x=0.5, ls='--', c='green')
+    plt.xlabel(r'$\sigma$ corruption', fontsize=30)
+    plt.ylabel('F1-score', fontsize=30)
+    plt.ylim([0, 1])
+    plt.tick_params(axis='both', which='major', labelsize=25)
+    plt.legend(loc='best')
+    if save: plt.savefig('results/noise-generalisation-ip-noisy' + suffix)
+    plt.show()
+
+    plt.plot(noises, beta_ip, label=r'$\beta$-ip')
+    plt.plot(noises, beta_dm, label=r'$\beta$-dm')
+    plt.xlabel(r'$\sigma$ corruption', fontsize=30)
+    plt.ylabel(r'$\beta$', fontsize=30)
+    plt.ylim([-0.1, 1])
+    plt.tick_params(axis='both', which='major', labelsize=25)
+    plt.legend(loc='best')
+    if save: plt.savefig('results/noise-generalisation-ip-noisy-beta' + suffix)
+    plt.show()
+
+
+    beta_ip, beta_dm = [], []
+    f1_with = []
+    f1_without = []
+    f1_base = []
+    noises = np.linspace(0,2,50)
+    for noise in noises:
+        X = torch.zeros(X_test.size()).float()
+        X = X_test.clone()
+        X[:,4:] = white_noise(X[:,4:].data.numpy(), noise)
+        F1, _, recall, _ = evaluation(models['model-with'][best_combo], 'model-with', X, y_test)
+        f1_with.append(F1)
+        F1, _, recall, _ = evaluation(models['model-without'], 'model-without', X, y_test)
+        f1_without.append(F1)
+        F1, _, recall, _ = evaluation(models['base-model'], 'base-model', X, y_test)
+        f1_base.append(F1)
+        modes = [X[:,:4], X[:,4:]]
+        _, betas = models['model-with'][best_combo][0].get_alpha_beta(modes)
+        beta_ip.append(torch.mean(betas[:,0]).data.numpy())
+        beta_dm.append(torch.mean(betas[:,1]).data.numpy())
+    plt.plot(noises, f1_with, label='with')
+    plt.plot(noises, f1_without, label='without')
+    plt.plot(noises, f1_base, label='base')
+    plt.axvline(x=0.5, ls='--', c='green')
+    plt.xlabel(r'$\sigma$ corruption', fontsize=30)
+    plt.ylabel('F1-score', fontsize=30)
+    plt.ylim([0, 1])
+    plt.tick_params(axis='both', which='major', labelsize=25)
+    plt.legend(loc='best')
+    if save: plt.savefig('results/noise-generalisation-dm-noisy' + suffix)
+    plt.show()
+
+    plt.plot(noises, beta_ip, label=r'$\beta$-ip')
+    plt.plot(noises, beta_dm, label=r'$\beta$-dm')
+    plt.xlabel(r'$\sigma$ corruption', fontsize=30)
+    plt.ylabel(r'$\beta$', fontsize=30)
+    plt.ylim([-0.1, 1])
+    plt.tick_params(axis='both', which='major', labelsize=25)
+    plt.legend(loc='best')
+    if save: plt.savefig('results/noise-generalisation-dm-noisy-beta' + suffix)
+    plt.show()
+
+
+    # from mpl_toolkits.mplot3d import Axes3D
+    # x=np.linspace(0,2,20)
+    # y=np.linspace(0,2,20)
+    # lx= len(x)
+    # ly=len(y)
+    # beta_ip, beta_dm = np.zeros((20,20)), np.zeros((20,20))
+
+    # for i in range(lx):
+    #     noise_ip = x[i]
     #     X = X_test.clone()
-    #     X[:,:4] = white_noise(X[:,:4].data.numpy(), noise)
-    #     F1, _, recall, _ = evaluation(models['model-with'][best_combo], 'model-with', X, y_test)
-    #     f1_with.append(F1)
-    #     F1, _, recall, _ = evaluation(models['model-without'], 'model-without', X, y_test)
-    #     f1_without.append(F1)
-    #     F1, _, recall, _ = evaluation(models['base-model'], 'base-model', X, y_test)
-    #     f1_base.append(F1)
-    #     modes = [X[:,:4], X[:,4:]]
-    #     _, betas = models['model-with'][best_combo][0].get_alpha_beta(modes)
-    #     beta_ip.append(torch.mean(betas[:,0]).data.numpy())
-    #     beta_dm.append(torch.mean(betas[:,1]).data.numpy())
-    # plt.plot(noises, f1_with, label='with')
-    # plt.plot(noises, f1_without, label='without')
-    # plt.plot(noises, f1_base, label='base')
-    # plt.axvline(x=0.5, ls='--', c='green')
-    # plt.xlabel(r'$\sigma$ corruption', fontsize=30)
-    # plt.ylabel('F1-score', fontsize=30)
-    # plt.ylim([0, 1])
-    # plt.tick_params(axis='both', which='major', labelsize=25)
-    # plt.legend(loc='best')
-    # if save: plt.savefig('results/noise-generalisation-ip-noisy' + suffix)
-    # plt.show()
-
-    # plt.plot(noises, beta_ip, label=r'$\beta$-ip')
-    # plt.plot(noises, beta_dm, label=r'$\beta$-dm')
-    # plt.xlabel(r'$\sigma$ corruption', fontsize=30)
-    # plt.ylabel(r'$\beta$', fontsize=30)
-    # plt.ylim([-0.1, 1])
-    # plt.tick_params(axis='both', which='major', labelsize=25)
-    # plt.legend(loc='best')
-    # if save: plt.savefig('results/noise-generalisation-ip-noisy-beta' + suffix)
-    # plt.show()
-
-
-    # beta_ip, beta_dm = [], []
-    # f1_with = []
-    # f1_without = []
-    # f1_base = []
-    # noises = np.linspace(0,2,50)
-    # for noise in noises:
-    #     X = torch.zeros(X_test.size()).float()
-    #     X = X_test.clone()
-    #     X[:,4:] = white_noise(X[:,4:].data.numpy(), noise)
-    #     F1, _, recall, _ = evaluation(models['model-with'][best_combo], 'model-with', X, y_test)
-    #     f1_with.append(F1)
-    #     F1, _, recall, _ = evaluation(models['model-without'], 'model-without', X, y_test)
-    #     f1_without.append(F1)
-    #     F1, _, recall, _ = evaluation(models['base-model'], 'base-model', X, y_test)
-    #     f1_base.append(F1)
-    #     modes = [X[:,:4], X[:,4:]]
-    #     _, betas = models['model-with'][best_combo][0].get_alpha_beta(modes)
-    #     beta_ip.append(torch.mean(betas[:,0]).data.numpy())
-    #     beta_dm.append(torch.mean(betas[:,1]).data.numpy())
-    # plt.plot(noises, f1_with, label='with')
-    # plt.plot(noises, f1_without, label='without')
-    # plt.plot(noises, f1_base, label='base')
-    # plt.axvline(x=0.5, ls='--', c='green')
-    # plt.xlabel(r'$\sigma$ corruption', fontsize=30)
-    # plt.ylabel('F1-score', fontsize=30)
-    # plt.ylim([0, 1])
-    # plt.tick_params(axis='both', which='major', labelsize=25)
-    # plt.legend(loc='best')
-    # if save: plt.savefig('results/noise-generalisation-dm-noisy' + suffix)
-    # plt.show()
-
-    # plt.plot(noises, beta_ip, label=r'$\beta$-ip')
-    # plt.plot(noises, beta_dm, label=r'$\beta$-dm')
-    # plt.xlabel(r'$\sigma$ corruption', fontsize=30)
-    # plt.ylabel(r'$\beta$', fontsize=30)
-    # plt.ylim([-0.1, 1])
-    # plt.tick_params(axis='both', which='major', labelsize=25)
-    # plt.legend(loc='best')
-    # if save: plt.savefig('results/noise-generalisation-dm-noisy-beta' + suffix)
-    # plt.show()
-
-
-    # beta_ip, beta_dm = np.zeros((2,2)), np.zeros((2,2))
-    # f1_with = []
-    # f1_without = []
-    # f1_base = []
-    # noises = np.linspace(0,2,2)
-    # for i, noise_ip in enumerate(noises):
-    #     X = X_test.clone()
-    #     X[:,:4] = white_noise(X[:,:4].data.numpy(), noise)
-    #     for j, noise_dm in enumerate(noises):
-    #         X[:,4:] = white_noise(X[:,4:].data.numpy(), noise)
+    #     X[:,:4] = white_noise(X[:,:4].data.numpy(), noise_ip)
+    #     for j in range(ly):
+    #         noise_dm = y[j]
+    #         X[:,4:] = white_noise(X[:,4:].data.numpy(), noise_dm)
     #         modes = [X[:,:4], X[:,4:]]
     #         _, betas = models['model-with'][best_combo][0].get_alpha_beta(modes)
     #         beta_ip[i,j] = torch.mean(betas[:,0]).data.numpy()
     #         beta_dm[i,j] = torch.mean(betas[:,1]).data.numpy()
 
-    from mpl_toolkits.mplot3d import Axes3D
-    x=np.linspace(0,2,20)
-    y=np.linspace(0,2,20)
-    lx= len(x)
-    ly=len(y)
-    beta_ip, beta_dm = np.zeros((20,20)), np.zeros((20,20))
-
-    for i in range(lx):
-        noise_ip = x[i]
-        X = X_test.clone()
-        X[:,:4] = white_noise(X[:,:4].data.numpy(), noise_ip)
-        for j in range(ly):
-            noise_dm = y[j]
-            X[:,4:] = white_noise(X[:,4:].data.numpy(), noise_dm)
-            modes = [X[:,:4], X[:,4:]]
-            _, betas = models['model-with'][best_combo][0].get_alpha_beta(modes)
-            beta_ip[i,j] = torch.mean(betas[:,0]).data.numpy()
-            beta_dm[i,j] = torch.mean(betas[:,1]).data.numpy()
-
-    fig = plt.figure()
-    ax = Axes3D(fig)
-    ax = fig.gca(projection='3d')
-    x, y = np.meshgrid(x, y)
-    surf = ax.plot_surface(x, y, beta_ip, rstride=1, cstride=1, cmap='hot')
-    fig.colorbar(surf, shrink=0.5, aspect=5)
-    plt.show()
-
-    fig = plt.figure()
-    ax = Axes3D(fig)
-    ax = fig.gca(projection='3d')
-    surf = ax.plot_surface(x, y, beta_dm, rstride=1, cstride=1, cmap='hot')
-    fig.colorbar(surf, shrink=0.5, aspect=5)
-    plt.show()
-
-    # from mpl_toolkits.mplot3d import Axes3D
-    # import matplotlib.pyplot as plt
-    # import numpy as np
-
-    # X = np.arange(1, 2)
-    # Y = np.arange(1, 2)
-    # X, Y = np.meshgrid(X, Y)
-    # R = np.sqrt(X**2 + Y**2)
-    # Z = np.sin(R)
     # fig = plt.figure()
+    # ax = Axes3D(fig)
     # ax = fig.gca(projection='3d')
-    # surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='hot', linewidth=0, antialiased=False)
-    # ax.set_zlim(-1.01, 1.01)
-
+    # x, y = np.meshgrid(x, y)
+    # surf = ax.plot_surface(x, y, beta_ip, rstride=1, cstride=1, cmap='hot')
     # fig.colorbar(surf, shrink=0.5, aspect=5)
     # plt.show()
+
+    # fig = plt.figure()
+    # ax = Axes3D(fig)
+    # ax = fig.gca(projection='3d')
+    # surf = ax.plot_surface(x, y, beta_dm, rstride=1, cstride=1, cmap='hot')
+    # fig.colorbar(surf, shrink=0.5, aspect=5)
+    # plt.show()
+
 
 
 # ---------------

@@ -387,9 +387,11 @@ if __name__ == "__main__":
     n_hidden = 12  # Number of hidden units in autoencoders
     noise_std_autoenc = 0.01
     noise_std_data = 0.5
-    # coldness = [5e-3]
-    # lambda_regul = [1e-4]
-    # lambda_capacity = [1e-2]
+    coldness = [1e-4]
+    # lambda_regul = [1e-3, 0]
+    # lambda_regul = [0, 1e-5, 1e-4, 1e-3]
+    # # lambda_capacity = [-1e-2]
+    # lambda_capacity = [1e-2]   
     coldness = [1e-4, 1e-3, 1e-2, 1e-1, 1]
     lambda_regul = [0, 1e-4, 1e-3, 1e-2, 1e-1]
     lambda_capacity = [0, 1e-4, 1e-3, 1e-2, 1e-1]
@@ -512,8 +514,8 @@ if __name__ == "__main__":
 
     # X_test_noisy, y_test_noisy, indic_test = apply_corruption(X_test, y_test,
     #                                                 0.5)  
-    ranking = get_ranking(models['model-with'], 45, X_test_noisy, y_test_noisy, indic_test)
-    # print_evaluation(models, ranking, X_test_noisy, y_test_noisy, indic_test)
+    ranking = get_ranking(models['model-with'], 10, X_test_noisy, y_test_noisy, indic_test)
+    print_evaluation(models, ranking, X_test_noisy, y_test_noisy, indic_test)
 
     """ Confusion matrix of best models """
     # yhat, classes = predictions(models['base-model'], 'base-model', X_test_noisy) 
@@ -530,28 +532,34 @@ if __name__ == "__main__":
     #     print(name, param.data)
 
     # plot_curves(curves, ranking[0], save=True) 
-    # X_test_noisy, y_test_noisy, indic_test = apply_corruption(X_test, y_test,0.01)  
-    # for i in range(120): 
-    #     plot_distribution(models['model-with'][ranking[i]], X_test_noisy, indic_test, save=True, idx=i)
+    X_test_noisy, y_test_noisy, indic_test = apply_corruption(X_test, y_test,2)  
+    for i in range(10): 
+        plot_distribution(models['model-with'][ranking[i]], X_test_noisy, indic_test, save=True, idx=i)
     # X_test_noisy[:,:4] = white_noise(X_test_noisy[:,:4].data.numpy(),2)
     # plot_distribution(models['model-with'][ranking[0]], X_test_noisy, indic_test, save=True)
     # plot_yerkes_dodson(meta['coldness'], models, ranking[0], X_test_noisy,
     #         y_test_noisy, save=True)
     # plot_capacity_vs_coldness(coldness, models, ranking[0], X_test_noisy,
     #         y_test_noisy, save=True)
-    # for i in range(44,50):
+    # for i in range(4):
     #     plot_noise_generalisation(models, ranking[i], X_test, y_test, save=False, idx=i)
     # print(ranking[44])
-    plot_noise_generalisation(models, ranking[0], X_test, y_test, save=True, idx=0)
+    # plot_noise_generalisation(models, ranking[0], X_test, y_test, save=False, idx=0)
     # plot_noise_generalisation(models, (0.0001, 0.01, 0.001), X_test, y_test, save=True)
 
     # test(meta, models, X_test, y_test, save=False)
     # base_F1 = 0.9
     # cut_noise = 1
     # plot_heatmap(models, meta, base_F1, cut_noise, X_test, y_test, save=True)
-    # for i in range(10):
+    # for i in range(4):
     #     plot_total_energy(models, ranking[i], X_test, y_test, save=False)
     # plot_total_energy(models, ranking[0], X_test, y_test, save=True)
+
+    # for name, param in models['model-with'][ranking[0]].named_parameters():
+    #     print(name, param.data)
+    # print()
+    # for name, param in models['model-with'][ranking[3]].named_parameters():
+    #     print(name, param.data)
 
     # ---------------
     def freeze_coupling(model):

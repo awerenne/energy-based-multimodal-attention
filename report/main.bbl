@@ -276,6 +276,55 @@
     \field{year}{2005}
   \endentry
 
+  \entry{attentive-survey}{article}{}
+    \name{author}{4}{}{%
+      {{hash=CS}{%
+         family={{Chaudhari}},
+         familyi={C\bibinitperiod},
+         given={Sneha},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=PG}{%
+         family={{Polatkan}},
+         familyi={P\bibinitperiod},
+         given={Gungor},
+         giveni={G\bibinitperiod},
+      }}%
+      {{hash=RR}{%
+         family={{Ramanath}},
+         familyi={R\bibinitperiod},
+         given={Rohan},
+         giveni={R\bibinitperiod},
+      }}%
+      {{hash=MV}{%
+         family={{Mithal}},
+         familyi={M\bibinitperiod},
+         given={Varun},
+         giveni={V\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Machine Learning, Statistics - Machine Learning}
+    \strng{namehash}{CS+1}
+    \strng{fullhash}{CSPGRRMV1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2019}
+    \field{labeldatesource}{year}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{eid}{arXiv:1904.02874}
+    \verb{eprint}
+    \verb 1904.02874
+    \endverb
+    \field{pages}{arXiv:1904.02874}
+    \field{title}{{An Attentive Survey of Attention Models}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.LG}
+    \field{year}{2019}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
   \entry{backprop}{book}{}
     \name{editor}{2}{}{%
       {{hash=CY}{%
@@ -308,6 +357,77 @@
       {Hillsdale, NJ, USA}%
     }
     \field{year}{1995}
+  \endentry
+
+  \entry{lstm-dae}{inproceedings}{}
+    \name{author}{6}{}{%
+      {{hash=CMY}{%
+         family={Chen},
+         familyi={C\bibinitperiod},
+         given={Mu-Yen},
+         giveni={M\bibinitperiod-Y\bibinitperiod},
+      }}%
+      {{hash=HTC}{%
+         family={Huang},
+         familyi={H\bibinitperiod},
+         given={Tien-Chi},
+         giveni={T\bibinitperiod-C\bibinitperiod},
+      }}%
+      {{hash=SY}{%
+         family={Shu},
+         familyi={S\bibinitperiod},
+         given={Yu},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=CCC}{%
+         family={Chen},
+         familyi={C\bibinitperiod},
+         given={Chia-Chen},
+         giveni={C\bibinitperiod-C\bibinitperiod},
+      }}%
+      {{hash=HTC}{%
+         family={Hsieh},
+         familyi={H\bibinitperiod},
+         given={Tsung-Che},
+         giveni={T\bibinitperiod-C\bibinitperiod},
+      }}%
+      {{hash=YNY}{%
+         family={Yen},
+         familyi={Y\bibinitperiod},
+         given={Neil\bibnamedelima Y.},
+         giveni={N\bibinitperiod\bibinitdelim Y\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {International World Wide Web Conferences Steering Committee}%
+    }
+    \keyw{autoencoder, chinese sentence representation, deep learning, long
+  short-term memory (lstm), sentiment classification}
+    \strng{namehash}{CMY+1}
+    \strng{fullhash}{CMYHTCSYCCCHTCYNY1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2018}
+    \field{labeldatesource}{year}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{booktitle}{Companion Proceedings of the The Web Conference 2018}
+    \verb{doi}
+    \verb 10.1145/3184558.3186355
+    \endverb
+    \field{isbn}{978-1-4503-5640-4}
+    \field{pages}{403\bibrangedash 408}
+    \field{series}{WWW '18}
+    \field{title}{Learning the Chinese Sentence Representation with LSTM
+  Autoencoder}
+    \verb{url}
+    \verb https://doi.org/10.1145/3184558.3186355
+    \endverb
+    \list{location}{1}{%
+      {Lyon, France}%
+    }
+    \field{year}{2018}
+    \warn{\item Can't use 'location' + 'address'}
   \endentry
 
   \entry{cocktail-party}{misc}{}
@@ -1550,37 +1670,6 @@
     \warn{\item Invalid format of field 'month'}
   \endentry
 
-  \entry{reinforcement}{article}{}
-    \name{author}{1}{}{%
-      {{hash=LY}{%
-         family={{Li}},
-         familyi={L\bibinitperiod},
-         given={Yuxi},
-         giveni={Y\bibinitperiod},
-      }}%
-    }
-    \keyw{Computer Science - Machine Learning}
-    \strng{namehash}{LY1}
-    \strng{fullhash}{LY1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelyear}{2017}
-    \field{labeldatesource}{year}
-    \field{sortinit}{L}
-    \field{sortinithash}{L}
-    \field{eid}{arXiv:1701.07274}
-    \verb{eprint}
-    \verb 1701.07274
-    \endverb
-    \field{pages}{arXiv:1701.07274}
-    \field{title}{{Deep Reinforcement Learning: An Overview}}
-    \field{journaltitle}{arXiv e-prints}
-    \field{eprinttype}{arXiv}
-    \field{eprintclass}{cs.LG}
-    \field{year}{2017}
-    \warn{\item Invalid format of field 'month'}
-  \endentry
-
   \entry{cross-transformer}{article}{}
     \name{author}{3}{}{%
       {{hash=LJ}{%
@@ -1796,6 +1885,81 @@
     \verb ifold-hypothesis.pdf
     \endverb
     \field{year}{2010}
+  \endentry
+
+  \entry{paszke}{article}{}
+    \name{author}{10}{}{%
+      {{hash=PA}{%
+         family={Paszke},
+         familyi={P\bibinitperiod},
+         given={Adam},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=GS}{%
+         family={Gross},
+         familyi={G\bibinitperiod},
+         given={Sam},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=CS}{%
+         family={Chintala},
+         familyi={C\bibinitperiod},
+         given={Soumith},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=CG}{%
+         family={Chanan},
+         familyi={C\bibinitperiod},
+         given={Gregory},
+         giveni={G\bibinitperiod},
+      }}%
+      {{hash=YE}{%
+         family={Yang},
+         familyi={Y\bibinitperiod},
+         given={Edward},
+         giveni={E\bibinitperiod},
+      }}%
+      {{hash=DZ}{%
+         family={DeVito},
+         familyi={D\bibinitperiod},
+         given={Zachary},
+         giveni={Z\bibinitperiod},
+      }}%
+      {{hash=LZ}{%
+         family={Lin},
+         familyi={L\bibinitperiod},
+         given={Zeming},
+         giveni={Z\bibinitperiod},
+      }}%
+      {{hash=DA}{%
+         family={Desmaison},
+         familyi={D\bibinitperiod},
+         given={Alban},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=AL}{%
+         family={Antiga},
+         familyi={A\bibinitperiod},
+         given={Luca},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=LA}{%
+         family={Lerer},
+         familyi={L\bibinitperiod},
+         given={Adam},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{PA+1}
+    \strng{fullhash}{PAGSCSCGYEDZLZDAALLA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2017}
+    \field{labeldatesource}{year}
+    \field{sortinit}{P}
+    \field{sortinithash}{P}
+    \field{title}{Automatic differentiation in PyTorch}
+    \field{year}{2017}
   \endentry
 
   \entry{exploding}{article}{}
@@ -2059,6 +2223,41 @@
     \warn{\item Invalid format of field 'month'}
   \endentry
 
+  \entry{sutton}{book}{}
+    \name{author}{2}{}{%
+      {{hash=SRS}{%
+         family={Sutton},
+         familyi={S\bibinitperiod},
+         given={Richard\bibnamedelima S.},
+         giveni={R\bibinitperiod\bibinitdelim S\bibinitperiod},
+      }}%
+      {{hash=BAG}{%
+         family={Barto},
+         familyi={B\bibinitperiod},
+         given={Andrew\bibnamedelima G.},
+         giveni={A\bibinitperiod\bibinitdelim G\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {MIT Press}%
+    }
+    \strng{namehash}{SRSBAG1}
+    \strng{fullhash}{SRSBAG1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1998}
+    \field{labeldatesource}{year}
+    \field{sortinit}{S}
+    \field{sortinithash}{S}
+    \field{edition}{1st}
+    \field{isbn}{0262193981}
+    \field{title}{Introduction to Reinforcement Learning}
+    \list{location}{1}{%
+      {Cambridge, MA, USA}%
+    }
+    \field{year}{1998}
+  \endentry
+
   \entry{star-eater}{article}{}
     \name{author}{2}{}{%
       {{hash=TJ}{%
@@ -2083,6 +2282,52 @@
     \field{title}{Black Holes: Star Eater.}
     \field{journaltitle}{National Geographic}
     \field{year}{2014}
+  \endentry
+
+  \entry{cnn-dae}{article}{}
+    \name{author}{3}{}{%
+      {{hash=TV}{%
+         family={{Turchenko}},
+         familyi={T\bibinitperiod},
+         given={Volodymyr},
+         giveni={V\bibinitperiod},
+      }}%
+      {{hash=CE}{%
+         family={{Chalmers}},
+         familyi={C\bibinitperiod},
+         given={Eric},
+         giveni={E\bibinitperiod},
+      }}%
+      {{hash=LA}{%
+         family={{Luczak}},
+         familyi={L\bibinitperiod},
+         given={Artur},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \keyw{Computer Science - Neural and Evolutionary Computing, Computer
+  Science - Computer Vision and Pattern Recognition, Computer Science - Machine
+  Learning}
+    \strng{namehash}{TVCELA1}
+    \strng{fullhash}{TVCELA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2017}
+    \field{labeldatesource}{year}
+    \field{sortinit}{T}
+    \field{sortinithash}{T}
+    \field{eid}{arXiv:1701.04949}
+    \verb{eprint}
+    \verb 1701.04949
+    \endverb
+    \field{pages}{arXiv:1701.04949}
+    \field{title}{{A Deep Convolutional Auto-Encoder with Pooling - Unpooling
+  Layers in Caffe}}
+    \field{journaltitle}{arXiv e-prints}
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.NE}
+    \field{year}{2017}
+    \warn{\item Invalid format of field 'month'}
   \endentry
 
   \entry{attention-need}{article}{}

@@ -1,7 +1,3 @@
-"""
-    Implementation of a Denoising Autoencoder with potential energy computation
-"""
-
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -11,28 +7,15 @@ import torch.nn.functional as F
 # ---------------
 class DenoisingAutoEncoder(nn.Module):
     """
-        Denoising Autoencoder.
-        
-        Inputs
-            - x: input tensor, size N x D
-                    + N: batch size
-                    + D: dimension of each input sample
-            - add_noise: boolean value, true forces the model to use the
-                         corruption process
-
-        Arguments
-            - d_input: dimension of input (D)
-            - d_hidden: number of hidden units (H)
-            - noise: amplitude of noise in corruption process
-
+        - d_input: dimension of input 
+        - d_hidden: number of hidden units 
+        - noise: standard deviation of Gaussian white noise of corruption process
     """
-
     def __init__(self, d_input, d_hidden, noise_stddev=0):
         super().__init__()
         self.d_input = d_input
         self.d_hidden = d_hidden
         self.noise_stddev = noise_stddev
-
         self.encoder = nn.Linear(d_input, d_hidden, bias=False)
         self.bias_h = torch.nn.Parameter(torch.zeros(d_hidden).float())
         self.bias_r = torch.nn.Parameter(torch.zeros(d_input).float())
@@ -56,13 +39,19 @@ class DenoisingAutoEncoder(nn.Module):
         if self.noise_stddev == 0: return x
         return x + Variable(x.data.new(x.size()).normal_(0, self.noise_stddev))
 
-    # -------
+    """
+        - x: input tensor, size N x D
+                + N: batch size
+                + D: dimension of each input sample
+        - add_noise: boolean value, if true the model applies corruption to the 
+                     input x
+    """
     def forward(self, x, add_noise):
         assert x.size(1) == self.d_input
         if add_noise:
-            x = self.corruption(x)  # N x D
-        u = torch.sigmoid(self.encoder(x) + self.bias_h)  # N x H
-        output = F.linear(u, self.encoder.weight.t()) + self.bias_r  # N x D
+            x = self.corruption(x)  
+        u = torch.sigmoid(self.encoder(x) + self.bias_h)  
+        output = F.linear(u, self.encoder.weight.t()) + self.bias_r  
         return output
 
 
