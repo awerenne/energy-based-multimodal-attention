@@ -1,5 +1,5 @@
 """
-    Functions related to the processing of the Pulsar dataset
+    Functions related to the pre-processing of the Pulsar dataset.
 """
 
 import numpy as np
@@ -9,7 +9,6 @@ import random
 from sklearn.model_selection import train_test_split
 import seaborn as sns
 import matplotlib.pyplot as plt
-
 
 
 # ---------------
@@ -50,9 +49,7 @@ def standardize(X_train, X_test):
 # ---------------    
 def white_noise(x, noise_std):
     noise = np.random.normal(loc=0, scale=noise_std, size=np.shape(x))
-    # noise = np.random.uniform(low=-noise_std, high=noise_std, size=np.shape(x))
-    out = np.add(x, noise)
-    return torch.from_numpy(out).float()
+    return torch.from_numpy(np.add(x, noise)).float()
 
 
 # ---------------
@@ -65,9 +62,6 @@ def apply_corruption(X, y, noise_std):
     small_mid = int(float(big_mid/2))
     indicator[:small_mid,0] = 1
     indicator[small_mid:big_mid,1] = 1
-    # for i in range(4):
-    #     X_[:small_mid, i] = white_noise(X_[:small_mid, i], noise_std)
-    #     X_[small_mid:big_mid, 4+i] = white_noise(X_[small_mid:big_mid, 4+i], noise_std)
     X_[:small_mid, :4] = white_noise(X_[:small_mid, :4], noise_std)
     X_[small_mid:big_mid, 4:] = white_noise(X_[small_mid:big_mid, 4:], noise_std)
     p = np.random.permutation(X_.shape[0])
@@ -84,11 +78,6 @@ def signal_only(X, y):
 
 
 # ---------------
-def noise_power(noise_std):
-    return 10 * np.log10(noise_std**2)
-
-
-# ---------------
 def background_only(X, y):
     X, y = X.data.numpy(), y.data.numpy()
     X = X[np.argsort(y),:]
@@ -97,7 +86,14 @@ def background_only(X, y):
     return torch.tensor(X[idx[0]:idx[1]]).float()
 
 
+# --------------- 
+def SNR(noise_std):
+    return 10 * np.log10(noise_std**2)
 
+
+# --------------- 
+def NSR(noise_std):
+    return -SNR(noise_std)
 
 
 
