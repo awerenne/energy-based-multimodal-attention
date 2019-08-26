@@ -1,6 +1,6 @@
 """
-    Experiment I: train an Autoencoder on simple toy data manifolds. Visualize 
-    the reconstruction vector field and energy landscape.
+    Trains an Autoencoder on simple toy data manifolds. Visualize 
+    the reconstruction error vector field and norm. Visualize the potential energy.
 """
 
 import torch
@@ -57,13 +57,12 @@ if __name__ == "__main__":
     n_samples = 2000
     max_epochs = 25
     d_input = 2
-    n_hidden = 14  # 8
-    noise_stddev = 0.004 # 0.008
+    n_hidden = 14  
+    noise_stddev = 0.004 
 
     """ Manifold """
     X = make_wave(n_samples)  # N x 2 
     # X = make_circle(n_samples)  # N x 2
-    # X = make_spiral(n_samples)  # N x 2 TODO: close-up, more hidden inputs
 
     """ Load and train model """ 
     loaders = make_loaders(X)
@@ -80,7 +79,7 @@ if __name__ == "__main__":
     """ Compare the two quantifiers """ 
     model.eval()
     plot_vector_field(model, X, save=False)
-    # plot_quantifier(model, save=False)
+    plot_quantifier(model, save=False)
 
 
 

@@ -1,7 +1,3 @@
-"""
-    ...
-"""
-
 import torch
 from torch.utils import data
 import numpy as np
@@ -12,7 +8,7 @@ seed = 42
 
 # ---------------
 def plot_curves(curves, save=False):
-    """ Plot train- and validation curves """
+    """ Plot training- and validation curves """
     train_curve, valid_curve = curves
     train_curve = np.asarray(train_curve)
     test_curve = np.asarray(valid_curve)
@@ -27,18 +23,14 @@ def plot_curves(curves, save=False):
 # ---------------
 def make_mesh():
     nx, ny = (25, 25)
-    # nx, ny = (20, 20)
     x = np.linspace(-5, 5, nx)
     y = np.linspace(-5, 5, ny)
-    # x = np.linspace(-2, 2, nx)
-    # y = np.linspace(-2, 2, ny)
     xmesh, ymesh = np.meshgrid(x, y)
     return xmesh, ymesh, nx, ny
 
 
 # ---------------
 def plot_vector_field(model, X, save=False):
-    """ Plots the reconstruction vector field alongside the data manifolds """
     xmesh, ymesh, nx, ny = make_mesh()
     xnorm = np.zeros(xmesh.shape)
     ynorm = np.zeros(ymesh.shape)
@@ -51,15 +43,13 @@ def plot_vector_field(model, X, save=False):
     fig1, ax1 = plt.subplots()
     ax1.quiver(xmesh, ymesh, xnorm, ynorm)
     plt.scatter(X[:, 0], X[:, 1], c='blue', edgecolor='k', alpha=0.3)
-    # idx = np.where((X[:,0] < 2) & (X[:,0] > -2) & (X[:,1] < 2) & (X[:,1] > -2))
-    # plt.scatter(X[idx, 0], X[idx, 1], c='blue', edgecolor='k', alpha=0.3)
     if save: plt.savefig('results/vector-field')
     plt.show()
 
 
 # ---------------
 def plot_quantifier(model, save=False):
-    """ Plots two heatmaps: energy and reconstruction norm """
+    """ Plots two heatmaps: potential energy and reconstruction norm """
     xmesh, ymesh, nx, ny = make_mesh()
     q = np.zeros((2, ymesh.shape[0], ymesh.shape[1]))
 

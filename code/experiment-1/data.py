@@ -1,8 +1,5 @@
 """ 
-    Generation of the different two-dimensional manifolds. Each function returns
-    a N x D (D = 2) tensor. 
-        - N: number of samples
-        - D: number of dimensions 
+    Generation of the different two-dimensional manifolds. 
 """
 
 import numpy as np
@@ -47,11 +44,6 @@ def make_spiral(n_samples):
 # ---------------
 def make_loaders(X):
     X_train, X_test = train_test_split(X, test_size=0.33, random_state=seed)
-    # l = torch.tensor(X_train).float()
-    # t =  l + Variable(l.data.new(l.size()).normal_(0, 0.008))
-    # plt.scatter(t[:, 0], t[:, 1], c='blue', edgecolor='k', alpha=0.3)
-    # # plt.savefig('results/wave-manifold')
-    # plt.show()
     train_dataset = torch.utils.data.TensorDataset(torch.tensor(X_train).float())
     train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=16)
     test_dataset = torch.utils.data.TensorDataset(torch.tensor(X_test).float())
