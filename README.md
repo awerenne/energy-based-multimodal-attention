@@ -3,12 +3,12 @@
 This repository contains the implementation for my thesis 'Energy-based Multi-Modal Attention' at the Montefiore (Computer & Electrical Engineering) Institute of the University of Liège (2018-2019). The report can be found [here](https://github.com/Werenne/energy-based-multimodal-attention/blob/master/report/main.pdf).
 
 Author: Aurélien Werenne<br />
-Supervisor: Raphaël Marée  
+Supervisor: Dr. Raphaël Marée  
  
 ___
 
 
-A multi-modal neural network exploits information from different channels and in different terms (e.g., images, text, sounds, sensor measures) in the hope that the information carried by each mode is complementary, in order to improve the predictions the neural network. Nevertheless, in realistic situations, varying levels of perturbations can occur on the data of the modes, which may decrease the quality of the inference process. An additional difficulty is that these perturbations vary between the modes and on a per-sample basis. This work presents a solution to this problem. 
+A multi-modal neural network exploits information from different channels and in different terms (e.g., images, text, sounds, sensor measures) in the hope that the information carried by each mode is complementary, in order to improve the predictions the neural network. Nevertheless, in realistic situations, varying levels of perturbations can occur on the data of the modes, which may decrease the quality of the inference process. An additional difficulty is that these perturbations vary between the modes and on a sample-per-sample basis. This work presents a solution to this problem. 
 
 ___
 
