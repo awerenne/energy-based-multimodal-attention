@@ -1,7 +1,3 @@
-"""
-    ...
-"""
-
 import numpy as np
 import torch
 import torch.nn as nn
@@ -20,18 +16,14 @@ from itertools import combinations
 # ---------------
 class MLP(nn.Module):
     """
-        ...
+        Small multi-layer perceptron used as the prediction model.
     """
 
     def __init__(self, d_input):
         super().__init__()
-        # self.linear1 = nn.Linear(d_input, int(d_input/2))
-        # self.linear2 = nn.Linear(int(d_input/2), 1)
         self.linear1 = nn.Linear(d_input, 8)
         self.linear2 = nn.Linear(8, 4)
         self.linear3 = nn.Linear(4, 1)
-        # self.linear1 = nn.Linear(d_input, 6)
-        # self.linear2 = nn.Linear(6, 1)
         self.threshold = 0.5
         self.d_input = d_input
 
@@ -108,7 +100,7 @@ def train_step_autoencoder(X, model, optimizer, batch_size, train=True):
         optimizer.zero_grad()
         idx = indices[i:i+batch_size]
         batch = X[idx].view(batch_size, -1)
-        Xhat = model(batch, add_noise=True)  # N x D
+        Xhat = model(batch, add_noise=True)  
         loss = criterion(Xhat, batch)
         sum_loss += loss.item()
         n_steps += 1
@@ -193,9 +185,7 @@ def train_clf(models, name, meta, X_train, y_train, indicator_train,
                 curves = np.zeros((2, n_epochs+1))
                 model = copy_emma(models[name][(-1,-1,-1)])
                 model[0].set_coldness(tau)
-                # freeze_coupling(model[0])
                 optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()), lr=meta['lr'])
-                # optimizer = torch.optim.SGD(nn.ParameterList(model.parameters()), lr=meta['lr'])
                 model.eval()
                 with torch.set_grad_enabled(False):
                     curves[1,0] = train_step(model, name, optimizer, meta['batch_size'], X_train, y_train, indic_train, lambda_regul, lambda_capacity, valid=True)
@@ -229,7 +219,6 @@ def train_step(model, name, optimizer, batch_size, X, y, indic=None, lambda_regu
     n_steps, sum_loss = 0, 0
     # criterion = torch.nn.BCEWithLogitsLoss(pos_weight=torch.tensor([10.]))
     criterion = torch.nn.BCEWithLogitsLoss()
-    # criterion = torch.nn.BCELoss()
     indices = np.arange(X.size(0))
     np.random.shuffle(indices)
     for i in range(0, len(X)-batch_size, batch_size):
@@ -239,7 +228,6 @@ def train_step(model, name, optimizer, batch_size, X, y, indic=None, lambda_regu
         if not name == 'model-with':
             yhat, logits = model(batch)
             loss = criterion(logits, y[idx].unsqueeze(-1))
-            # loss = criterion(yhat, y[idx].unsqueeze(-1))
         else:
             modes = [batch[:,:4], batch[:,4:]]
             modes, log_alphas = model[0](modes)
@@ -247,7 +235,6 @@ def train_step(model, name, optimizer, batch_size, X, y, indic=None, lambda_regu
             new_batch[:, :4], new_batch[:, 4:]  = modes[0], modes[1]
             yhat, logits = model[1](new_batch)  
             loss = criterion(logits, y[idx].unsqueeze(-1))
-            # loss = criterion(yhat, y[idx].unsqueeze(-1))
             loss -= lambda_regul * regul_loss(indic[idx], log_alphas)
             loss += (lambda_capacity * (model[0].get_gain() - model[0].get_bias_attention()))[0]
         sum_loss += loss.item()
@@ -314,17 +301,17 @@ def evaluation(model, name, X, y):
 
 # ---------------
 def model_evaluation(model, name, X, y, indic):
-        idx = (indic[:,0] == 0) * (indic[:,1] == 0)
-        F1, precision, recall, specificity = evaluation(model, name, X[idx], y[idx])
-        print("    Normal: " + str("{:.4f}".format(F1)) + " - " + str("{:.4f}".format(precision)) + " - " + str("{:.4f}".format(recall)) + " - " + str("{:.4f}".format(specificity)))
-        
-        idx = (indic[:,0] == 1) * (indic[:,1] == 0)
-        F1, precision, recall, specificity = evaluation(model, name, X[idx], y[idx])
-        print("  Noisy-ip: " + str("{:.4f}".format(F1)) + " - " + str("{:.4f}".format(precision)) + " - " + str("{:.4f}".format(recall)) + " - " + str("{:.4f}".format(specificity)))
-        
-        idx = (indic[:,0] == 0) * (indic[:,1] == 1)
-        F1, precision, recall, specificity = evaluation(model, name, X[idx], y[idx])
-        print("  Noisy-dm: " + str("{:.4f}".format(F1)) + " - " + str("{:.4f}".format(precision)) + " - " + str("{:.4f}".format(recall)) + " - " + str("{:.4f}".format(specificity)))
+    idx = (indic[:,0] == 0) * (indic[:,1] == 0)
+    F1, precision, recall, specificity = evaluation(model, name, X[idx], y[idx])
+    print("    Normal: " + str("{:.4f}".format(F1)) + " - " + str("{:.4f}".format(precision)) + " - " + str("{:.4f}".format(recall)) + " - " + str("{:.4f}".format(specificity)))
+    
+    idx = (indic[:,0] == 1) * (indic[:,1] == 0)
+    F1, precision, recall, specificity = evaluation(model, name, X[idx], y[idx])
+    print("  Noisy-ip: " + str("{:.4f}".format(F1)) + " - " + str("{:.4f}".format(precision)) + " - " + str("{:.4f}".format(recall)) + " - " + str("{:.4f}".format(specificity)))
+    
+    idx = (indic[:,0] == 0) * (indic[:,1] == 1)
+    F1, precision, recall, specificity = evaluation(model, name, X[idx], y[idx])
+    print("  Noisy-dm: " + str("{:.4f}".format(F1)) + " - " + str("{:.4f}".format(precision)) + " - " + str("{:.4f}".format(recall)) + " - " + str("{:.4f}".format(specificity)))
 
 
 # ---------------
@@ -387,11 +374,6 @@ if __name__ == "__main__":
     n_hidden = 12  # Number of hidden units in autoencoders
     noise_std_autoenc = 0.01
     noise_std_data = 0.5
-    coldness = [1e-4]
-    # lambda_regul = [1e-3, 0]
-    # lambda_regul = [0, 1e-5, 1e-4, 1e-3]
-    # # lambda_capacity = [-1e-2]
-    # lambda_capacity = [1e-2]   
     coldness = [1e-4, 1e-3, 1e-2, 1e-1, 1]
     lambda_regul = [0, 1e-4, 1e-3, 1e-2, 1e-1]
     lambda_capacity = [0, 1e-4, 1e-3, 1e-2, 1e-1]
@@ -425,8 +407,6 @@ if __name__ == "__main__":
     curves = {'base-model': None, 'model-without': None, 'model-with': {(-1,-1,-1): None}}
     if retrain:
         """ Train autoencoders on normal signal train-set """
-        # X_signal_train = signal_only(X_train, y_train)
-        # X_signal_valid = signal_only(X_valid, y_valid)
         X_signal_train = X_train
         X_signal_valid = X_valid
         model = DenoisingAutoEncoder(d_input[0], n_hidden, noise_std_autoenc).float()
@@ -493,8 +473,6 @@ if __name__ == "__main__":
         # """ Load noisy test-set (with indicator) """
         X_test, y_test, X_test_noisy, y_test_noisy, indic_test = torch.load("dumps/test-set.pt")
     
-
-    """ Evaluation (top 10) """
     def get_ranking(models, n_top, X, y, indic):
         if models is None: 
             return None
@@ -518,103 +496,26 @@ if __name__ == "__main__":
     print_evaluation(models, ranking, X_test_noisy, y_test_noisy, indic_test)
 
     """ Confusion matrix of best models """
-    # yhat, classes = predictions(models['base-model'], 'base-model', X_test_noisy) 
-    # print_confusion_matrix(classes.data.numpy(), y_test_noisy.data.numpy())
-    # refined_matrix(y_test_noisy, classes, indic_test)
-    # yhat, classes = predictions(models['model-without'], 'model-without', X_test_noisy) 
-    # print_confusion_matrix(classes.data.numpy(), y_test_noisy.data.numpy())
-    # refined_matrix(y_test_noisy, classes, indic_test)
-    # yhat, classes = predictions(models['model-with'][ranking[0]], 'model-with', X_test_noisy) 
-    # print_confusion_matrix(classes.data.numpy(), y_test_noisy.data.numpy())
-    # refined_matrix(y_test_noisy, classes, indic_test)
+    yhat, classes = predictions(models['base-model'], 'base-model', X_test_noisy) 
+    print_confusion_matrix(classes.data.numpy(), y_test_noisy.data.numpy())
+    refined_matrix(y_test_noisy, classes, indic_test)
+    yhat, classes = predictions(models['model-without'], 'model-without', X_test_noisy) 
+    print_confusion_matrix(classes.data.numpy(), y_test_noisy.data.numpy())
+    refined_matrix(y_test_noisy, classes, indic_test)
+    yhat, classes = predictions(models['model-with'][ranking[0]], 'model-with', X_test_noisy) 
+    print_confusion_matrix(classes.data.numpy(), y_test_noisy.data.numpy())
+    refined_matrix(y_test_noisy, classes, indic_test)
 
-    # for name, param in models['model-with'][ranking[0]].named_parameters():
-    #     print(name, param.data)
-
-    # plot_curves(curves, ranking[0], save=True) 
-    X_test_noisy, y_test_noisy, indic_test = apply_corruption(X_test, y_test,2)  
-    for i in range(10): 
-        plot_distribution(models['model-with'][ranking[i]], X_test_noisy, indic_test, save=True, idx=i)
-    # X_test_noisy[:,:4] = white_noise(X_test_noisy[:,:4].data.numpy(),2)
-    # plot_distribution(models['model-with'][ranking[0]], X_test_noisy, indic_test, save=True)
-    # plot_yerkes_dodson(meta['coldness'], models, ranking[0], X_test_noisy,
-    #         y_test_noisy, save=True)
-    # plot_capacity_vs_coldness(coldness, models, ranking[0], X_test_noisy,
-    #         y_test_noisy, save=True)
-    # for i in range(4):
+    X_test_noisy, y_test_noisy, indic_test = apply_corruption(X_test, y_test, 2)  
+    # for i in range(10): 
+    #     plot_distribution(models['model-with'][ranking[i]], X_test_noisy, indic_test, save=True, idx=i)
+    plot_distribution(models['model-with'][ranking[0]], X_test_noisy, indic_test, save=True)
+    # for i in range(10):
     #     plot_noise_generalisation(models, ranking[i], X_test, y_test, save=False, idx=i)
-    # print(ranking[44])
-    # plot_noise_generalisation(models, ranking[0], X_test, y_test, save=False, idx=0)
-    # plot_noise_generalisation(models, (0.0001, 0.01, 0.001), X_test, y_test, save=True)
-
-    # test(meta, models, X_test, y_test, save=False)
-    # base_F1 = 0.9
-    # cut_noise = 1
-    # plot_heatmap(models, meta, base_F1, cut_noise, X_test, y_test, save=True)
-    # for i in range(4):
-    #     plot_total_energy(models, ranking[i], X_test, y_test, save=False)
-    # plot_total_energy(models, ranking[0], X_test, y_test, save=True)
-
-    # for name, param in models['model-with'][ranking[0]].named_parameters():
-    #     print(name, param.data)
-    # print()
-    # for name, param in models['model-with'][ranking[3]].named_parameters():
-    #     print(name, param.data)
-
-    # ---------------
-    def freeze_coupling(model):
-        for name, param in model.named_parameters():
-            if name == 'W_coupling':
-                print("hello")
-                param.data = torch.tensor([[-0.4272, -0.1357],[0.2234, -0.4154]]).float()
-                param.requires_grad = False
-                print(param)
-                print(param.requires_grad)
-                print("yo")
-
-    def mixup(X, y, indic, mixing):
-        if mixing == 0:
-            return X, y, indic
-        length = int(float(X.size(0))*mixing)
-        X_, y_ = X.data.numpy(), y.data.numpy()
-        N = length
-        big_mid = int(float(N)/2.)
-        small_mid = int(float(big_mid/2))
-        X_[:small_mid, :4] = white_noise(np.zeros_like(X_[:small_mid, :4]), 0.5)
-        X_[small_mid:big_mid, 4:] = white_noise(np.zeros_like(X_[small_mid:big_mid, 4:]), 0.5)
-        p = np.random.permutation(X_.shape[0])
-        return torch.tensor(X_[p,:]).float(), torch.tensor(y_[p]).float(), indic[p,:]
+    plot_noise_generalisation(models, ranking[0], X_test, y_test, save=False, idx=0)
+    plot_total_energy(models, ranking[0], X_test, y_test, save=True)
 
 
-    # mlp = copy_mlp(models['base-model'])
-    # autoencoders = models['model-with'][ranking[0]][0].autoencoders
-    # min_potentials =  models['model-with'][ranking[0]][0].min_potentials
-    # emma = EMMA(n_modes, autoencoders, min_potentials).float()
-    # model = nn.ModuleList([emma, mlp])
-    # freeze_coupling(emma)
-    # models['model-with'][(-1,-1,-1)] = model
-    # meta['coldness'] = [ranking[0][0]]
-    # meta['lambda_regul'] = [ranking[0][1]]
-    # meta['lambda_capacity'] = [ranking[0][2]]
-    # meta['max_epochs'] = 20
-    # gammas = []
-    # for mixing in np.linspace(0,1,5):
-    #     # X, y = torch.zeros(X_train.size()).float(), torch.zeros(y_train.size()).float()
-    #     X, y, indic = mixup(X_train_noisy.clone(), y_train_noisy.clone(), indic_train, mixing)
-    #     train_clf(models, 'model-with', meta, X, y, indic, X, y, indic)
-    #     print(models['model-with'][ranking[0]][0].get_coupling()[0])
-    #     print(models['model-with'][ranking[0]][0].get_coupling()[1])
-    #     gammas.append(models['model-with'][ranking[0]][0].get_coupling()[0])
-    #     models['model-with'][(-1,-1,-1)] = copy_emma(model)
-    #     freeze_coupling(models['model-with'][(-1,-1,-1)])
-    # plt.bar(gammas, align='center', tick_label=['0%', '25%', '50%', '75%', '100%'])
-    # plt.xlabel('mixup', fontsize=17)
-    # plt.ylabel('gamma', fontsize=17)
-    # plt.ylim([0, 1])
-    # plt.tick_params(axis='both', which='major', labelsize=11)
-    # plt.legend(loc='best')
-    # plt.savefig('results/mixup')
-    # plt.show()
 
 
 
