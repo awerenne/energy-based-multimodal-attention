@@ -1,3 +1,6 @@
+""" Additional small experiments """
+
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -15,10 +18,6 @@ from itertools import combinations
 
 # ---------------
 class MLP(nn.Module):
-    """
-        Small multi-layer perceptron used as the prediction model.
-    """
-
     def __init__(self, d_input):
         super().__init__()
         self.linear1 = nn.Linear(d_input, 8)
@@ -44,6 +43,89 @@ class MLP(nn.Module):
         x = self.linear3(x)
         return torch.sigmoid(x), x
 
+# ---------------
+class Other(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.linear1 = nn.Linear(4, 2)
+        self.linear2 = nn.Linear(2, 1)
+        self.attention = nn.Linear(8, 2)
+        self.threshold = 0.5
+        self.d_input = d_input
+
+    def set_threshold(self, threshold):
+        self.threshold = threshold
+
+    def get_threshold(self):
+        return self.threshold
+
+    def get_dim_input(self):
+        return self.d_input
+
+    def forward(self, x):
+        alphas = self.attention(x)
+        r1 = torch.zeros(x.size(0), 4)
+        r2 = torch.zeros(x.size(0), 4)
+        for i in range(4):
+            r1[:,i] += alphas[:,0] * x[:,i]
+            r2[:,i] += alphas[:,1] * x[:,i+4]
+        x = r1 + r2
+        x = self.linear1(x)
+        x = torch.relu(x)
+        x = self.linear2(x)
+        return torch.sigmoid(x), x
+
+# ---------------
+class Dual(nn.Module):
+    def __init__(self, autoenc_ip, autoenc_dm):
+        super().__init__()
+        self.linear1 = nn.Linear(2, 2)
+        self.linear2= nn.Linear(2, 1)
+        self.threshold = 0.5
+        self.d_input = d_input
+        self.autoenc_ip = autoenc_ip
+        self.autoenc_dm = autoenc_dm
+
+    def set_threshold(self, threshold):
+        self.threshold = threshold
+
+    def get_threshold(self):
+        return self.threshold
+
+    def get_dim_input(self):
+        return self.d_input
+
+    def forward(self, x):
+        x = torch.cat((self.autoenc_ip.potential(x[:,:4]).unsqueeze(-1), self.autoenc_dm.potential(x[:,4:]).unsqueeze(-1)), dim=1)
+        x = self.linear1(x)
+        x = torch.relu(x)
+        x = self.linear2(x)
+        return torch.sigmoid(x), x
+
+# ---------------
+class MLP_half(nn.Module):
+    def __init__(self, d_input):
+        super().__init__()
+        self.linear1 = nn.Linear(4, 2)
+        self.linear2 = nn.Linear(2, 1)
+        self.threshold = 0.5
+        self.d_input = d_input
+
+    def set_threshold(self, threshold):
+        self.threshold = threshold
+
+    def get_threshold(self):
+        return self.threshold
+
+    def get_dim_input(self):
+        return self.d_input
+
+    def forward(self, x):
+        x = self.linear1(x)
+        x = torch.relu(x)
+        x = self.linear2(x)
+        return torch.sigmoid(x), x
+
 
 # ---------------
 def copy_emma(old_model):
@@ -58,6 +140,24 @@ def copy_emma(old_model):
 # ---------------
 def copy_mlp(old_model):
     mlp = MLP(d_input=old_model.get_dim_input()).float()
+    mlp.load_state_dict(old_model.state_dict())
+    return mlp
+
+# ---------------
+def copy_other(old_model):
+    mlp = Other().float()
+    mlp.load_state_dict(old_model.state_dict())
+    return mlp
+
+# ---------------
+def copy_mlp_half(old_model):
+    mlp = MLP_half(d_input=old_model.get_dim_input()).float()
+    mlp.load_state_dict(old_model.state_dict())
+    return mlp
+
+# ---------------
+def copy_dual(old_model):
+    mlp = Dual(old_model.autoenc_ip, old_model.autoenc_dm).float()
     mlp.load_state_dict(old_model.state_dict())
     return mlp
 
@@ -155,7 +255,14 @@ def train_clf(models, name, meta, X_train, y_train, indicator_train,
                 curves[1,epoch] = train_step(model, name, optimizer, meta['batch_size'], X_train, y_train, valid=True)
             if curves[1,epoch] < best_loss:
                 best_loss = curves[1,epoch]
-                best_model = copy_mlp(model)
+                if name == 'half-model-IP' or name == 'half-model-DM':
+                    best_model = copy_mlp_half(model)
+                elif name == 'Dual':
+                    best_model = copy_dual(model)
+                elif name == 'other':
+                    best_model = copy_other(model)
+                else:
+                    best_model = copy_mlp(model)
                 best_epoch = epoch
                 state_optim = optimizer.state_dict()
         optimizer = torch.optim.Adam(nn.ParameterList(best_model.parameters()))
@@ -287,7 +394,12 @@ def predictions(model, name, X):
 # ---------------
 def evaluation(model, name, X, y):
     if not name == 'model-with':
-        yhat, _ = model(X)
+        if name == 'half-model-IP':
+            yhat, _ = model(X[:,:4])
+        elif name == 'half-model-DM':
+            yhat, _ = model(X[:,4:])
+        else:
+            yhat, _ = model(X)
         score = compute_score(y, yhat, model.get_threshold())
     else:
         modes = [X[:,:4], X[:,4:]]
@@ -364,6 +476,25 @@ def unfreeze(model):
     for name, param in model.named_parameters():
         param.requires_grad = True
 
+# ---------------
+def print_evaluation(models, ranking, X, y, indic):
+    print("F1-score -- Precision -- Recall -- Specificity")
+    for name, model in models.items():
+        print()
+        print(name + ": ")
+        if model is None: continue
+        if name == 'model-with':
+            for key in ranking:
+                m = model[key]
+                print(key)
+                print("capacity: " + str(m[0].capacity.data.numpy()))
+                m.eval()
+                model_evaluation(m, name, X, y, indic)
+            print()
+        else:
+            model.eval()
+            model_evaluation(model, name, X, y, indic)
+    print()
 
 # ---------------
 if __name__ == "__main__":  
@@ -374,9 +505,9 @@ if __name__ == "__main__":
     n_hidden = 12  # Number of hidden units in autoencoders
     noise_std_autoenc = 0.01
     noise_std_data = 0.5
-    coldness = [1e-4, 1e-3, 1e-2, 1e-1, 1]
-    lambda_regul = [0, 1e-4, 1e-3, 1e-2, 1e-1]
-    lambda_capacity = [0, 1e-4, 1e-3, 1e-2, 1e-1]
+    coldness = [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1]
+    lambda_regul = [1e-2]
+    lambda_capacity = [1e-3]
 
     meta = {}
     meta['clipper'] = WeightClipper()
@@ -406,41 +537,46 @@ if __name__ == "__main__":
     models = {'base-model': None, 'model-without': None, 'model-with': {(-1,-1,-1): None}}
     curves = {'base-model': None, 'model-without': None, 'model-with': {(-1,-1,-1): None}}
     if retrain:
-        """ Train autoencoders on normal signal train-set """
-        X_signal_train = X_train
-        X_signal_valid = X_valid
-        model = DenoisingAutoEncoder(d_input[0], n_hidden, noise_std_autoenc).float()
-        optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        model, _ = train_autoencoder(model, optimizer, meta['batch_size'], 30, X_signal_train[:,:4], X_signal_valid[:,:4])
-        autoencoders['IP'] = model
-        min_potentials[0] = get_min_potential(X_signal_train[:,:4], model)
-        torch.save((model.state_dict(), min_potentials[0]), "dumps/autoencoder-ip.pt")
+        """ Load autoencoders """
+        autoencoders['IP'] = DenoisingAutoEncoder(d_input[0], n_hidden, noise_std_autoenc).float()
+        params, min_potentials[0] = torch.load("dumps/autoencoder-ip.pt")
+        autoencoders['IP'].load_state_dict(params)
 
-        model = DenoisingAutoEncoder(d_input[1], n_hidden, noise_std_autoenc).float()
-        optimizer = torch.optim.Adam(nn.ParameterList(model.parameters()))
-        model, _ = train_autoencoder(model, optimizer, meta['batch_size'], 30, X_signal_train[:,4:], X_signal_valid[:,4:])
-        autoencoders['DM-SNR'] = model
-        min_potentials[1] = get_min_potential(X_signal_train[:,4:], model)
+        autoencoders['DM-SNR'] = DenoisingAutoEncoder(d_input[1], n_hidden, noise_std_autoenc).float()
+        params, min_potentials[1] = torch.load("dumps/autoencoder-dm-snr.pt")
+        autoencoders['DM-SNR'].load_state_dict(params)
         min_potentials = torch.tensor(min_potentials).float()
-        torch.save((model.state_dict(), min_potentials[1]), "dumps/autoencoder-dm-snr.pt")
 
         """ Freeze autoencoders """
         for key, autoencoder in autoencoders.items():
             freeze(autoencoder)
 
         """ Train base model on normal train-set, eval on valid-set """
-        model = MLP(d_input=np.sum(d_input)).float()
-        models['base-model'] = model
-        curves = train_clf(models, 'base-model', meta, X_train, y_train, indic_train, 
-            X_valid, y_valid, indic_valid)
-        torch.save((curves), "dumps/curve-base.pt")
+        temp = torch.load("dumps/models")
+        models['base-model'] = temp['base-model']
 
-        """ Train model without EMMA noisy train-set, eval on noisy valid-set """
-        mlp = copy_mlp(models['base-model'])
-        models['model-without'] = mlp
-        curves = train_clf(models, 'model-without', meta, X_train_noisy, y_train_noisy, indic_train, 
+        """ Train SEPARATE base model on normal train-set, eval on valid-set """
+        model = MLP_half(d_input=np.sum(d_input)).float()
+        models['half-model-IP'] = model
+        curves = train_clf(models, 'half-model-IP', meta, X_train[:,:4], y_train, indic_train, 
+            X_valid[:,:4], y_valid, indic_valid)
+
+        model = MLP_half(d_input=np.sum(d_input)).float()
+        models['half-model-DM'] = model
+        curves = train_clf(models, 'half-model-DM', meta, X_train[:,4:], y_train, indic_train, 
+            X_valid[:,4:], y_valid, indic_valid)
+
+        """ Train dual base model on normal train-set, eval on valid-set """
+        model = Dual(autoencoders['IP'], autoencoders['DM-SNR']).float()
+        models['Dual'] = model
+        curves = train_clf(models, 'Dual', meta, X_train, y_train, indic_train, 
+            X_valid, y_valid, indic_valid)
+
+        """ Train other module """
+        model = Other().float()
+        models['other'] = model
+        curves = train_clf(models, 'other', meta, X_train_noisy, y_train_noisy, indic_train, 
             X_valid_noisy, y_valid_noisy, indic_valid)
-        torch.save((curves), "dumps/curve-without.pt")
 
         """ Train model with EMMA noisy train-set, eval on noisy valid-set """
         mlp = copy_mlp(models['base-model'])
@@ -449,11 +585,10 @@ if __name__ == "__main__":
         models['model-with'][(-1,-1,-1)] = model
         curves = train_clf(models, 'model-with', meta, X_train_noisy, y_train_noisy, indic_train, 
             X_valid_noisy, y_valid_noisy, indic_valid)
-        torch.save((curves), "dumps/curve-with.pt")
 
         """ Save """
-        torch.save((models), "dumps/models")
-        torch.save((X_test, y_test, X_test_noisy, y_test_noisy, indic_test), "dumps/test-set.pt")
+        torch.save((models), "new_dumps/models")
+        torch.save((X_test, y_test, X_test_noisy, y_test_noisy, indic_test), "new_dumps/test-set.pt")
 
     else:
         """ Load autoencoders """
@@ -467,11 +602,10 @@ if __name__ == "__main__":
         min_potentials = torch.tensor(min_potentials).float()
 
         """ Load models """
-        models = torch.load("dumps/models")
-        curves = torch.load("dumps/curve-with.pt")
+        models = torch.load("new_dumps/models")
 
         # """ Load noisy test-set (with indicator) """
-        X_test, y_test, X_test_noisy, y_test_noisy, indic_test = torch.load("dumps/test-set.pt")
+        X_test, y_test, X_test_noisy, y_test_noisy, indic_test = torch.load("new_dumps/test-set.pt")
     
     def get_ranking(models, n_top, X, y, indic):
         if models is None: 
@@ -493,31 +627,11 @@ if __name__ == "__main__":
     ranking = get_ranking(models['model-with'], 15, X_test_noisy, y_test_noisy, indic_test)
     print_evaluation(models, ranking, X_test_noisy, y_test_noisy, indic_test)
 
-    X_test_noisy, y_test_noisy, indic_test = apply_corruption(X_test, y_test, 0.5) 
-    yhat, classes = predictions(models['model-with'][(1e-4, 1e-2, 1e-3)], 'model-with', X_test) 
-    refined_matrix(y_test_noisy, classes, indic_test)
-    X_test_noisy, y_test_noisy, indic_test = apply_corruption(X_test, y_test, 2) 
-    yhat, classes = predictions(models['model-with'][(1e-4, 1e-2, 1e-3)], 'model-with', X_test_noisy) 
-    refined_matrix(y_test_noisy, classes, indic_test)
-
-    """ Confusion matrix of best models """
-    yhat, classes = predictions(models['base-model'], 'base-model', X_test_noisy) 
-    print_confusion_matrix(classes.data.numpy(), y_test_noisy.data.numpy())
-    refined_matrix(y_test_noisy, classes, indic_test)
-    yhat, classes = predictions(models['model-without'], 'model-without', X_test_noisy) 
-    print_confusion_matrix(classes.data.numpy(), y_test_noisy.data.numpy())
-    refined_matrix(y_test_noisy, classes, indic_test)
-    yhat, classes = predictions(models['model-with'][ranking[0]], 'model-with', X_test_noisy) 
-    print_confusion_matrix(classes.data.numpy(), y_test_noisy.data.numpy())
-    refined_matrix(y_test_noisy, classes, indic_test)
-
     save = False
     indices = [0]
-    indices = arange(10)
-    X_test_noisy, y_test_noisy, indic_test = apply_corruption(X_test, y_test, 2)  
     for idx in indices: 
         plot_distribution(models['model-with'][ranking[idx]], X_test_noisy, indic_test, save=save)
-        plot_noise_generalisation(models, ranking[idx], X_test, y_test, save=False, idx=idx)
+        plot_noise_generalisation(models, ranking[idx], X_test, y_test, save=True, idx=idx)
         plot_noise_generalisation(models, (0.0001, 0.01, 0), X_test, y_test, save=False, idx=idx)
         plot_total_energy(models, ranking[idx], X_test, y_test, save=save)
     plot_noise_generalisation(models, (1e-4, 1e-2, 1e-3), X_test, y_test, save=False, idx=0)

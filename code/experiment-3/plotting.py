@@ -94,7 +94,7 @@ def plot_distribution(model, X, indic, save=False, idx=None):
     plt.tick_params(axis='both', which='major', labelsize=25)
     plt.ylim([0, 1])
     if save: plt.savefig('results/noise-2/alpha-distrib' + suffix)
-    # plt.show()
+    plt.show()
 
     idx = (indic[:,0] == 0) * (indic[:,1] == 0)
     modes = [X[idx,:4], X[idx,4:]]
@@ -120,7 +120,7 @@ def plot_distribution(model, X, indic, save=False, idx=None):
     plt.tick_params(axis='both', which='major', labelsize=25)
     plt.ylim([0, 1])
     if save: plt.savefig('results/noise-2/beta-distrib' + suffix)
-    # plt.show()
+    plt.show()
 
 
 # ---------------
@@ -281,6 +281,141 @@ def plot_noise_generalisation(models, best_combo, X_test, y_test, save=False, id
     fig.colorbar(surf, shrink=0.5, aspect=5)
     plt.show()
 
+
+# ---------------
+def plot_specific(models, X_test, y_test, save=False):
+    best_combo = (1e-4, 1e-2, 1e-3)
+    f1_with = []
+    f1_without = []
+    f1_base = []
+    noises = np.linspace(-20,5,50)
+    beta_ip, beta_dm = [], []
+    for noise in noises:
+        X = torch.zeros(X_test.size()).float()
+        X = X_test.clone()
+        noise = 10**(noise/20)
+        X[:,4:] = white_noise(X[:,4:].data.numpy(), noise)
+        F1, _, recall, _ = evaluation(models['model-with'][best_combo], 'model-with', X, y_test)
+        f1_with.append(F1)
+        F1, _, recall, _ = evaluation(models['model-without'], 'model-without', X, y_test)
+        f1_without.append(F1)
+        F1, _, recall, _ = evaluation(models['base-model'], 'base-model', X, y_test)
+        f1_base.append(F1)
+        modes = [X[:,:4], X[:,4:]]
+        _, betas = models['model-with'][best_combo][0].get_alpha_beta(modes)
+        beta_ip.append(torch.mean(betas[:,0]).data.numpy())
+        beta_dm.append(torch.mean(betas[:,1]).data.numpy())
+    plt.plot(noises, f1_with, label='with', c='b')
+    plt.plot(noises, f1_without, label='without')
+    plt.plot(noises, f1_base, label='base')
+    plt.axvline(x=20*np.log10(0.5), ls='--', c='darkgrey')
+    plt.axhline(y=0.82, ls='--', c='grey')
+    plt.xlabel('NSR (dB)', fontsize=30)
+    plt.ylabel('F1-score', fontsize=30)
+    plt.ylim([0, 1])
+    plt.tick_params(axis='both', which='major', labelsize=25)
+    plt.legend(loc='best')
+    # plt.savefig('results/presentation/noise-generalisation-dm-noisy')
+    plt.show()
+
+    plt.plot(noises, beta_ip, label=r'$\beta$ corrupted mode', c='m')
+    plt.plot(noises, beta_dm, label=r'$\beta$ other mode', c='orange')
+    plt.xlabel('NSR (dB)', fontsize=30)
+    plt.ylabel(r'$\beta$', fontsize=30)
+    plt.ylim([-0.1, 1])
+    plt.tick_params(axis='both', which='major', labelsize=25)
+    plt.legend(loc='best')
+    plt.savefig('results/presentation/noise-generalisation-dm-noisy-beta')
+    plt.show()
+
+    h_combo = (1e-4, 1e-2, 1e-1)
+    m_combo = (1e-4, 1e-2, 1e-3)
+    l_combo = (1e-4, 1e-2, 0)
+
+    # h_combo = (1e-4, 1e-1, 1e-3)
+    # m_combo = (1e-4, 1e-2, 1e-3)
+    # l_combo = (1e-4, 0, 1e-3)
+
+    # # h_combo = (1, 1e-2, 1e-3)
+    # # m_combo = (1e-2, 1e-2, 1e-3)
+    # # l_combo = (1e-4, 1e-2, 1e-3)
+
+    f1_highcap = []
+    f1_midcap = []
+    f1_lowcap = []
+    noises = np.linspace(-20,5,50)
+    h_beta_ip, h_beta_dm = [], []
+    m_beta_ip, m_beta_dm = [], []
+    l_beta_ip, l_beta_dm = [], []
+    for noise in noises:
+        X = torch.zeros(X_test.size()).float()
+        X = X_test.clone()
+        noise = 10**(noise/20)
+        X[:,:4] = white_noise(X[:,:4].data.numpy(), noise)
+        F1, _, recall, _ = evaluation(models['model-with'][h_combo], 'model-with', X, y_test)
+        f1_highcap.append(F1)
+        F1, _, recall, _ = evaluation(models['model-with'][m_combo], 'model-with', X, y_test)
+        f1_midcap.append(F1)
+        F1, _, recall, _ = evaluation(models['model-with'][l_combo], 'model-with', X, y_test)
+        f1_lowcap.append(F1)
+        modes = [X[:,:4], X[:,4:]]
+
+        _, betas = models['model-with'][h_combo][0].get_alpha_beta(modes)
+        h_beta_ip.append(torch.mean(betas[:,0]).data.numpy())
+        h_beta_dm.append(torch.mean(betas[:,1]).data.numpy())
+
+        _, betas = models['model-with'][m_combo][0].get_alpha_beta(modes)
+        m_beta_ip.append(torch.mean(betas[:,0]).data.numpy())
+        m_beta_dm.append(torch.mean(betas[:,1]).data.numpy())
+
+        _, betas = models['model-with'][l_combo][0].get_alpha_beta(modes)
+        l_beta_ip.append(torch.mean(betas[:,0]).data.numpy())
+        l_beta_dm.append(torch.mean(betas[:,1]).data.numpy())
+    plt.plot(noises, f1_highcap, label='high energy regul.', c='purple')
+    plt.plot(noises, f1_midcap, label='good energy regul.', c='b')
+    plt.plot(noises, f1_lowcap, label='no energy regul.', c='skyblue')
+    plt.axvline(x=20*np.log10(0.5), ls='--', c='darkgrey')
+    plt.axhline(y=0.82, ls='--', c='grey')
+    plt.xlabel('NSR (dB)', fontsize=30)
+    plt.ylabel('F1-score', fontsize=30)
+    plt.ylim([0, 1])
+    plt.tick_params(axis='both', which='major', labelsize=25)
+    plt.legend(loc='best')
+    plt.savefig('results/presentation/energy-dm-noisy')
+    plt.show()
+
+    plt.plot(noises, h_beta_ip, label=r'$\beta$ corrupted mode', c='m')
+    plt.plot(noises, h_beta_dm, label=r'$\beta$ other mode', c='orange')
+    plt.axvline(x=20*np.log10(0.5), ls='--', c='darkgrey')
+    plt.xlabel('NSR (dB)', fontsize=30)
+    plt.ylabel(r'$\beta$', fontsize=30)
+    plt.ylim([-0.1, 1])
+    plt.tick_params(axis='both', which='major', labelsize=25)
+    plt.legend(loc='best')
+    plt.savefig('results/presentation/high-capacity-ip-noisy-beta')
+    plt.show()
+
+    plt.plot(noises, m_beta_ip, label=r'$\beta$ corrupted mode', c='m')
+    plt.plot(noises, m_beta_dm, label=r'$\beta$ other mode', c='orange')
+    plt.axvline(x=20*np.log10(0.5), ls='--', c='darkgrey')
+    plt.xlabel('NSR (dB)', fontsize=30)
+    plt.ylabel(r'$\beta$', fontsize=30)
+    plt.ylim([-0.1, 1])
+    plt.tick_params(axis='both', which='major', labelsize=25)
+    plt.legend(loc='best')
+    plt.savefig('results/presentation/normal-ip-noisy-beta')
+    plt.show()
+
+    plt.plot(noises, l_beta_ip, label=r'$\beta$ corrupted mode', c='m')
+    plt.plot(noises, l_beta_dm, label=r'$\beta$ other mode', c='orange')
+    plt.axvline(x=20*np.log10(0.5), ls='--', c='darkgrey')
+    plt.xlabel('NSR (dB)', fontsize=30)
+    plt.ylabel(r'$\beta$', fontsize=30)
+    plt.ylim([-0.1, 1])
+    plt.tick_params(axis='both', which='major', labelsize=25)
+    plt.legend(loc='best')
+    plt.savefig('results/presentation/no-capacity-ip-noisy-beta')
+    plt.show()
 
 
 # ---------------
