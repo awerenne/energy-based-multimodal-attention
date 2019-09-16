@@ -21,15 +21,15 @@ The proposed solution is to couple the prediction model with an attention module
 
 ## Results
 
-The main experiment showed that the use of the attention module improves the robustness and generalizes the performance gain on samples with perturbations different from the one simulated in a training set (e.g. snow storm). To this end, a real-world dataset was used with two modes, denoted here **A** and **B**. Perturbations were simulated by adding Gaussian white noise. The common method to improve the robustness of a stand-alone prediction model against those perturbations is to train the model with corrupted samples. 
+The main experiment showed that the use of the attention module improves the robustness and generalizes the performance gain on samples with perturbations different from those simulated in the training set (e.g. snow storm). In this experiment, a real-world dataset was used with two modes, denoted **A** and **B**. Perturbations were simulated by adding Gaussian white noise. The common method to improve the robustness of a stand-alone prediction model against perturbations is to train the model with corrupted samples. 
 
-In the figure below we show the evolution of the performance when increasing the noise-to-signal ratio of mode **A** in the test samples. The vertical dashed line represents the noise-to-signal ratio applied during the training. As can be observed, the stand-alone prediction model trained with corrupted samples (red line) has a good performance until the noise-to-signal ratio of the test samples becomes higher than the one of the training samples. On the other hand, the prediction model coupled with our attention module (blue line) obtains better performance and remains more stable.
+The figure below shows how the performance evolves when increasing the noise-to-signal ratio of mode **A** in the test samples. The vertical dashed line represents the noise-to-signal ratio applied during the training. As can be observed, the stand-alone prediction model trained with corrupted samples (red line) has a good performance until the noise-to-signal ratio of the test samples becomes higher than the one of the training samples. On the other hand, the prediction model coupled with our attention module (blue line) obtains better performance and remains more stable.
 
 <p align="center">
     <img width="560" src="slides/figs/noise-generalisation-ip-noisy.png">
 </p>
 
-It is worth noticing that the blue line seems to stabilize around the horizontal dashed line, the latter representing the maximal performance that could be attained using only the uncorrupted mode (mode **B**). This can be interpreted as follows: information in the corrupted mode is used to improve the predictions until the amount of perturbations becomes too high. From that point, only the uncorrupted mode is used for predictions. Similarly, the same pattern can be seen when corrupting mode **B**.
+Moreover, the blue line seems to stabilize around the horizontal dashed line, the latter representing the maximal performance that could be attained using only the uncorrupted mode (mode **B**) as input. This can be interpreted as follows: information in the corrupted mode is used to improve the predictions until the amount of perturbations becomes too high. From that point, only the uncorrupted mode is used for predictions. The same pattern is observed when corrupting mode **B**.
 
 <p align="center">
     <img width="560" src="slides/figs/noise-generalisation-dm-noisy.png">
