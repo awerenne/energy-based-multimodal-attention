@@ -7,7 +7,7 @@ Supervisor: Dr. Raphaël Marée
 
 ## Motivation
 
-A multi-modal neural network exploits information from different channels and in different terms (e.g., images, text, sounds, sensor measures) in the hope that the information carried by each mode is complementary, in order to improve the predictions of the neural network. Nevertheless, in realistic situations, varying levels of perturbations can occur on the data of the modes, which may decrease the quality of the inference process. An additional difficulty is that these perturbations vary between the modes and on a sample-per-sample basis. This work presents a solution to this problem. 
+A multi-modal neural network exploits information from different channels and in different terms (e.g. images, text, sounds, sensor measures) in the hope that the information carried by each mode is complementary, in order to improve the predictions of the neural network. Nevertheless, in realistic situations, varying levels of perturbations can occur on the data of the modes, which may decrease the quality of the inference process. An additional difficulty is that these perturbations vary between the modes and on a sample-per-sample basis. This work presents a solution to this problem. 
 
 ## Example
 
@@ -29,7 +29,7 @@ The figure below shows how the performance evolves when increasing the noise-to-
     <img width="560" src="slides/figs/noise-generalisation-ip-noisy.png">
 </p>
 
-Moreover, the blue line seems to stabilize around the horizontal dashed line, the latter representing the maximal performance that could be attained using only the uncorrupted mode (mode **B**) as input. This can be interpreted as follows: information in the corrupted mode is used to improve the predictions until the amount of perturbations becomes too high. From that point, only the uncorrupted mode is used for predictions. The same pattern is observed when corrupting mode **B**.
+Moreover, the blue line seems to stabilize around the horizontal dashed line, the latter representing the maximal performance that could be attained using only the uncorrupted mode (mode **B**) as input. This can be interpreted as follows: information in the corrupted mode is used by the prediction model until the amount of perturbations becomes too significant. From that turning point, only the uncorrupted mode is used for predictions. The same pattern is observed when corrupting mode **B**.
 
 <p align="center">
     <img width="560" src="slides/figs/noise-generalisation-dm-noisy.png">

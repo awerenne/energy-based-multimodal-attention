@@ -1,7 +1,7 @@
 \chapter{Experiments \& Results} 
 \label{chapter-experiments} 
 
-This chapter experimentally verifies the main ideas discussed in the previous chapters \ref{chapter-energy-estimation} and \ref{chapter-emma}. In chapter \ref{chapter-energy-estimation}, the derivation of the potential energy from an autoencoder was shown, with the potential energy being proportional to the log-likelihood. We claimed that this metric could be used to distinguish normal samples from failing ones. On the other hand, chapter \ref{chapter-emma} discussed the design of the attention module constructed to change the allocation of attention in the face of varying levels of perturbations, and thus improving the robustness of the MMN. 
+This chapter experimentally verifies the main ideas discussed in the previous chapters \ref{chapter-energy-estimation} and \ref{chapter-emma}. In chapter \ref{chapter-energy-estimation}, the derivation of the potential energy from an autoencoder was shown, with the potential energy being proportional to the log-likelihood. We claimed that this metric could be used to distinguish normal samples from failing ones. On the other hand, chapter \ref{chapter-emma} described the design of EMMA, which is constructed to change the allocation of its attention in the face of varying levels of perturbations, and thus improving the robustness of the MMN. 
 
 %----------------------------------------------------------------------------------------
 %	SECTION 
@@ -16,7 +16,7 @@ The models will learn to distinguish pulsars from other radio emissions. The dat
 \item \textit{dispersion measure} (DM): the amount of dispersive smearing\footnote{See Appendix \ref{chapter-dataset}.} a signal receives is proportional to a quantity called the dispersion measure, which is the integrated column density of free electrons between an observer and a pulsar (further details in Appendix \ref{chapter-dataset}). Similarly, the mode contains four features, namely the mean, standard deviation, excess kurtosis and skewness of the dispersion measure.
 \end{itemize}
 
-An additional difficulty of this dataset is that it is skewed, there are approximately ten time less positive samples than negative ones ($17.898$ total samples, $1.639$ positive samples, $16.259$ negative samples). This issue was handled by imposing a penalty in the loss function to fight the class imbalance (explained below).
+An additional difficulty of this dataset is that it is skewed, there are approximately ten time less positive samples than negative ones ($17.898$ total samples, $1.639$ positive samples, $16.259$ negative samples). This issue was handled by imposing a penalty in the loss function to fight the class imbalance.
 
 In the experiments, the dataset will be split into training, validation and test sets (see Table \ref{tab:split}). The validation set is used for tuning purposes, and to implement an Early Stopping\footnote{Early stopping \citep{early-stopping} is a form of regularization to avoid overfitting, where the error on the validation set is used in determining when overfitting has begun i.e., when the validation error starts increasing.} algorithm. Usually, the model is then retrained for a few iterations on both the combined training and validation set. In the case at hand, for the sake of simplicity, the model is not retrained on the combined sets. Prior to the training, the data is standardized for the purpose of having the same noise-to-signal ratio corruption effect on all features, since all their variances are equal to one. To avoid information leakage, the statistics (i.e., mean and variance) for the standardization are computed from the training set instead of the entire dataset, and applied to the three data subsets. 
 \begin{table}
@@ -89,10 +89,13 @@ Since only two classes are considered in this experiment, the conventional proce
 
 The motivation of this experiment is to show the effect of the attention module on the inputs, and its effectiveness in improving the robustness of the MMN. To this end, failing modes are simulated by adding white noise. The predictions of the model fitted with EMMA are compared with the predictions of models having the same architecture but without EMMA. The reason only noisy failing types are tested is two-fold. First, conventional models are generally not able to spontaneously learn to detect out-of-distribution samples. Secondly, it is straightforward to control the intensity of the failing mode by changing the noise-to-signal ratio. 
 
-To asses the extent to which fitting EMMA to a standard MMN can improve its predictive performance and robustness, the performance of the coupled models is compared with that of i) a stand-alone MMN ii) a stand-alone MMN trained via a standard data augmentation technique, which consists in adding noisy samples to the training set in the hope that the MMN learns to suppress the noise by itself. In summary, three types of models are evaluated:
+To asses the extent to which fitting EMMA to a standard MMN can improve its predictive performance and robustness, the performance of the coupled models is compared with that of i) a stand-alone MMN ii) a stand-alone MMN trained via a standard data augmentation technique, which consists in adding noisy samples to the training set in the hope that the MMN learns to suppress the noise by itself. In summary, six types of models are evaluated:
 \begin{itemize}
+\item \texttt{IP-only} is a small MMN trained on samples containing only data from the IP-mode.
+\item \texttt{DM-only} is a small MMN trained on samples containing only data from the DM-mode.
 \item \texttt{base-model} is the MMN optimized on the training set (stage 1). Thus, without added noise neither using EMMA.
 \item \texttt{model-without} is the model initialized with the weights of the \texttt{base-model}, and finetuned on a mix of corrupted and uncorrupted samples of the training set (data augmentation technique).
+\item \texttt{alternative} is the \texttt{base-model} coupled with an alternative attention module \citep{audiovisual-attention}, discussed in the literature review, finetuned on a mix of corrupted and uncorrupted samples.
 \item \texttt{model-with} is the combined \texttt{base-model} with the attention module EMMA. This model is trained end-to-end on a mix of corrupted and uncorrupted data (stage 2). 
 \end{itemize}
 The corruption process is applied as follows to each data subset separately: 50\% of the samples stay uncorrupted, 25\% of the samples are corrupted only on the IP mode and for the remaining samples only the DM mode is corrupted. In particular, the samples are corrupted by adding Gaussian white noise with a $\sigma_{\text{corruption}} = 0.5$.
@@ -100,15 +103,18 @@ The corruption process is applied as follows to each data subset separately: 50\
 The chosen loss function is the binary cross-entropy with an imbalance penalty\footnote{The imbalance penalty weights the loss of each sample with respect to the proportion of its corresponding class in the dataset}. Moreover, the three types of models are trained for 30 epochs with Early Stopping, implemented in the following way: at each epoch the state of the current model is saved as the new optimal one if the validation  error is lower than the previous minimum. Furthermore, the optimal classification threshold is determined on the validation set using the receiver operating characteristic (ROC) curve. Lastly, the F1-score is used as the criterion to evaluate the performance on the test set. 
 
 \subsection{Results}
-Table \ref{tab:results} shows the F1-scores of the three types of models on both corrupted and uncorrupted samples of the test set. For the \texttt{model-with}, 125 combinations of hyperparameters were trained, from which the fifteen best ones were extracted and shown in Table \ref{tab:results}. As expected, the \texttt{base-model} performs badly on samples with a noisy mode, since it was only trained on uncorrupted data. Furthermore, the results of \texttt{model-without} indicate that using data augmentation indeed improves the performance on noisy data, whereas the performance on uncorrupted samples slightly decreases. Moreover, it can be seen that the models equipped with the attention module (\texttt{model-with}) consistently outperform \texttt{model-without} and \texttt{base-model} on noisy data by a significant margin. Somewhat surprisingly, using the attention module appears to slightly improve the F1-score on uncorrupted data as well compared to the \texttt{base-model}. A possible explanation could be that EMMA is able to capture a certain spectrum of quality about the data, which would then be used by the MMN to improve the predictions. Nevertheless, further investigation is required to validate this hypothesis. Lastly, it is worth noticing that the models seems to be more robust against one failing mode (DM) then the other (IP). Since the noise-to-signal ratios are uniform across modes, it could be hypothesized that the latter mode is more informative.
+Table \ref{tab:results} shows the F1-scores of the three types of models on both corrupted and uncorrupted samples of the test set. For the \texttt{model-with}, 125 combinations of hyperparameters were trained, from which the fifteen best ones were extracted and shown in Table \ref{tab:results}. As expected, the \texttt{base-model} performs badly on samples with a noisy mode, since it was only trained on uncorrupted data. Furthermore, the results of \texttt{model-without} indicate that using data augmentation indeed improves the performance on noisy data, whereas the performance on uncorrupted samples slightly decreases. On the other hand, models equipped with the attention module (\texttt{model-with}) consistently outperform \texttt{model-without} and \texttt{base-model} on noisy data by a significant margin. Somewhat surprisingly, using the attention module appears to slightly improve the F1-score on uncorrupted data as well compared to the \texttt{base-model}. A possible explanation could be that EMMA is able to capture a small spectrum of quality about the training data, which would then be used by the MMN to improve the predictions. Nevertheless, further investigation is required to validate this hypothesis. Lastly, it is worth noticing that the models seems to be more robust against one failing mode (DM) then the other (IP). Since the noise-to-signal ratios are uniform across modes, it could be hypothesized that the latter mode is more informative. This hypothesis is verified by the obtained performance of the models \texttt{IP-only} and \texttt{DM-only}.
 \begin{table*}\centering
 \ra{1.3}
 \begin{tabular}{@{}rrrrcrrr@{}}\toprule
 & \multicolumn{3}{c}{Hyperparameters} & \phantom{abc}& \multicolumn{3}{c}{F1-score}\\
 \cmidrule{2-4} \cmidrule{6-8}
 & \multicolumn{1}{c}{$\rho$} & \multicolumn{1}{c}{$\lambda_c$} & \multicolumn{1}{c}{$\lambda_e$} && \multicolumn{1}{r}{uncorrupted} & \multicolumn{1}{r}{IP noisy} & \multicolumn{1}{r}{DM noisy}\\ \midrule\midrule
+IP-only & & & && 0.8235 & 0.5926 & \\
+DM-only & & & && 0.6612 &  & 0.3920\\\midrule
 base & & & && 0.8830 & 0.6441 & 0.6569\\
-without & & & && 0.8671& 0.7097& 0.7683\\\midrule
+without & & & && 0.8671& 0.7097& 0.7683\\
+alternative & & & && 0.7726 & 0.6129 & 0.6882\\\midrule
 with & $10^{-4}$ & $10^{-3}$ & $10^{-2}$ && $\mathbf{0.8881}$& $\mathbf{0.7333}$& $\mathbf{0.8077}$\\
 with & $10^{-4}$ & $0$ & $10^{-2}$ && $\mathbf{0.8849}$& $\mathbf{0.7285}$& $\mathbf{0.8183}$\\
 with & $10^{-4}$ & $10^{-4}$ & $10^{-2}$ && $\mathbf{0.8945}$& $\mathbf{0.7333}$& $\mathbf{0.8182}$\\
@@ -119,14 +125,9 @@ with & $10^{-4}$ & $10^{-3}$ & $0$ && 0.8786& $\mathbf{0.7190}$& $\mathbf{0.7826
 with & $10^{-3}$ & $10^{-1}$ & $10^{-2}$ && 0.8800& $\mathbf{0.7432}$& $\mathbf{0.8344}$\\
 with & $10^{-4}$ & $0$ & $10^{-4}$ && 0.8723& 0.7051& $\mathbf{0.7853}$\\
 with & $10^{-4}$ & $10^{-4}$ & $10^{-3}$ && 0.8794& 0.7053& $\mathbf{0.7853}$\\
-with & $10^{-3}$ & $10^{-3}$ & $10^{-4}$ && 0.8641& $\mathbf{0.7347}$& $\mathbf{0.8129}$\\
-with & $1$ & $10^{-1}$ & $10^{-1}$ && 0.8683& $\mathbf{0.7237}$& $\mathbf{0.8052}$\\
-with & $10^{-3}$ & $10^{-2}$ & $10^{-4}$ && 0.8705& $\mathbf{0.7105}$& $\mathbf{0.8205}$\\
-with & $10^{-4}$ & $0$ & $10^{-3}$ && 0.8693& 0.7051& $\mathbf{0.7901}$\\
-with & $10^{-3}$ & $10^{-1}$ & $0$ && 0.8817& 0.7049& $\mathbf{0.8129}$\\
 \bottomrule
 \end{tabular}
-\caption{F1-scores of the top-15 trained \texttt{model-with} (the models are ranked by their weighted average F1-score) along with \texttt{base-model} and \texttt{model-without}.}
+\caption{F1-scores of the top-10 trained \texttt{model-with} (the models are ranked by their weighted average F1-score) along with the other types of models.}
 \label{tab:results}
 \end{table*}
 
@@ -262,34 +263,73 @@ As discussed in Chapter \ref{chapter-literature-review}, the robustness of a mod
 In this study, in order to carry out a more realistic robustness assessment of the combined model (\texttt{model-with}), the quality of the predictions is evaluated on test sets with varying levels of noises. In particular, \textit{only one mode} of the test set is corrupted with a specific intensity of noise on which the model is evaluated. This process is then repeated for increasing noise intensity. The results of the robustness analysis of the $1^\text{st}$ ranked model are shown In Figure \ref{fig:exp-att-shift-6}. When the noise is applied on the DM-mode (Figure \ref{fig:exp-att-shift-6-b}), he performance of the \texttt{model-with} remain more stable than that of the other models. The masking of the noise by the attention module is verified in Figure \ref{fig:exp-att-shift-6-d} (blue line). Concerning, the results when the other mode (IP) is noisy (Figure \ref{fig:exp-att-shift-6-a}) are less convincing. However, the performance seems to stabilize for high noise levels (Figure \ref{fig:exp-att-shift-6-a}, from $\sigma \approx 1.35$). In fact, it can be shown that this high noise level corresponds to the attention switch in Figure \ref{fig:exp-att-shift-6-c}. This may indicate that the capacity was regularized too strongly, and as result does not let sufficient information pass. To support this claim, results for a module with a higher capacity are displayed in Figure \ref{fig:exp-att-shift-7}. It can indeed be observed that the global amount of allocated attention (capacity) is higher, as the sum of the area under the curves of the attention scores is higher. In consequence, the module can instead learn to shift the attention sooner (Figure \ref{fig:exp-att-shift-7-c} and \ref{fig:exp-att-shift-7-d}), leading to a more consistent and stable performance (Figure \ref{fig:exp-att-shift-7-a} compared to Figure \ref{fig:exp-att-shift-6-a}). 
 
 Finally, it must be stated that the capacity regularizer requires careful tuning. Indeed, an extreme case in which the capacity was regularized too heavily is reported in Figure \ref{fig:exp-att-shift-8}. Strikingly, the model performance deteriorates significantly, and the stand-alone MMN with data augmentation training outperforms the combined models over a wide range of noise intensities. 
+
+
 \begin{figure}[!h]
 \centering
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{figures/noise-generalisation-ip-noisy-0}
+  \includegraphics[width=\linewidth]{figures/new/noise-generalisation-ip-noisy}
   \caption{F1-score, noisy IP-mode}
   \label{fig:exp-att-shift-6-a}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{figures/noise-generalisation-dm-noisy-0}
+  \includegraphics[width=\linewidth]{figures/new/noise-generalisation-dm-noisy}
   \caption{F1-score, noisy DM-mode}
  \label{fig:exp-att-shift-6-b} 
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{figures/noise-generalisation-ip-noisy-beta-0}
+  \includegraphics[width=\linewidth]{figures/new/normal-ip-noisy-beta}
   \caption{attention score, noisy IP-mode}
    \label{fig:exp-att-shift-6-c} 
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{figures/noise-generalisation-dm-noisy-beta-0}
+  \includegraphics[width=\linewidth]{figures/new/normal-dm-noisy-beta}
   \caption{attention score, noisy DM-mode}
    \label{fig:exp-att-shift-6-d} 
 \end{subfigure}
-\caption[Noise generalisation]{Noise generalisation of \texttt{model-with} ($\rho=10^{-4},\,\lambda_e=10^{-3},\,\lambda_c=10^{-2}$). The learned capacity is 0.19.}
+\caption[Robustness generalisation]{Robustness generalisation of \texttt{model-with} ($\rho=10^{-4},\,\lambda_e=10^{-3},\,\lambda_c=10^{-2}$). The learned capacity is 0.19.}
 \label{fig:exp-att-shift-6}
+\end{figure}
+
+\subsection*{Influence of capacity regularization}
+\begin{figure}[!h]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{figures/new/capacity-ip-noisy}
+  \caption{F1-score, noisy IP-mode}
+  \label{fig:exp-att-shift-7-a}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{figures/new/capacity-dm-noisy}
+  \caption{F1-score, noisy DM-mode}
+  \label{fig:exp-att-shift-7-b}
+\end{subfigure}
+\caption[Influence of capacity regularization]{...}
+\label{fig:exp-att-shift-7}
+\end{figure}
+
+\subsection*{Influence of energy regularization}
+
+\begin{figure}[!h]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{figures/new/energy-ip-noisy}
+  \caption{F1-score, noisy IP-mode}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{figures/new/energy-dm-noisy}
+  \caption{F1-score, noisy DM-mode}
+\end{subfigure}
+\caption[Influence of energy regularization]{...}
+\label{fig:exp-att-shift-8}
 \end{figure}
 
 
@@ -305,54 +345,83 @@ The main objective of this work was to develop ideas and a new framework to tack
 \centering
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{figures/noise-generalisation-ip-noisy-4}
+  \includegraphics[width=\linewidth]{figures/new/no-capacity-ip-noisy-beta}
   \caption{F1-score, noisy IP-mode}
-  \label{fig:exp-att-shift-7-a}
+  \label{fig:exp-9-a}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{figures/noise-generalisation-dm-noisy-4}
+  \includegraphics[width=\linewidth]{figures/new/no-capacity-dm-noisy-beta}
   \caption{F1-score, noisy DM-mode}
-  \label{fig:exp-att-shift-7-b}
+ \label{fig:exp-9-b} 
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{figures/noise-generalisation-ip-noisy-beta-4}
+  \includegraphics[width=\linewidth]{figures/new/normal-ip-noisy-beta}
   \caption{attention score, noisy IP-mode}
-  \label{fig:exp-att-shift-7-c}
+   \label{fig:exp-9-c} 
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{figures/noise-generalisation-dm-noisy-beta-4}
+  \includegraphics[width=\linewidth]{figures/new/normal-dm-noisy-beta}
   \caption{attention score, noisy DM-mode}
-  \label{fig:exp-att-shift-7-d}
+   \label{fig:exp-9-d} 
 \end{subfigure}
-\caption[Noise generalisation with more capacity]{Noise generalisation of \texttt{model-with} ($\rho=10^{-4},\,\lambda_e=10^{-2},\,\lambda_c=10^{-3}$). The learned capacity is 0.49.}
-\label{fig:exp-att-shift-7}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{figures/new/high-capacity-ip-noisy-beta}
+  \caption{attention score, noisy IP-mode}
+   \label{fig:exp-9-e} 
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{figures/new/high-capacity-dm-noisy-beta}
+  \caption{attention score, noisy DM-mode}
+   \label{fig:exp-9-f} 
+\end{subfigure}
+\caption[Robustness generalisation]{Robustness generalisation of \texttt{model-with} ($\rho=10^{-4},\,\lambda_e=10^{-3},\,\lambda_c=10^{-2}$). The learned capacity is 0.19.}
+\label{fig:exp-9}
 \end{figure}
 
 \begin{figure}[!h]
 \centering
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{figures/noise-generalisation-ip-noisy-44}
+  \includegraphics[width=\linewidth]{figures/new/no-energy-ip-noisy-beta}
   \caption{F1-score, noisy IP-mode}
+  \label{fig:exp-10-a}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{figures/noise-generalisation-dm-noisy-44}
+  \includegraphics[width=\linewidth]{figures/new/no-energy-dm-noisy-beta}
   \caption{F1-score, noisy DM-mode}
+ \label{fig:exp-10-b} 
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{figures/noise-generalisation-ip-noisy-beta-44}
+  \includegraphics[width=\linewidth]{figures/new/normal-ip-noisy-beta}
   \caption{attention score, noisy IP-mode}
+   \label{fig:exp-10-c} 
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{figures/noise-generalisation-dm-noisy-beta-44}
+  \includegraphics[width=\linewidth]{figures/new/normal-dm-noisy-beta}
   \caption{attention score, noisy DM-mode}
+   \label{fig:exp-10-d} 
 \end{subfigure}
-\caption[Noise generalisation with not enough capacity]{Noise generalisation of \texttt{model-with} ($\rho=10^{-4},\,\lambda_e=10^{-1},\,\lambda_c=10^{-1}$). The learned capacity is 0.04.}
-\label{fig:exp-att-shift-8}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{figures/new/high-energy-ip-noisy-beta}
+  \caption{attention score, noisy IP-mode}
+   \label{fig:exp-10-e} 
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{figures/new/high-energy-dm-noisy-beta}
+  \caption{attention score, noisy DM-mode}
+   \label{fig:exp-10-f} 
+\end{subfigure}
+\caption[Robustness generalisation]{Robustness generalisation of \texttt{model-with} ($\rho=10^{-4},\,\lambda_e=10^{-3},\,\lambda_c=10^{-2}$). The learned capacity is 0.19.}
+\label{fig:exp-10}
 \end{figure}
+
