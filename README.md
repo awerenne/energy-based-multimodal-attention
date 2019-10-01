@@ -1,6 +1,6 @@
 # Energy-based Multi-Modal Attention (EMMA)
 
-This repository contains the implementation for my thesis 'Energy-based Multi-Modal Attention' done at the Montefiore (Computer & Electrical Engineering) Institute of the University of Liège. The up-to-date report can be found [here](https://github.com/Werenne/energy-based-multimodal-attention/blob/master/report/main.pdf).
+This repository contains the implementation for my thesis 'Energy-based Multi-Modal Attention' done at the Montefiore Institute (Computer & Electrical Engineering) of the University of Liège. The up-to-date report can be found [here](https://awerenne.github.io/files/thesis-report.pdf).
 
 Author: Aurélien Werenne<br />
 Supervisor: Dr. Raphaël Marée  
@@ -11,9 +11,9 @@ A multi-modal neural network exploits information from different channels and in
 
 ## Example
 
-Take the case of a self-driving car using a neural network for scene understanding, receiving at its input data coming simultanously from a camera, LIDAR sensor and a GPS (i.e. multi-modal input). Now, imagine the car being in a snow storm, the quality of the data coming from the LIDAR and GPS will remain unchanged, whereas, the one from the camera will be decreased. As a consequence, predictions of the model will be negatively affected (unless the training set explicitly contains sufficient samples of snow storms).
+As an illustration, take the case of a self-driving car using a neural network for scene understanding, receiving at its input data coming simultanously from a camera, LIDAR sensor and a GPS (i.e. multi-modal input). Now, imagine the car arriving in a snow storm, the quality of the data coming from the LIDAR and GPS will remain unchanged, whereas, the one from the camera will decrease. As a consequence, predictions of the model will be negatively affected (unless the training set explicitly contains sufficient samples of snow storms).
 
-The proposed solution is to couple the prediction model with an attention module. The role of the latter is to indicate to the model which modes of the current sample are important and which ones can be neglected. The idea is to leverage the redundancy of information between the modes, such that if the quality of one mode decreases the other mode(s) can "take over".
+The proposed solution is to couple the prediction model with an attention module. The role of the latter is to indicate which modes of the current sample are important and which ones can be neglected to the model. The idea is to leverage the redundancy of information between the modes, such that if the quality of one mode decreases the other mode(s) can "take over".
 
 <p align="center">
     <img width="460" height="300" src="slides/figs/introduction-three-modes-with-emma.jpg">
@@ -21,7 +21,7 @@ The proposed solution is to couple the prediction model with an attention module
 
 ## Results
 
-The main experiment showed that the use of the attention module improves the robustness and generalizes the performance gain on samples with perturbations different from those simulated in the training set (e.g. snow storm). In this experiment, a real-world dataset was used with two modes, denoted **A** and **B**. Perturbations were simulated by adding Gaussian white noise. The common method to improve the robustness of a stand-alone prediction model against perturbations is to train the model with corrupted samples. 
+The main experiment showed that the use of the attention module improves the robustness, and generalizes this performance gain on samples with perturbations different from those simulated in the training set. A real-world dataset was used composed of two modes, denoted **A** and **B**. Perturbations were simulated by adding Gaussian white noise. To improve the robustness of a prediction model against perturbations, the standard method is to train the model with corrupted samples. 
 
 The figure below shows how the performance evolves when increasing the noise-to-signal ratio of mode **A** in the test samples. The vertical dashed line represents the noise-to-signal ratio applied during the training. As can be observed, the stand-alone prediction model trained with corrupted samples (red line) has a good performance until the noise-to-signal ratio of the test samples becomes higher than the one of the training samples. On the other hand, the prediction model coupled with our attention module (blue line) obtains better performance and remains more stable.
 
