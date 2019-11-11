@@ -260,9 +260,7 @@ In order to evaluate the veracity of this claim, the following experiment is car
 \subsection*{Robustness Generalisation}\label{sec:generalization}
 As discussed in Chapter \ref{chapter-literature-review}, the robustness of a model is often evaluated under the same conditions as the training. This approach appears somewhat questionable. Indeed, the conditions under which the model will be deployed cannot, in most cases,  be specified exactly in advance. In particular, the nature and occurrence of failing modes may be unknown \textit{a priori}. As a result, it appears very likely that such an evaluation method provides an overly optimistic assessment of model robustness.
 
-In this study, in order to carry out a more realistic robustness assessment of the combined model (\texttt{model-with}), the quality of the predictions is evaluated on test sets with varying levels of noises. In particular, \textit{only one mode} of the test set is corrupted with a specific intensity of noise on which the model is evaluated. This process is then repeated for increasing noise intensity. The results of the robustness analysis of the $1^\text{st}$ ranked model are shown In Figure \ref{fig:exp-att-shift-6}. When the noise is applied on the DM-mode (Figure \ref{fig:exp-att-shift-6-b}), he performance of the \texttt{model-with} remain more stable than that of the other models. The masking of the noise by the attention module is verified in Figure \ref{fig:exp-att-shift-6-d} (blue line). Concerning, the results when the other mode (IP) is noisy (Figure \ref{fig:exp-att-shift-6-a}) are less convincing. However, the performance seems to stabilize for high noise levels (Figure \ref{fig:exp-att-shift-6-a}, from $\sigma \approx 1.35$). In fact, it can be shown that this high noise level corresponds to the attention switch in Figure \ref{fig:exp-att-shift-6-c}. This may indicate that the capacity was regularized too strongly, and as result does not let sufficient information pass. To support this claim, results for a module with a higher capacity are displayed in Figure \ref{fig:exp-att-shift-7}. It can indeed be observed that the global amount of allocated attention (capacity) is higher, as the sum of the area under the curves of the attention scores is higher. In consequence, the module can instead learn to shift the attention sooner (Figure \ref{fig:exp-att-shift-7-c} and \ref{fig:exp-att-shift-7-d}), leading to a more consistent and stable performance (Figure \ref{fig:exp-att-shift-7-a} compared to Figure \ref{fig:exp-att-shift-6-a}). 
-
-Finally, it must be stated that the capacity regularizer requires careful tuning. Indeed, an extreme case in which the capacity was regularized too heavily is reported in Figure \ref{fig:exp-att-shift-8}. Strikingly, the model performance deteriorates significantly, and the stand-alone MMN with data augmentation training outperforms the combined models over a wide range of noise intensities. 
+In this study, in order to carry out a more realistic robustness assessment of the combined model (\texttt{model-with}), the quality of the predictions is evaluated on test sets with varying levels of noises. In particular, \textit{only one mode} of the test set is corrupted with a specific intensity of noise on which the model is evaluated. This process is then repeated for increasing noise intensity. The results of the robustness analysis of the $1^\text{st}$ ranked model are shown In Figure \ref{fig:exp-att-shift-6}. When the noise is applied on the DM-mode (Figure \ref{fig:exp-att-shift-6-b}), he performance of the \texttt{model-with} remain more stable than that of the other models. The masking of the noise by the attention module is verified in Figure \ref{fig:exp-att-shift-6-d}. \textit{TODO: rewrite with new findings.}
 
 
 \begin{figure}[!h]
@@ -296,6 +294,7 @@ Finally, it must be stated that the capacity regularizer requires careful tuning
 \end{figure}
 
 \subsection*{Influence of capacity regularization}
+\textit{TODO: rewrite with new findings.}
 \begin{figure}[!h]
 \centering
 \begin{subfigure}{.5\textwidth}
@@ -310,11 +309,12 @@ Finally, it must be stated that the capacity regularizer requires careful tuning
   \caption{F1-score, noisy DM-mode}
   \label{fig:exp-att-shift-7-b}
 \end{subfigure}
-\caption[Influence of capacity regularization]{...}
+\caption[Influence of capacity regularization]{Influence of capacity regularizer on F1-score of \texttt{model-with} ($\rho=10^{-4},\,\lambda_e=10^{-3}$).}
 \label{fig:exp-att-shift-7}
 \end{figure}
 
 \subsection*{Influence of energy regularization}
+\textit{TODO: rewrite with new findings.}
 
 \begin{figure}[!h]
 \centering
@@ -328,7 +328,7 @@ Finally, it must be stated that the capacity regularizer requires careful tuning
   \includegraphics[width=\linewidth]{figures/new/energy-dm-noisy}
   \caption{F1-score, noisy DM-mode}
 \end{subfigure}
-\caption[Influence of energy regularization]{...}
+\caption[Influence of energy regularization]{Influence of energy regularizer on F1-score of \texttt{model-with} ($\rho=10^{-4},\,\lambda_c=10^{-2}$).}
 \label{fig:exp-att-shift-8}
 \end{figure}
 
@@ -379,7 +379,7 @@ The main objective of this work was to develop ideas and a new framework to tack
   \caption{attention score, noisy DM-mode}
    \label{fig:exp-9-f} 
 \end{subfigure}
-\caption[Robustness generalisation]{Robustness generalisation of \texttt{model-with} ($\rho=10^{-4},\,\lambda_e=10^{-3},\,\lambda_c=10^{-2}$). The learned capacity is 0.19.}
+\caption[Robustness generalisation]{Influence of capacity regularizer on attention scores of \texttt{model-with} ($\rho=10^{-4},\,\lambda_e=10^{-3}$).}
 \label{fig:exp-9}
 \end{figure}
 
@@ -421,7 +421,7 @@ The main objective of this work was to develop ideas and a new framework to tack
   \caption{attention score, noisy DM-mode}
    \label{fig:exp-10-f} 
 \end{subfigure}
-\caption[Robustness generalisation]{Robustness generalisation of \texttt{model-with} ($\rho=10^{-4},\,\lambda_e=10^{-3},\,\lambda_c=10^{-2}$). The learned capacity is 0.19.}
+\caption[Robustness generalisation]{Influence of energy regularizer on attention scores of \texttt{model-with} ($\rho=10^{-4},\,\lambda_c=10^{-2}$).}
 \label{fig:exp-10}
 \end{figure}
 
