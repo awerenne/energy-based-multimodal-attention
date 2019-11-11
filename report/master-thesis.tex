@@ -1,0 +1,309 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Masters/Doctoral Thesis 
+% LaTeX Template
+% Version 2.5 (27/8/17)
+%
+% This template was downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Version 2.x major modifications by:
+% Vel (vel@latextemplates.com)
+%
+% This template is based on a template by:
+% Steve Gunn (http://users.ecs.soton.ac.uk/srg/softwaretools/document/templates/)
+% Sunil Patel (http://www.sunilpatel.co.uk/thesis-template/)
+%
+% Template license:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[
+11pt, % The default document font size, options: 10pt, 11pt, 12pt
+%oneside, % Two side (alternating margins) for binding by default, uncomment to switch to one side
+english, % ngerman for German
+singlespacing, % Single line spacing, alternatives: onehalfspacing or doublespacing
+%draft, % Uncomment to enable draft mode (no pictures, no links, overfull hboxes indicated)
+%nolistspacing, % If the document is onehalfspacing or doublespacing, uncomment this to set spacing in lists to single
+%liststotoc, % Uncomment to add the list of figures/tables/etc to the table of contents
+%toctotoc, % Uncomment to add the main table of contents to the table of contents
+parskip, % Uncomment to add space between paragraphs
+%nohyperref, % Uncomment to not load the hyperref package
+headsepline, % Uncomment to get a line under the header
+%chapterinoneline, % Uncomment to place the chapter title next to the number on one line
+%consistentlayout, % Uncomment to change the layout of the declaration, abstract and acknowledgements pages to match the default layout
+]{master-thesis} % The class file specifying the document structure
+\restoreparindent
+\usepackage[utf8]{inputenc} % Required for inputting international characters
+\usepackage[T1]{fontenc} % Output font encoding for international characters
+\usepackage{amsmath}
+\usepackage{hyperref}
+%\usepackage{mathpazo} % Use the Palatino font by default
+%\usepackage{xfrac,unicode-math}
+\usepackage[eng,exjobb]{KTHEEtitlepage}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{cancel}
+\usepackage{booktabs, lscape}
+
+\usepackage[backend=bibtex,style=authoryear,natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
+%\setlength{\intextsep}{10pt plus 1.0pt minus 2.0pt}
+\addbibresource{biblio.bib} % The filename of the bibliography
+\usepackage{float}
+\usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
+\usepackage{subcaption}
+\newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
+%\setmathfont{Latin Modern Math}[version=lm]
+\newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
+
+%----------------------------------------------------------------------------------------
+%	MARGIN SETTINGS
+%----------------------------------------------------------------------------------------
+
+\geometry{
+	paper=a4paper, % Change to letterpaper for US letter
+	inner=2.5cm, % Inner margin
+	outer=3.5cm, % Outer margin
+	bindingoffset=.5cm, % Binding offset
+	top=1.5cm, % Top margin
+	bottom=1.5cm, % Bottom margin
+	%showframe, % Uncomment to show how the type block is set on the page
+}
+
+%----------------------------------------------------------------------------------------
+%	THESIS INFORMATION
+%----------------------------------------------------------------------------------------
+
+\thesistitle{Energy-based Multi-Modal Attention} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
+\supervisor{Dr. Raphaël \textsc{Marée}} % Your supervisor's name, this is used in the title page, print it elsewhere with \supname
+\examiner{} % Your examiner's name, this is not currently used anywhere in the template, print it elsewhere with \examname
+\degree{Master of Computer Science and Engineering} % Your degree name, this is used in the title page and abstract, print it elsewhere with \degreename
+\author{Aurélien \textsc{Werenne}} % Your name, this is used in the title page and abstract, print it elsewhere with \authorname
+\addresses{} % Your address, this is not currently used anywhere in the template, print it elsewhere with \addressname
+
+\subject{Artificial Intelligence} % Your subject area, this is not currently used anywhere in the template, print it elsewhere with \subjectname
+\keywords{Multimodal, Deep Learning, Attention, Robustness} % Keywords for your thesis, this is not currently used anywhere in the template, print it elsewhere with \keywordnames
+\university{University of Liège} % Your university's name and URL, this is used in the title page and abstract, print it elsewhere with \univname
+\faculty{Faculty of Applied Sciences} % Your faculty's name and URL, this is used in the title page and abstract, print it elsewhere with \facname
+\department{Montefiore Institute} % Your department's name and URL, this is used in the title page and abstract, print it elsewhere with \deptname
+\group{\href{http://www.montefiore.ulg.ac.be/systmod/}{Systems and Modelling}} % Your research group's name and URL, this is used in the title page, print it elsewhere with \groupname
+
+\AtBeginDocument{
+\hypersetup{pdftitle=\ttitle} % Set the PDF's title to your title
+\hypersetup{pdfauthor=\authorname} % Set the PDF's author to your name
+\hypersetup{pdfkeywords=\keywordnames} % Set the PDF's keywords to your keywords
+}
+
+\begin{document}
+
+\frontmatter % Use roman page numbering style (i, ii, iii, iv...) for the pre-content pages
+
+\pagestyle{plain} % Default to the plain heading style until the thesis style is called for the body content
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+\ititle{Energy-based Multi-Modal Attention}
+\idate{August 2019}
+\color{white}\iauthor{Aurelien Werenne}
+\makeititle
+\color{black}
+\begin{titlepage}
+\begin{center}
+
+%\vspace*{.06\textheight}
+%{\scshape\LARGE \univname\par}\vspace{1.5cm} % University name
+%\textsc{\Large Master Thesis}\\[0.5cm] % Thesis type
+
+\vspace*{.06\textheight}
+\begin{center}
+\includegraphics[scale=0.6]{figures/logo-uliege}\\[1.6cm] 
+\end{center}
+
+\HRule \\[0.4cm] % Horizontal line
+{\huge \bfseries \ttitle\par}\vspace{0.4cm} % Thesis title
+\HRule \\[1.5cm] % Horizontal line
+ 
+\begin{minipage}[t]{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Author:}\\
+\authorname 
+\end{flushleft}
+\end{minipage}
+\begin{minipage}[t]{0.4\textwidth}
+\begin{flushright} \large
+\emph{Supervisor:} \\
+\supname
+\end{flushright}
+\end{minipage}\\[2.4cm]
+
+\large \textit{A thesis submitted in partial fulfillment of the requirements\\ for the degree of \degreename}\\[1cm] % University requirement text
+\deptname\\
+\facname\\
+\univname\\
+Liège, Belgium\\[4cm] 
+ 
+
+%\begin{center}
+%\includegraphics[scale=0.6]{figures/logo-uliege}\\[1.6cm] 
+%\end{center}
+{\large Academic Year 2018 - 2019}
+ 
+\vfill
+\end{center}
+\end{titlepage}
+
+%----------------------------------------------------------------------------------------
+%	QUOTATION PAGE
+%----------------------------------------------------------------------------------------
+
+\vspace*{0.2\textheight}
+
+\noindent\enquote{\itshape Sometimes it seems as though each new step towards Artificial Intelligence, rather than producing something which everyone agrees is real intelligence, merely reveals what real intelligence is not.}\bigbreak
+\hfill Douglas Hofstadter
+%\ldots
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT PAGE
+%----------------------------------------------------------------------------------------
+
+\begin{abstract}
+\addchaptertocentry{\abstractname} % Add the abstract to the table of contents
+A multi-modal neural network exploits information from different channels and in different terms (e.g., images, text, sounds, sensor measures) in the hope that the information carried by each mode is complementary, in order to improve the predictions of the neural network. Nevertheless, in realistic situations, varying levels of perturbations can occur on the data of the modes, which may decrease the quality of the inference process. An additional difficulty is that these perturbations vary between the modes and on a per-sample basis. This work presents a solution to this problem. The three main contributions are described below.
+
+First, a novel attention module is designed, analysed and implemented. This attention module is constructed to help multi-modal networks handle modes with perturbations.
+
+Secondly, two new regularizers are developed to generalize the robustness to more intensive failing modes (relative to the training set).
+
+Lastly, a unified multi-modal attention module is presented, combining the main types of attention mechanisms in the deep learning literature with our module. We suggest that the unified module could be coupled with a prediction model to enable the latter face unexpected situations, and extract the most relevant information from the input data.
+
+\end{abstract}
+
+%----------------------------------------------------------------------------------------
+%	ACKNOWLEDGEMENTS
+%----------------------------------------------------------------------------------------
+
+\begin{acknowledgements}
+\addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
+\vspace*{5mm}
+I would like to thank everybody who kept me busy this year. In particular, my thesis advisor Dr. Raphaël Marée for always encouraging my research, and Romain Mormont who gave me valuable feedback on the writing of this Master thesis. I would also like to thank the jury for reading the text.
+
+Moreover, I would like to acknowledge the work of all the Professors at the University of Liège who helped me become an engineer.
+
+I am also very grateful to my good friends Mathias Berger and Lucas Fuentes. They took time of their busy schedules to provide me with very valuable comments and suggestions, which have drastically improved the quality of this thesis. Thank you. 
+
+Finally, I must express my profound gratitude to my family, especially my grand-parents for providing me with unfailing support and continuous encouragement throughout the process of researching and writing this thesis. This accomplishment would not have been possible without them.\\[1cm]
+
+\begin{flushright}
+\textit{Aurélien Werenne}\\
+Liège, Belgium 2018-2019
+\end{flushright}
+
+\end{acknowledgements}
+
+%----------------------------------------------------------------------------------------
+%	LIST OF CONTENTS/FIGURES/TABLES PAGES
+%----------------------------------------------------------------------------------------
+
+\tableofcontents % Prints the main table of contents
+
+\listoffigures % Prints the list of figures
+
+%----------------------------------------------------------------------------------------
+%	SYMBOLS
+%----------------------------------------------------------------------------------------
+%Abbreviations and Notation
+\begin{symbols}{ll}
+
+$\triangleq$ & Is defined as \\
+$N$ & Number of samples \\
+$M$ & Number of modes\\
+$k_B$ & Boltzmann constant \\
+$M_{\bigodot}$ & Solar mass \\
+$\mathrm{e}$ & Euler's number, base of the natural logarithm ($2.71828$) \\
+$\mathcal{L}$ & Loss function \\
+$\bm{\theta}$ & Set of parameters of the specified model \\
+$\nabla_{\bm{\theta}}$ & Gradient with respect to $\bm{\theta}$ \\
+$\lambda_c$ & Weight of capacity penalty \\
+$\lambda_e$ & Weight of energy penalty \\
+$\Omega$ & Energy regularizer \\
+$\Psi_i$ & Potential energy of mode $i$ \\
+$E_{\text{total}}$ & Total energy \\
+$E_i$ & Modal energy of mode $i$ \\
+$e_i$ & Self-energy of mode $i$ \\
+$e_{ij}$ & Shared energy of mode $j$ on mode $i$ \\
+$\alpha_i$ & Importance score of mode $i$ \\
+$\beta_i$ & Attention score of mode $i$ \\
+$\rho$ & Coldness in Boltzmann distribution \\
+$T$ & Temperature in Boltzmann distribution\\
+
+
+\addlinespace 
+\addlinespace 
+
+AE & \textbf{A}uto\textbf{e}conder\\
+BP & \textbf{B}ack-\textbf{p}ropagation\\
+CNN & \textbf{C}onvolutional \textbf{N}eural \textbf{N}etwork\\
+DAE & \textbf{D}enoising \textbf{A}uto\textbf{e}conder\\
+DL & \textbf{D}eep \textbf{L}earning\\
+DM & \textbf{D}ispersion \textbf{M}easure\\
+EMMA & \textbf{E}nergy-based \textbf{M}ulti-\textbf{M}odal \textbf{A}ttention\\
+ISM & \textbf{I}nter\textbf{s}tellar \textbf{M}edium\\
+IP & \textbf{I}ntegrated \textbf{P}rofile\\
+LSTM & \textbf{L}ong \textbf{S}hort \textbf{T}erm \textbf{M}emory\\
+MMDL & \textbf{M}ulti \textbf{M}odal \textbf{D}eep \textbf{L}earning\\
+MMN & \textbf{M}ulti \textbf{M}odal \textbf{N}etwork\\
+NLL & \textbf{N}egative \textbf{L}og-\textbf{L}ikelihood\\
+RNN & \textbf{R}ecurrent \textbf{N}eural \textbf{N}etwork\\
+SGD & \textbf{S}tochastic \textbf{G}radient \textbf{D}escent\\
+SNR & \textbf{S}ignal-to-\textbf{n}oise \textbf{R}atio\\
+WER & \textbf{W}ord \textbf{E}rror \textbf{R}ate\\
+
+\end{symbols}
+
+%----------------------------------------------------------------------------------------
+%	THESIS CONTENT - CHAPTERS
+%----------------------------------------------------------------------------------------
+
+\mainmatter % Begin numeric (1,2,3...) page numbering
+
+\pagestyle{thesis} % Return the page headers back to the "thesis" style
+
+% Include the chapters of the thesis as separate files from the Chapters folder
+% Uncomment the lines as you write the chapters
+
+\include{chapters/1-introduction}
+\include{chapters/2-background} 
+\include{chapters/3-literature-review}
+\include{chapters/4-energy-approx} 
+\include{chapters/5-emma} 
+\include{chapters/7-experiments} 
+\include{chapters/8-unified} 
+\include{chapters/9-conclusion} 
+
+%----------------------------------------------------------------------------------------
+%	THESIS CONTENT - APPENDICES
+%----------------------------------------------------------------------------------------
+
+\appendix % Cue to tell LaTeX that the following "chapters" are Appendices
+
+% Include the appendices of the thesis as separate files from the Appendices folder
+% Uncomment the lines as you write the Appendices
+
+\include{appendices/appendixA}
+\include{appendices/appendixB}
+\include{appendices/appendixC}
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\printbibliography[heading=bibintoc]
+
+%----------------------------------------------------------------------------------------
+
+\end{document}  
