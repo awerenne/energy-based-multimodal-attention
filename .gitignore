@@ -40,3 +40,5 @@ code/experiment-3/archive/
 *.snm
 
 code/experiment-3/new_dumps/
+
+*.xml
